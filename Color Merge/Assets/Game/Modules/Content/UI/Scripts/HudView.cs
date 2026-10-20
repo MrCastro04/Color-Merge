@@ -1,19 +1,51 @@
 using Assets.Game.Modules.Core.Timer.Scripts;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Таймер и рекорд рядом с ним.
+    // Таймер и рекорд.
+    // В режиме TIMER показывается оставшееся время; последние секунды — красным.
     public class HudView : MonoBehaviour
     {
+        private const float WARNING_TIME = 10f;
+
         [SerializeField] private TMP_Text _timeText;
         [SerializeField] private TMP_Text _bestTimeText;
         [SerializeField] private TMP_Text _levelText;
+        [SerializeField] private Color _warningColor = new(1f, 0.35f, 0.35f, 1f);
+
+        private Color _timeColor;
+        private bool _isColorCached;
+        private bool _isWarning;
 
         public void SetTime(float seconds)
         {
             _timeText.text = TimeFormatter.Format(seconds);
+        }
+
+        // Обратный отсчёт: меньше WARNING_TIME — текст краснеет и пульсирует.
+        public void SetRemainingTime(float seconds)
+        {
+            SetTime(seconds);
+
+            if (!_isColorCached)
+            {
+                _timeColor = _timeText.color;
+                _isColorCached = true;
+            }
+
+            bool isWarning = seconds <= WARNING_TIME;
+
+            if (isWarning == _isWarning)
+                return;
+
+            _isWarning = isWarning;
+            _timeText.color = isWarning ? _warningColor : _timeColor;
+
+            if (isWarning)
+                _timeText.transform.DOPunchScale(Vector3.one * 0.15f, 0.4f, 4, 0.5f).SetLink(gameObject);
         }
 
         // Рекорд показывается только при повторном прохождении.

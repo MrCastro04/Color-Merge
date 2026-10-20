@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Assets.Game.Modules.Content.Board.Scripts;
 using Assets.Game.Modules.Content.Generator.Scripts;
@@ -11,6 +12,7 @@ using Assets.Game.Modules.Core.AssetManagement.Scripts;
 using Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts;
 using Assets.Game.Modules.Core.UI.Scripts;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
@@ -36,6 +38,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly ScreenFader _screenFader;
         private readonly SettingsController _settingsController;
         private readonly LoseScreen _loseScreen;
+        private readonly ChainProgressView _chainProgressView;
 
         private LevelConfig _levelConfig;
         private CancellationToken _cancellationToken;
@@ -49,7 +52,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             BoardController boardController, Generator generator,
             LevelTimer levelTimer, BestTimeRepository bestTimeRepository,
             HudView hudView, WinScreen winScreen, MusicPlayer musicPlayer, ScreenFader screenFader,
-            SettingsController settingsController, LoseScreen loseScreen)
+            SettingsController settingsController, LoseScreen loseScreen, ChainProgressView chainProgressView)
         {
             _assetProvider = assetProvider;
             _levelLoader = levelLoader;
@@ -66,6 +69,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _screenFader = screenFader;
             _settingsController = settingsController;
             _loseScreen = loseScreen;
+            _chainProgressView = chainProgressView;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
@@ -84,6 +88,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             // Доска собрана за шторкой Mid Loader'а — теперь её можно показать.
             await _screenFader.FadeOutAsync(SHOW_LEVEL_FADE, cancellation);
+
+            // TIMER: обратный отсчёт идёт сразу, как только игрок видит доску (не ждёт первого мерджа).
+            if (_levelConfig.IsTimerMode && !_isFinished)
+                _levelTimer.Start();
         }
 
         public void Dispose()
@@ -107,6 +115,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             _levelTimer.Reset();
             _hudView.SetLevelName(_levelConfig.name);
+            SetupChainProgress();
+            HandleOnTimeChanged(0f);
 
             bool hasBestTime = _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
             _hudView.SetBestTime(hasBestTime, bestTime);
@@ -119,7 +129,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _boardController.OnGoalItemCreated += HandleOnGoalItemCreated;
             _generator.OnChargesEnded += CheckLose;
             _generator.OnSpawnFailed += CheckLose;
-            _levelTimer.OnTimeChanged += _hudView.SetTime;
+            _levelTimer.OnTimeChanged += HandleOnTimeChanged;
             _winScreen.OnRestartClicked += HandleOnRestartClicked;
             _winScreen.OnMenuClicked += HandleOnMenuClicked;
             _loseScreen.OnRestartClicked += HandleOnRestartClicked;
@@ -136,7 +146,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _boardController.OnGoalItemCreated -= HandleOnGoalItemCreated;
             _generator.OnChargesEnded -= CheckLose;
             _generator.OnSpawnFailed -= CheckLose;
-            _levelTimer.OnTimeChanged -= _hudView.SetTime;
+            _levelTimer.OnTimeChanged -= HandleOnTimeChanged;
             _winScreen.OnRestartClicked -= HandleOnRestartClicked;
             _winScreen.OnMenuClicked -= HandleOnMenuClicked;
             _loseScreen.OnRestartClicked -= HandleOnRestartClicked;
@@ -146,18 +156,62 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _settingsController.OnMenuRequested -= HandleOnMenuClicked;
         }
 
+        // Панель над доской: цепочка до цели уровня; стартовый прогресс — лучший предмет стартовой расстановки.
+        private void SetupChainProgress()
+        {
+            var chain = _levelConfig.ItemChain;
+            var path = new List<ItemConfig>();
+
+            for (int level = 1; level <= _levelConfig.GoalItemLevel; level++)
+                path.Add(chain.GetByLevel(level));
+
+            _chainProgressView.Setup(path);
+
+            int bestLevel = 0;
+
+            foreach (var item in _boardController.GetItems())
+                bestLevel = Mathf.Max(bestLevel, chain.GetLevel(item.Config));
+
+            _chainProgressView.SetReachedLevel(bestLevel);
+        }
+
+        private void UpdateChainProgress(ItemController item)
+        {
+            _chainProgressView.SetReachedLevel(_levelConfig.ItemChain.GetLevel(item.Config));
+        }
+
         private void HandleOnItemMerged(ItemController item)
         {
+            UpdateChainProgress(item);
+
             if (!_levelTimer.IsRunning && !_isFinished)
                 _levelTimer.Start();
 
-            // Собрали последний предмет — это победа, не поражение.
-            if (!_levelConfig.ItemChain.IsLast(item.Config))
+            // Собрали предмет-цель — это победа, не поражение.
+            if (item.Config != _levelConfig.GoalItem)
                 CheckLose();
+        }
+
+        // COLLECT_ITEM — секундомер; TIMER — оставшееся время, на нуле поражение.
+        private void HandleOnTimeChanged(float elapsed)
+        {
+            if (!_levelConfig.IsTimerMode)
+            {
+                _hudView.SetTime(elapsed);
+                return;
+            }
+
+            float remaining = Mathf.Max(0f, _levelConfig.TimeLimit - elapsed);
+            _hudView.SetRemainingTime(remaining);
+
+            if (remaining <= 0f && !_isFinished)
+                LoseAsync("TIME'S UP", "You ran out of time.\nTry again!").Forget();
         }
 
         private void HandleOnItemSpawned(ItemController item)
         {
+            UpdateChainProgress(item);
+
             CheckLose();
         }
 
@@ -175,12 +229,16 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             bool canSpawn = _generator.HasCharges && _boardController.HasFreeSlot;
 
             if (!canSpawn)
-                LoseAsync().Forget();
+                LoseAsync("OUT OF MOVES", "No merges left.\nTry again!").Forget();
         }
 
-        private async UniTaskVoid LoseAsync()
+        private async UniTaskVoid LoseAsync(string title, string message)
         {
+            if (_isFinished)
+                return;
+
             _isFinished = true;
+            _loseScreen.SetReason(title, message);
 
             _levelTimer.Stop();
             _boardController.SetInteractable(false);

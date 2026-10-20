@@ -11,8 +11,18 @@ namespace Assets.Game.Modules.Content.Level.Scripts
     [CreateAssetMenu(menuName = "Game/Level/Level Config", fileName = "Level_")]
     public class LevelConfig : ScriptableObject
     {
+        public const float MIN_TIME_LIMIT = 60f;
+        public const float DEFAULT_TIME_LIMIT = 120f;
+
         [SerializeField] private string _id;
         [SerializeField] private ItemChainConfig _itemChain;
+
+        [Header("Goal")]
+        [SerializeField] private LevelMode _mode = LevelMode.COLLECT_ITEM;
+        [Tooltip("Уровень предмета в ItemChain, который надо собрать: 1 — первый")]
+        [SerializeField, Min(1)] private int _goalItemLevel = 7;
+        [Tooltip("Только для TIMER: время на уровень, секунды (не меньше 60)")]
+        [SerializeField, Min(MIN_TIME_LIMIT)] private float _timeLimit = DEFAULT_TIME_LIMIT;
 
         [Header("Board")]
         [SerializeField, Min(1)] private int _columns = 5;
@@ -40,11 +50,25 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public int GeneratorCharges => _generatorCharges;
         public bool HasGeneratorLimit => _generatorCharges >= 0;
 
+        public LevelMode Mode => _mode;
+        public bool IsTimerMode => _mode == LevelMode.TIMER;
+        public float TimeLimit => Mathf.Max(MIN_TIME_LIMIT, _timeLimit);
+        public int GoalItemLevel => Mathf.Clamp(_goalItemLevel, 1, _itemChain.Items.Count);
+        public ItemConfig GoalItem => _itemChain.GetByLevel(GoalItemLevel);
+
         public int GetStars(float time)
         {
             if (time <= _threeStarsTime) return 3;
             if (time <= _twoStarsTime) return 2;
             return 1;
+        }
+
+        private void OnValidate()
+        {
+            _timeLimit = Mathf.Max(MIN_TIME_LIMIT, _timeLimit);
+
+            if (_itemChain != null && _itemChain.Items.Count > 0)
+                _goalItemLevel = Mathf.Clamp(_goalItemLevel, 1, _itemChain.Items.Count);
         }
 
         [Serializable]

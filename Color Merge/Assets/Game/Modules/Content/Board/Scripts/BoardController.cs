@@ -22,6 +22,8 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         private readonly HashSet<int> _busySlots = new();
         private ItemController[] _items = Array.Empty<ItemController>();
         private ItemChainConfig _itemChain;
+        // Собрали этот предмет — цель уровня выполнена (LevelConfig.GoalItem).
+        private ItemConfig _goalItem;
         private bool _isInteractable = true;
 
         public event Action<ItemController> OnItemSpawned;
@@ -53,6 +55,7 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             Clear();
 
             _itemChain = levelConfig.ItemChain;
+            _goalItem = levelConfig.GoalItem;
             _items = new ItemController[levelConfig.SlotsCount];
 
             _boardView.Init(levelConfig.Columns, levelConfig.Rows);
@@ -236,7 +239,7 @@ namespace Assets.Game.Modules.Content.Board.Scripts
 
             OnItemMerged?.Invoke(merged);
 
-            bool isGoal = _itemChain.IsLast(nextConfig);
+            bool isGoal = nextConfig == _goalItem;
 
             if (isGoal)
                 OnGoalItemCreated?.Invoke(merged);
