@@ -1,0 +1,14 @@
+{
+    "name": "Core.UI",
+    "rootNamespace": "",
+    "references": [ "UniTask", "DOTween.Modules", "Core.Utils" ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

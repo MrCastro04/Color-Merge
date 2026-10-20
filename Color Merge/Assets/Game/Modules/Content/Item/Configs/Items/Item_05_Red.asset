@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103507e7e2d99fb458d00df4849d57a2, type: 3}
+  m_Name: Item_05_Red
+  m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Item.Scripts.ItemConfig
+  _id: 05_red
+  _icon: {fileID: 4558208606743002616, guid: 33cceb2d42e864e439ce1d5329611140, type: 3}
+  _color: {r: 1, g: 1, b: 1, a: 1}
