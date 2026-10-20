@@ -1,7 +1,7 @@
 {
     "name": "Content",
     "rootNamespace": "",
-    "references": [ "Core.AssetManagement", "Core.Save", "Core.Timer", "Core.SceneManagement", "Core.UI", "Core.Utils", "UniTask", "Unity.Addressables", "Unity.ResourceManager", "DOTween.Modules", "VContainer", "UnityEngine.UI", "Unity.TextMeshPro" ],
+    "references": [ "Core.AssetManagement", "Core.Save", "Core.Timer", "Core.SceneManagement", "Core.UI", "Core.Utils", "Core.Sound", "UniTask", "Unity.Addressables", "Unity.ResourceManager", "DOTween.Modules", "VContainer", "UnityEngine.UI", "Unity.TextMeshPro" ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -32,6 +32,10 @@ namespace Assets.Game.Modules.Content.Item.Scripts
         private Canvas _dragCanvas;
         private RectTransform _dragCanvasRT;
 
+        public event Action<ItemView> OnDragStarted;
+        // Дроп не подтвердили — предмет летит обратно в свой слот.
+        public event Action<ItemView> OnReturned;
+
         public RectTransform RT => _rt;
         public ItemController Controller { get; internal set; }
         public float MaxPointerScale => 1.1f;
@@ -64,6 +68,8 @@ namespace Assets.Game.Modules.Content.Item.Scripts
 
             _rt.SetParent(_dragCanvasRT, true);
             _rt.SetAsLastSibling();
+
+            OnDragStarted?.Invoke(this);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -83,7 +89,10 @@ namespace Assets.Game.Modules.Content.Item.Scripts
             _cg.alpha = 1f;
 
             if (!_isDropAccepted)
+            {
                 ReturnToPreviousSlot();
+                OnReturned?.Invoke(this);
+            }
         }
 
         public void ConfirmDrop()

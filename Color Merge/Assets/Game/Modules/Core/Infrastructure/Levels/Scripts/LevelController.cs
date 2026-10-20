@@ -8,6 +8,8 @@ using Assets.Game.Modules.Content.Level.Scripts;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
 using Assets.Game.Modules.Content.UI.Scripts;
 using Assets.Game.Modules.Core.AssetManagement.Scripts;
+using Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts;
+using Assets.Game.Modules.Core.UI.Scripts;
 using Cysharp.Threading.Tasks;
 using VContainer.Unity;
 
@@ -17,6 +19,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
     // загрузка конфига → сборка доски → игра → победа / поражение.
     public class LevelController : IAsyncStartable, IDisposable
     {
+        private const float SHOW_LEVEL_FADE = 0.4f;
+
         private readonly IAssetProvider _assetProvider;
         private readonly LevelLoader _levelLoader;
         private readonly LevelConfigReference _levelConfigReference;
@@ -28,6 +32,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly BestTimeRepository _bestTimeRepository;
         private readonly HudView _hudView;
         private readonly WinScreen _winScreen;
+        private readonly MusicPlayer _musicPlayer;
+        private readonly ScreenFader _screenFader;
 
         private LevelConfig _levelConfig;
         private CancellationToken _cancellationToken;
@@ -39,7 +45,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             IItemFactory itemFactory, ISlotFactory slotFactory,
             BoardController boardController, Generator generator,
             LevelTimer levelTimer, BestTimeRepository bestTimeRepository,
-            HudView hudView, WinScreen winScreen)
+            HudView hudView, WinScreen winScreen, MusicPlayer musicPlayer, ScreenFader screenFader)
         {
             _assetProvider = assetProvider;
             _levelLoader = levelLoader;
@@ -52,6 +58,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _bestTimeRepository = bestTimeRepository;
             _hudView = hudView;
             _winScreen = winScreen;
+            _musicPlayer = musicPlayer;
+            _screenFader = screenFader;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
@@ -64,6 +72,11 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             BuildLevel();
 
             Subscribe();
+
+            _musicPlayer.PlayAsync(MusicType.Gameplay, cancellation).Forget();
+
+            // Доска собрана за шторкой Mid Loader'а — теперь её можно показать.
+            await _screenFader.FadeOutAsync(SHOW_LEVEL_FADE, cancellation);
         }
 
         public void Dispose()
@@ -99,6 +112,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _generator.OnChargesEnded += HandleOnChargesEnded;
             _levelTimer.OnTimeChanged += _hudView.SetTime;
             _winScreen.OnRestartClicked += HandleOnRestartClicked;
+            _winScreen.OnMenuClicked += HandleOnMenuClicked;
         }
 
         private void Unsubscribe()
@@ -108,6 +122,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _generator.OnChargesEnded -= HandleOnChargesEnded;
             _levelTimer.OnTimeChanged -= _hudView.SetTime;
             _winScreen.OnRestartClicked -= HandleOnRestartClicked;
+            _winScreen.OnMenuClicked -= HandleOnMenuClicked;
         }
 
         private void HandleOnItemMerged(ItemController item)
@@ -151,7 +166,14 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
         private void HandleOnRestartClicked()
         {
+            _winScreen.SetInteractable(false);
             _levelLoader.RestartAsync().Forget();
+        }
+
+        private void HandleOnMenuClicked()
+        {
+            _winScreen.SetInteractable(false);
+            _levelLoader.LoadAsync(SCENE_NAMES.MAIN_MENU).Forget();
         }
     }
 }

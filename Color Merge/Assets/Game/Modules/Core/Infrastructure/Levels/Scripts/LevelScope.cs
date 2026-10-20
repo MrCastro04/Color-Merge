@@ -28,6 +28,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             RegisterGenerator(builder);
 
             builder.Register<LevelTimer>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+            builder.Register<LevelSounds>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
 
             RegisterUI(builder);
 
