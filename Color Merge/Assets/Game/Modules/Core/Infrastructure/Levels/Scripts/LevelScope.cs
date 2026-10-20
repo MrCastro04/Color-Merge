@@ -55,6 +55,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             builder.RegisterComponentInHierarchy<HudView>();
             builder.RegisterComponentInHierarchy<WinScreen>();
+            builder.RegisterComponentInHierarchy<LoseScreen>();
 
             builder.RegisterComponentInHierarchy<SettingsView>();
             builder.RegisterComponentInHierarchy<SettingsButtonView>();

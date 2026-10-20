@@ -24,6 +24,12 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         [Tooltip("-1 — без ограничения")]
         [SerializeField] private int _generatorCharges = -1;
 
+        [Header("Stars (секунды)")]
+        [Tooltip("Прошёл быстрее — 3 звезды")]
+        [SerializeField, Min(0)] private float _threeStarsTime = 90f;
+        [Tooltip("Прошёл быстрее — 2 звезды, иначе 1")]
+        [SerializeField, Min(0)] private float _twoStarsTime = 180f;
+
         public string ID => _id;
         public ItemChainConfig ItemChain => _itemChain;
         public int Columns => _columns;
@@ -33,6 +39,13 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public IReadOnlyList<InitialItem> InitialItems => _initialItems;
         public int GeneratorCharges => _generatorCharges;
         public bool HasGeneratorLimit => _generatorCharges >= 0;
+
+        public int GetStars(float time)
+        {
+            if (time <= _threeStarsTime) return 3;
+            if (time <= _twoStarsTime) return 2;
+            return 1;
+        }
 
         [Serializable]
         public struct InitialItem

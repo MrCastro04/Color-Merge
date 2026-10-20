@@ -35,13 +35,14 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
         private readonly MusicPlayer _musicPlayer;
         private readonly SFXOneShotPlayer _sfx;
         private readonly BestTimeRepository _bestTimeRepository;
+        private readonly LockedLevelPopup _lockedLevelPopup;
 
         private CancellationToken _cancellationToken;
 
         public MainMenuController(
             MainMenuView mainMenuView, LevelSelectView levelSelectView, SettingsController settingsController,
             LevelLoader levelLoader, ScreenFader screenFader, MusicPlayer musicPlayer, SFXOneShotPlayer sfx,
-            BestTimeRepository bestTimeRepository)
+            BestTimeRepository bestTimeRepository, LockedLevelPopup lockedLevelPopup)
         {
             _mainMenuView = mainMenuView;
             _levelSelectView = levelSelectView;
@@ -51,6 +52,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _musicPlayer = musicPlayer;
             _sfx = sfx;
             _bestTimeRepository = bestTimeRepository;
+            _lockedLevelPopup = lockedLevelPopup;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
@@ -59,6 +61,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
 
             _levelSelectView.HideImmediate();
             _levelSelectView.Setup(GetLevelStates());
+            _lockedLevelPopup.HideImmediate();
 
             Subscribe();
 
@@ -78,6 +81,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelSelectView.OnLevelSelected += HandleOnLevelSelected;
             _levelSelectView.OnLockedLevelClicked += HandleOnLockedLevelClicked;
             _levelSelectView.OnCloseClicked += HandleOnLevelSelectCloseClicked;
+            _lockedLevelPopup.OnOkClicked += HandleOnLockedPopupOkClicked;
         }
 
         private void Unsubscribe()
@@ -86,6 +90,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelSelectView.OnLevelSelected -= HandleOnLevelSelected;
             _levelSelectView.OnLockedLevelClicked -= HandleOnLockedLevelClicked;
             _levelSelectView.OnCloseClicked -= HandleOnLevelSelectCloseClicked;
+            _lockedLevelPopup.OnOkClicked -= HandleOnLockedPopupOkClicked;
         }
 
         private void HandleOnPlayClicked()
@@ -118,9 +123,18 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             return states;
         }
 
+        // Закрытый уровень: подсказка «пройди предыдущий». levelIndex с нуля → предыдущий уровень = levelIndex по счёту с 1.
         private void HandleOnLockedLevelClicked(int levelIndex)
         {
             _sfx.Play(SFXOneShotType.Return);
+            _lockedLevelPopup.SetLevel(levelIndex);
+            _lockedLevelPopup.ShowAsync(_cancellationToken).Forget();
+        }
+
+        private void HandleOnLockedPopupOkClicked()
+        {
+            _sfx.Play(SFXOneShotType.ButtonClick);
+            _lockedLevelPopup.HideAsync(_cancellationToken).Forget();
         }
 
         private void HandleOnLevelSelectCloseClicked()

@@ -15,15 +15,17 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         private readonly BoardController _boardController;
         private readonly Generator.Scripts.Generator _generator;
         private readonly WinScreen _winScreen;
+        private readonly LoseScreen _loseScreen;
 
         public LevelSounds(
             SFXOneShotPlayer sfx, BoardController boardController,
-            Generator.Scripts.Generator generator, WinScreen winScreen)
+            Generator.Scripts.Generator generator, WinScreen winScreen, LoseScreen loseScreen)
         {
             _sfx = sfx;
             _boardController = boardController;
             _generator = generator;
             _winScreen = winScreen;
+            _loseScreen = loseScreen;
         }
 
         public void Initialize()
@@ -38,6 +40,9 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             _generator.OnSpawnFailed += HandleOnSpawnFailed;
             _winScreen.OnRestartClicked += HandleOnButtonClicked;
             _winScreen.OnMenuClicked += HandleOnButtonClicked;
+            _winScreen.OnStarShown += HandleOnStarShown;
+            _loseScreen.OnRestartClicked += HandleOnButtonClicked;
+            _loseScreen.OnMenuClicked += HandleOnButtonClicked;
         }
 
         public void Dispose()
@@ -52,6 +57,9 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             _generator.OnSpawnFailed -= HandleOnSpawnFailed;
             _winScreen.OnRestartClicked -= HandleOnButtonClicked;
             _winScreen.OnMenuClicked -= HandleOnButtonClicked;
+            _winScreen.OnStarShown -= HandleOnStarShown;
+            _loseScreen.OnRestartClicked -= HandleOnButtonClicked;
+            _loseScreen.OnMenuClicked -= HandleOnButtonClicked;
         }
 
         private void HandleOnItemPicked(ItemController item) => _sfx.Play(SFXOneShotType.PickUp);
@@ -63,5 +71,6 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         private void HandleOnGoalItemCreated(ItemController item) => _sfx.Play(SFXOneShotType.Win);
         private void HandleOnSpawnFailed() => _sfx.Play(SFXOneShotType.Return);
         private void HandleOnButtonClicked() => _sfx.Play(SFXOneShotType.ButtonClick);
+        private void HandleOnStarShown(int starIndex) => _sfx.Play(SFXOneShotType.Spawn);
     }
 }

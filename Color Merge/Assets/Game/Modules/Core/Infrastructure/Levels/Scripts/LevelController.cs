@@ -35,6 +35,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly MusicPlayer _musicPlayer;
         private readonly ScreenFader _screenFader;
         private readonly SettingsController _settingsController;
+        private readonly LoseScreen _loseScreen;
 
         private LevelConfig _levelConfig;
         private CancellationToken _cancellationToken;
@@ -48,7 +49,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             BoardController boardController, Generator generator,
             LevelTimer levelTimer, BestTimeRepository bestTimeRepository,
             HudView hudView, WinScreen winScreen, MusicPlayer musicPlayer, ScreenFader screenFader,
-            SettingsController settingsController)
+            SettingsController settingsController, LoseScreen loseScreen)
         {
             _assetProvider = assetProvider;
             _levelLoader = levelLoader;
@@ -64,12 +65,14 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _musicPlayer = musicPlayer;
             _screenFader = screenFader;
             _settingsController = settingsController;
+            _loseScreen = loseScreen;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
         {
             _cancellationToken = cancellation;
             _winScreen.HideImmediate();
+            _loseScreen.HideImmediate();
 
             await LoadConfigs(cancellation);
 
@@ -112,11 +115,15 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private void Subscribe()
         {
             _boardController.OnItemMerged += HandleOnItemMerged;
+            _boardController.OnItemSpawned += HandleOnItemSpawned;
             _boardController.OnGoalItemCreated += HandleOnGoalItemCreated;
-            _generator.OnChargesEnded += HandleOnChargesEnded;
+            _generator.OnChargesEnded += CheckLose;
+            _generator.OnSpawnFailed += CheckLose;
             _levelTimer.OnTimeChanged += _hudView.SetTime;
             _winScreen.OnRestartClicked += HandleOnRestartClicked;
             _winScreen.OnMenuClicked += HandleOnMenuClicked;
+            _loseScreen.OnRestartClicked += HandleOnRestartClicked;
+            _loseScreen.OnMenuClicked += HandleOnMenuClicked;
             _settingsController.OnOpened += HandleOnSettingsOpened;
             _settingsController.OnClosed += HandleOnSettingsClosed;
             _settingsController.OnMenuRequested += HandleOnMenuClicked;
@@ -125,11 +132,15 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private void Unsubscribe()
         {
             _boardController.OnItemMerged -= HandleOnItemMerged;
+            _boardController.OnItemSpawned -= HandleOnItemSpawned;
             _boardController.OnGoalItemCreated -= HandleOnGoalItemCreated;
-            _generator.OnChargesEnded -= HandleOnChargesEnded;
+            _generator.OnChargesEnded -= CheckLose;
+            _generator.OnSpawnFailed -= CheckLose;
             _levelTimer.OnTimeChanged -= _hudView.SetTime;
             _winScreen.OnRestartClicked -= HandleOnRestartClicked;
             _winScreen.OnMenuClicked -= HandleOnMenuClicked;
+            _loseScreen.OnRestartClicked -= HandleOnRestartClicked;
+            _loseScreen.OnMenuClicked -= HandleOnMenuClicked;
             _settingsController.OnOpened -= HandleOnSettingsOpened;
             _settingsController.OnClosed -= HandleOnSettingsClosed;
             _settingsController.OnMenuRequested -= HandleOnMenuClicked;
@@ -139,6 +150,15 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             if (!_levelTimer.IsRunning && !_isFinished)
                 _levelTimer.Start();
+
+            // Собрали последний предмет — это победа, не поражение.
+            if (!_levelConfig.ItemChain.IsLast(item.Config))
+                CheckLose();
+        }
+
+        private void HandleOnItemSpawned(ItemController item)
+        {
+            CheckLose();
         }
 
         private void HandleOnGoalItemCreated(ItemController goalItem)
@@ -146,10 +166,28 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             WinAsync(goalItem).Forget();
         }
 
-        private void HandleOnChargesEnded()
+        // Поражение: пар для мерджа нет, и новый предмет взять негде (генератор пуст или доска заполнена).
+        private void CheckLose()
         {
-            // TODO: поражение — генератор пуст и на доске нет пар для мерджа (_boardController.HasAvailableMerge()).
-            // Проверять после каждого мерджа, показывать экран поражения с рестартом.
+            if (_isFinished || _boardController.HasAvailableMerge())
+                return;
+
+            bool canSpawn = _generator.HasCharges && _boardController.HasFreeSlot;
+
+            if (!canSpawn)
+                LoseAsync().Forget();
+        }
+
+        private async UniTaskVoid LoseAsync()
+        {
+            _isFinished = true;
+
+            _levelTimer.Stop();
+            _boardController.SetInteractable(false);
+            _generator.SetInteractable(false);
+
+            await UniTask.Delay(400, cancellationToken: _cancellationToken);
+            await _loseScreen.ShowAsync(_cancellationToken);
         }
 
         private async UniTaskVoid WinAsync(ItemController goalItem)
@@ -171,7 +209,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             _winScreen.SetResult(time, bestTime, isNewRecord);
 
-            await _winScreen.ShowAsync(_cancellationToken);
+            await _winScreen.ShowWithStarsAsync(_levelConfig.GetStars(time), _cancellationToken);
         }
 
         // Пока открыты настройки — пауза: таймер стоит, RESUME продолжает.
@@ -187,16 +225,19 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                 _levelTimer.Start();
         }
 
+        // С экрана победы или поражения.
         private void HandleOnRestartClicked()
         {
             _winScreen.SetInteractable(false);
+            _loseScreen.SetInteractable(false);
             _levelLoader.RestartAsync().Forget();
         }
 
-        // С экрана победы или из настроек.
+        // С экрана победы, поражения или из настроек.
         private void HandleOnMenuClicked()
         {
             _winScreen.SetInteractable(false);
+            _loseScreen.SetInteractable(false);
             _settingsController.SetInteractable(false);
             _levelLoader.LoadAsync(SCENE_NAMES.MAIN_MENU).Forget();
         }
