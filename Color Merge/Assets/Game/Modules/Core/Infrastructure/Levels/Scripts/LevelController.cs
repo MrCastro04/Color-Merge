@@ -8,24 +8,21 @@ using Assets.Game.Modules.Content.Level.Scripts;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
 using Assets.Game.Modules.Content.UI.Scripts;
 using Assets.Game.Modules.Core.AssetManagement.Scripts;
-using Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts;
-using Assets.Game.Modules.Core.SceneManagement.Scripts;
 using Cysharp.Threading.Tasks;
 using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 {
-    // Сценарий уровня: загрузка → сборка доски → игра → победа/поражение.
+    // Сценарий уровня (как Tutorial_N_Controller в Combo-Dungeon):
+    // загрузка конфига → сборка доски → игра → победа / поражение.
     public class LevelController : IAsyncStartable, IDisposable
     {
         private readonly IAssetProvider _assetProvider;
-        private readonly ISceneLoader _sceneLoader;
-        private readonly LevelProgress _levelProgress;
-        private readonly LevelAssets _levelAssets;
+        private readonly LevelLoader _levelLoader;
+        private readonly LevelConfigReference _levelConfigReference;
         private readonly IItemFactory _itemFactory;
         private readonly ISlotFactory _slotFactory;
         private readonly BoardController _boardController;
-        private readonly BoardView _boardView;
         private readonly Generator _generator;
         private readonly LevelTimer _levelTimer;
         private readonly BestTimeRepository _bestTimeRepository;
@@ -37,21 +34,19 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private bool _isFinished;
 
         public LevelController(
-            IAssetProvider assetProvider, ISceneLoader sceneLoader,
-            LevelProgress levelProgress, LevelAssets levelAssets,
+            IAssetProvider assetProvider, LevelLoader levelLoader,
+            LevelConfigReference levelConfigReference,
             IItemFactory itemFactory, ISlotFactory slotFactory,
-            BoardController boardController, BoardView boardView,
-            Generator generator, LevelTimer levelTimer, BestTimeRepository bestTimeRepository,
+            BoardController boardController, Generator generator,
+            LevelTimer levelTimer, BestTimeRepository bestTimeRepository,
             HudView hudView, WinScreen winScreen)
         {
             _assetProvider = assetProvider;
-            _sceneLoader = sceneLoader;
-            _levelProgress = levelProgress;
-            _levelAssets = levelAssets;
+            _levelLoader = levelLoader;
+            _levelConfigReference = levelConfigReference;
             _itemFactory = itemFactory;
             _slotFactory = slotFactory;
             _boardController = boardController;
-            _boardView = boardView;
             _generator = generator;
             _levelTimer = levelTimer;
             _bestTimeRepository = bestTimeRepository;
@@ -78,9 +73,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
         private async UniTask LoadAsync(CancellationToken cancellation)
         {
-            var levelReference = _levelAssets.GetLevel(_levelProgress.CurrentLevelIndex);
-
-            _levelConfig = await _assetProvider.LoadAsync<LevelConfig>(levelReference, cancellation);
+            _levelConfig = await _assetProvider.LoadAsync<LevelConfig>(_levelConfigReference, cancellation);
 
             await UniTask.WhenAll(
                 _itemFactory.WarmUpAsync(cancellation),
@@ -153,21 +146,19 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             await goalItem.View.PlayWinAsync(_cancellationToken);
 
-            bool hasNextLevel = _levelProgress.CurrentLevelIndex < _levelAssets.Count - 1;
-            _winScreen.SetResult(time, bestTime, isNewRecord, hasNextLevel);
+            _winScreen.SetResult(time, bestTime, isNewRecord, _levelLoader.HasNextLevel);
 
             await _winScreen.ShowAsync(_cancellationToken);
         }
 
         private void HandleOnRestartClicked()
         {
-            _sceneLoader.LoadAsync(SCENE_NAMES.GAME).Forget();
+            _levelLoader.RestartAsync().Forget();
         }
 
         private void HandleOnNextClicked()
         {
-            _levelProgress.MoveToNextLevel();
-            _sceneLoader.LoadAsync(SCENE_NAMES.GAME).Forget();
+            _levelLoader.LoadNextAsync().Forget();
         }
     }
 }
