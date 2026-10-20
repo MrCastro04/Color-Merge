@@ -111,3 +111,7 @@ InitTestScene*.unity*
 # GUIPackCartoon: исходники (PSD/SVG, мокапы) в игре не используются, игра берёт только Demo
 /Color Merge/Assets/GUIPackCartoon/Sources/
 /Color Merge/Assets/GUIPackCartoon/Sources.meta
+
+# Odin Inspector (Sirenix) — платный ассет Asset Store, в репозиторий не выкладываем
+/Color Merge/Assets/Plugins/Sirenix/
+/Color Merge/Assets/Plugins/Sirenix.meta
