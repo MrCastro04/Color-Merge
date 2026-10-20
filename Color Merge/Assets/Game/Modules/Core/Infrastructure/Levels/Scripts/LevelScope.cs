@@ -12,18 +12,16 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 {
-    // Скоуп сцены уровня (как Tutorial_N_Scope в Combo-Dungeon). Общие сервисы приходят из ApplicationScope.
-    // Сцена, запущенная напрямую (не через Boot), их не найдёт.
+    // Скоуп сцены уровня (как Tutorial_N_Scope в Combo-Dungeon). В инспекторе — только конфиг уровня,
+    // общие сервисы и ассеты приходят из ApplicationScope. Сцена, запущенная напрямую (не через Boot), их не найдёт.
     // View'шки берутся из сцены (RegisterComponentInHierarchy) — все они обязаны быть на сцене.
     public class LevelScope : LifetimeScope
     {
         [SerializeField] private LevelConfigReference _levelConfig;
-        [SerializeField] private ItemAssets _itemAssets;
-        [SerializeField] private SlotAssets _slotAssets;
 
         protected override void Configure(IContainerBuilder builder)
         {
-            RegisterAssets(builder);
+            builder.RegisterInstance(_levelConfig);
 
             RegisterBoard(builder);
 
@@ -34,13 +32,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             RegisterUI(builder);
 
             builder.RegisterEntryPoint<LevelController>();
-        }
-
-        private void RegisterAssets(IContainerBuilder builder)
-        {
-            builder.RegisterInstance(_levelConfig);
-            builder.RegisterInstance(_itemAssets);
-            builder.RegisterInstance(_slotAssets);
         }
 
         private static void RegisterBoard(IContainerBuilder builder)

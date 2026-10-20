@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Assets.Game.Modules.Content.Item.Scripts;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
@@ -37,7 +38,9 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public struct InitialItem
         {
             public int SlotID;
-            [Min(1)] public int Level;
+            [FormerlySerializedAs("Level")]
+            [Tooltip("Уровень предмета в ItemChain: 1 — первый")]
+            [Min(1)] public int ItemStartLevel;
         }
     }
 }

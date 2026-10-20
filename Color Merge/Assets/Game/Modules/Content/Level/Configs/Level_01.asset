@@ -19,11 +19,11 @@ MonoBehaviour:
   _blockedSlots: 
   _initialItems:
   - SlotID: 11
-    Level: 1
+    ItemStartLevel: 1
   - SlotID: 13
-    Level: 1
+    ItemStartLevel: 1
   - SlotID: 21
-    Level: 2
+    ItemStartLevel: 2
   - SlotID: 23
-    Level: 2
+    ItemStartLevel: 2
   _generatorCharges: -1

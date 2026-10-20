@@ -235,7 +235,8 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
-  _levelCatalog: {fileID: 11400000, guid: 5f8d41881c4c7f14591ed86b0707d14d, type: 2}
+  _itemAssets: {fileID: 11400000, guid: 55f99d2243092574aad2584187737538, type: 2}
+  _slotAssets: {fileID: 11400000, guid: c6ab50295118f5844873dd911ca8a0cf, type: 2}
 --- !u!4 &569375720
 Transform:
   m_ObjectHideFlags: 0

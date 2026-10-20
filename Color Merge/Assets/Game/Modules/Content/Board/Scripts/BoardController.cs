@@ -72,7 +72,7 @@ namespace Assets.Game.Modules.Content.Board.Scripts
                 if (!IsValidId(initialItem.SlotID) || _slots[initialItem.SlotID].IsBlocked)
                     continue;
 
-                CreateAt(initialItem.SlotID, _itemChain.GetByLevel(initialItem.Level));
+                CreateAt(initialItem.SlotID, _itemChain.GetByLevel(initialItem.ItemStartLevel));
             }
 
             _isInteractable = true;

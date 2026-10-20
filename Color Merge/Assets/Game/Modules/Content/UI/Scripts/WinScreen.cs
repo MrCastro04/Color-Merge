@@ -13,28 +13,23 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         [SerializeField] private TMP_Text _bestTimeText;
         [SerializeField] private GameObject _newRecordLabel;
         [SerializeField] private Button _restartButton;
-        [SerializeField] private Button _nextButton;
 
         public event Action OnRestartClicked;
-        public event Action OnNextClicked;
 
         protected override void Awake()
         {
             base.Awake();
 
             _restartButton.onClick.AddListener(() => OnRestartClicked?.Invoke());
-            _nextButton.onClick.AddListener(() => OnNextClicked?.Invoke());
         }
 
-        public void SetResult(float time, float bestTime, bool isNewRecord, bool hasNextLevel)
+        public void SetResult(float time, float bestTime, bool isNewRecord)
         {
             _timeText.text = TimeFormatter.Format(time);
             _bestTimeText.text = $"BEST {TimeFormatter.Format(bestTime)}";
 
             if (_newRecordLabel != null)
                 _newRecordLabel.SetActive(isNewRecord);
-
-            _nextButton.gameObject.SetActive(hasNextLevel);
         }
 
         // TODO: анимация появления (звёзды / конфетти из VFX)

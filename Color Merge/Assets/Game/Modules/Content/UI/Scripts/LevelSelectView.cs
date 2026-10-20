@@ -8,8 +8,8 @@ namespace Assets.Game.Modules.Content.UI.Scripts
     {
         public event Action<int> OnLevelSelected;
 
-        // TODO: создать кнопки по LevelCatalog.Count, показать рекорд из BestTimeRepository,
-        // по клику — OnLevelSelected(index) → LevelLoader.LoadLevelAsync. Пока нигде не регистрируется — нет на сцене.
+        // TODO: кнопки выбора уровня с рекордом из BestTimeRepository, по клику — OnLevelSelected(index).
+        // Пока нигде не регистрируется — нет на сцене.
         protected void Invoke_OnLevelSelected(int levelIndex)
         {
             OnLevelSelected?.Invoke(levelIndex);

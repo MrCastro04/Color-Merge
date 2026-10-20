@@ -59,7 +59,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _cancellationToken = cancellation;
             _winScreen.HideImmediate();
 
-            await LoadAsync(cancellation);
+            await LoadConfigs(cancellation);
 
             BuildLevel();
 
@@ -71,7 +71,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             Unsubscribe();
         }
 
-        private async UniTask LoadAsync(CancellationToken cancellation)
+        private async UniTask LoadConfigs(CancellationToken cancellation)
         {
             _levelConfig = await _assetProvider.LoadAsync<LevelConfig>(_levelConfigReference, cancellation);
 
@@ -99,7 +99,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _generator.OnChargesEnded += HandleOnChargesEnded;
             _levelTimer.OnTimeChanged += _hudView.SetTime;
             _winScreen.OnRestartClicked += HandleOnRestartClicked;
-            _winScreen.OnNextClicked += HandleOnNextClicked;
         }
 
         private void Unsubscribe()
@@ -109,7 +108,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _generator.OnChargesEnded -= HandleOnChargesEnded;
             _levelTimer.OnTimeChanged -= _hudView.SetTime;
             _winScreen.OnRestartClicked -= HandleOnRestartClicked;
-            _winScreen.OnNextClicked -= HandleOnNextClicked;
         }
 
         private void HandleOnItemMerged(ItemController item)
@@ -146,7 +144,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             await goalItem.View.PlayWinAsync(_cancellationToken);
 
-            _winScreen.SetResult(time, bestTime, isNewRecord, _levelLoader.HasNextLevel);
+            _winScreen.SetResult(time, bestTime, isNewRecord);
 
             await _winScreen.ShowAsync(_cancellationToken);
         }
@@ -154,11 +152,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private void HandleOnRestartClicked()
         {
             _levelLoader.RestartAsync().Forget();
-        }
-
-        private void HandleOnNextClicked()
-        {
-            _levelLoader.LoadNextAsync().Forget();
         }
     }
 }
