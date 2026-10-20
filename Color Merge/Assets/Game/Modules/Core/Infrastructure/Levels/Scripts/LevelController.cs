@@ -34,10 +34,12 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly WinScreen _winScreen;
         private readonly MusicPlayer _musicPlayer;
         private readonly ScreenFader _screenFader;
+        private readonly SettingsController _settingsController;
 
         private LevelConfig _levelConfig;
         private CancellationToken _cancellationToken;
         private bool _isFinished;
+        private bool _wasTimerRunningBeforeSettings;
 
         public LevelController(
             IAssetProvider assetProvider, LevelLoader levelLoader,
@@ -45,7 +47,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             IItemFactory itemFactory, ISlotFactory slotFactory,
             BoardController boardController, Generator generator,
             LevelTimer levelTimer, BestTimeRepository bestTimeRepository,
-            HudView hudView, WinScreen winScreen, MusicPlayer musicPlayer, ScreenFader screenFader)
+            HudView hudView, WinScreen winScreen, MusicPlayer musicPlayer, ScreenFader screenFader,
+            SettingsController settingsController)
         {
             _assetProvider = assetProvider;
             _levelLoader = levelLoader;
@@ -60,6 +63,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _winScreen = winScreen;
             _musicPlayer = musicPlayer;
             _screenFader = screenFader;
+            _settingsController = settingsController;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
@@ -113,6 +117,9 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _levelTimer.OnTimeChanged += _hudView.SetTime;
             _winScreen.OnRestartClicked += HandleOnRestartClicked;
             _winScreen.OnMenuClicked += HandleOnMenuClicked;
+            _settingsController.OnOpened += HandleOnSettingsOpened;
+            _settingsController.OnClosed += HandleOnSettingsClosed;
+            _settingsController.OnMenuRequested += HandleOnMenuClicked;
         }
 
         private void Unsubscribe()
@@ -123,6 +130,9 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _levelTimer.OnTimeChanged -= _hudView.SetTime;
             _winScreen.OnRestartClicked -= HandleOnRestartClicked;
             _winScreen.OnMenuClicked -= HandleOnMenuClicked;
+            _settingsController.OnOpened -= HandleOnSettingsOpened;
+            _settingsController.OnClosed -= HandleOnSettingsClosed;
+            _settingsController.OnMenuRequested -= HandleOnMenuClicked;
         }
 
         private void HandleOnItemMerged(ItemController item)
@@ -164,15 +174,30 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             await _winScreen.ShowAsync(_cancellationToken);
         }
 
+        // Пока открыты настройки — пауза: таймер стоит, RESUME продолжает.
+        private void HandleOnSettingsOpened()
+        {
+            _wasTimerRunningBeforeSettings = _levelTimer.IsRunning;
+            _levelTimer.Stop();
+        }
+
+        private void HandleOnSettingsClosed()
+        {
+            if (_wasTimerRunningBeforeSettings && !_isFinished)
+                _levelTimer.Start();
+        }
+
         private void HandleOnRestartClicked()
         {
             _winScreen.SetInteractable(false);
             _levelLoader.RestartAsync().Forget();
         }
 
+        // С экрана победы или из настроек.
         private void HandleOnMenuClicked()
         {
             _winScreen.SetInteractable(false);
+            _settingsController.SetInteractable(false);
             _levelLoader.LoadAsync(SCENE_NAMES.MAIN_MENU).Forget();
         }
     }

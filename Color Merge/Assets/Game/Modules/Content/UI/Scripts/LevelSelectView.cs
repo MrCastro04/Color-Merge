@@ -21,11 +21,14 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
         public int LevelsCount => _levelButtons.Count;
 
-        // unlockedCount — сколько уровней с начала списка открыто.
-        public void Setup(int unlockedCount)
+        // states[i] — состояние i-й кнопки; кнопок больше, чем состояний, — лишние закрыты.
+        public void Setup(IReadOnlyList<LevelButtonState> states)
         {
             for (int i = 0; i < _levelButtons.Count; i++)
-                _levelButtons[i].Setup(i, isLocked: i >= unlockedCount);
+            {
+                var state = i < states.Count ? states[i] : new LevelButtonState(true, false, 0f);
+                _levelButtons[i].Setup(i, state);
+            }
 
             if (_isListening)
                 return;

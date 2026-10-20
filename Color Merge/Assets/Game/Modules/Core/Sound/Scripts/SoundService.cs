@@ -13,8 +13,8 @@ namespace Assets.Game.Modules.Core.Sound.Scripts
         private const string MUSIC_VOLUME_KEY = "sound_music_volume";
         private const string SFX_VOLUME_KEY = "sound_sfx_volume";
 
-        private const float DEFAULT_MUSIC_VOLUME = 0.4f;
-        private const float DEFAULT_SFX_VOLUME = 0.7f;
+        private const float DEFAULT_MUSIC_VOLUME = 0.06f;
+        private const float DEFAULT_SFX_VOLUME = 0.06f;
 
         private const float MIN_PITCH = 0.92f;
         private const float MAX_PITCH = 1.08f;

@@ -1,4 +1,5 @@
 using System;
+using Assets.Game.Modules.Core.Timer.Scripts;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -6,12 +7,14 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Кнопка уровня в окне выбора: номер или замок. Закрытая кнопка нажимается (для звука «нельзя») и покачивается.
+    // Кнопка уровня в окне выбора: номер или замок, под кнопкой — лучшее время (только у пройденных).
+    // Закрытая кнопка нажимается (для звука «нельзя») и покачивается.
     // Не зависит от Awake: окно выбора может быть выключено на сцене до первого показа.
     public class LevelButtonView : MonoBehaviour
     {
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _numberText;
+        [SerializeField] private TMP_Text _bestTimeText;
         [SerializeField] private GameObject _lockIcon;
         [SerializeField] private Image _background;
         [SerializeField] private Color _unlockedColor = Color.white;
@@ -24,15 +27,21 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
         public event Action<LevelButtonView> OnClicked;
 
-        public void Setup(int index, bool isLocked)
+        public void Setup(int index, LevelButtonState state)
         {
             Index = index;
-            IsLocked = isLocked;
+            IsLocked = state.IsLocked;
 
             _numberText.text = (index + 1).ToString();
-            _numberText.gameObject.SetActive(!isLocked);
-            _lockIcon.SetActive(isLocked);
-            _background.color = isLocked ? _lockedColor : _unlockedColor;
+            _numberText.gameObject.SetActive(!state.IsLocked);
+            _lockIcon.SetActive(state.IsLocked);
+            _background.color = state.IsLocked ? _lockedColor : _unlockedColor;
+
+            bool showBestTime = !state.IsLocked && state.HasBestTime;
+            _bestTimeText.gameObject.SetActive(showBestTime);
+
+            if (showBestTime)
+                _bestTimeText.text = TimeFormatter.Format(state.BestTime);
 
             if (!_isListening)
             {

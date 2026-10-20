@@ -55,6 +55,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             builder.RegisterComponentInHierarchy<HudView>();
             builder.RegisterComponentInHierarchy<WinScreen>();
+
+            builder.RegisterComponentInHierarchy<SettingsView>();
+            builder.RegisterComponentInHierarchy<SettingsButtonView>();
+            builder.Register<SettingsController>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
         }
     }
 }
