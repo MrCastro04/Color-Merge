@@ -1,0 +1,14 @@
+{
+    "name": "Content",
+    "rootNamespace": "",
+    "references": [ "Core.AssetManagement", "Core.Save", "Core.Timer", "Core.SceneManagement", "Core.UI", "Core.Utils", "UniTask", "Unity.Addressables", "Unity.ResourceManager", "DOTween.Modules", "VContainer", "UnityEngine.UI", "Unity.TextMeshPro" ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
