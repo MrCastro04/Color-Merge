@@ -107,3 +107,11 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# GUIPackCartoon: исходники (PSD/SVG, мокапы) в игре не используются, игра берёт только Demo
+/Color Merge/Assets/Game/Modules/Content/GUI/GUIPackCartoon/Sources/
+/Color Merge/Assets/Game/Modules/Content/GUI/GUIPackCartoon/Sources.meta
+
+# Odin Inspector (Sirenix) — платный ассет Asset Store, в репозиторий не выкладываем
+/Color Merge/Assets/Plugins/Sirenix/
+/Color Merge/Assets/Plugins/Sirenix.meta

@@ -18,6 +18,8 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         public bool HasCharges => _charges != 0;
 
         public event Action OnChargesEnded;
+        // Нажали, но свободных клеток нет.
+        public event Action OnSpawnFailed;
 
         public Generator(BoardController boardController, GeneratorButtonView buttonView)
         {
@@ -55,9 +57,12 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             if (_itemToSpawn == null || !HasCharges)
                 return;
 
-            // TODO: фидбек «доска заполнена» (тряска кнопки / звук)
+            // TODO: визуальный фидбек «доска заполнена» (тряска кнопки)
             if (!_boardController.TrySpawnAtRandomFreeSlot(_itemToSpawn))
+            {
+                OnSpawnFailed?.Invoke();
                 return;
+            }
 
             if (_charges < 0)
                 return;

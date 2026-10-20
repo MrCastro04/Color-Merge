@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7afbc89d006906e4bb06d927a5298fa9, type: 3}
+  m_Name: SFXOneShot
+  m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.SFXOneShot.Scripts.SFXOneShotConfig
+  _sounds:
+  - Type: 0
+    Clip:
+      m_AssetGUID: 851d310aaa2843042bf4520fa5e35f22
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    Volume: 0.6
+    RandomizePitch: 1
+  - Type: 1
+    Clip:
+      m_AssetGUID: c71361ddc3280244685bee43bd6418cb
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    Volume: 0.5
+    RandomizePitch: 1
+  - Type: 2
+    Clip:
+      m_AssetGUID: d927a16567632d349bcdd6676ec85b5e
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    Volume: 0.6
+    RandomizePitch: 1
+  - Type: 3
+    Clip:
+      m_AssetGUID: fc4cb513dd97d4f4096ff0086d42ba29
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    Volume: 0.5
+    RandomizePitch: 1
+  - Type: 4
+    Clip:
+      m_AssetGUID: d02abc2cfb6bdc5498482ad412e50267
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    Volume: 0.5
+    RandomizePitch: 1
+  - Type: 5
+    Clip:
+      m_AssetGUID: 794be8487841dc642bc5f3ff630fca19
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    Volume: 0.6
+    RandomizePitch: 1
+  - Type: 6
+    Clip:
+      m_AssetGUID: 11bd2bc7678b89a47b31491965ea5c7f
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    Volume: 0.8
+    RandomizePitch: 1
+  - Type: 7
+    Clip:
+      m_AssetGUID: 829c3da919394cb4aa670145e9fb7801
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_SubObjectGUID: 
+      m_EditorAssetChanged: 0
+    Volume: 0.8
+    RandomizePitch: 0

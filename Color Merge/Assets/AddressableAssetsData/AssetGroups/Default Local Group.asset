@@ -15,8 +15,33 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: c6833557b9fe6be42b7ebc0463e6414b
   m_SerializeEntries:
+  - m_GUID: 09f47db0375992c498e7383bef8bfc08
+    m_Address: Music_Gameplay
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11bd2bc7678b89a47b31491965ea5c7f
+    m_Address: SFX_Merge
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 794be8487841dc642bc5f3ff630fca19
+    m_Address: SFX_Spawn
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7d698b4fc65de684dbe5f7d6b033bb16
     m_Address: Level_02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 829c3da919394cb4aa670145e9fb7801
+    m_Address: SFX_Win
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 851d310aaa2843042bf4520fa5e35f22
+    m_Address: SFX_ButtonClick
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -30,8 +55,33 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c71361ddc3280244685bee43bd6418cb
+    m_Address: SFX_PickUp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d02abc2cfb6bdc5498482ad412e50267
+    m_Address: SFX_Swap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d927a16567632d349bcdd6676ec85b5e
+    m_Address: SFX_Drop
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e39a4f07788c038499ae2d803caea0c2
     m_Address: Slot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f635aa30e67cffd4cbfbd97c41472ef8
+    m_Address: Music_MainMenu
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc4cb513dd97d4f4096ff0086d42ba29
+    m_Address: SFX_Return
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

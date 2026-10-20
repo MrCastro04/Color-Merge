@@ -28,6 +28,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             RegisterGenerator(builder);
 
             builder.Register<LevelTimer>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+            builder.Register<LevelSounds>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
 
             RegisterUI(builder);
 
@@ -54,6 +55,12 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             builder.RegisterComponentInHierarchy<HudView>();
             builder.RegisterComponentInHierarchy<WinScreen>();
+            builder.RegisterComponentInHierarchy<LoseScreen>();
+            builder.RegisterComponentInHierarchy<ChainProgressView>();
+
+            builder.RegisterComponentInHierarchy<SettingsView>();
+            builder.RegisterComponentInHierarchy<SettingsButtonView>();
+            builder.Register<SettingsController>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
         }
     }
 }

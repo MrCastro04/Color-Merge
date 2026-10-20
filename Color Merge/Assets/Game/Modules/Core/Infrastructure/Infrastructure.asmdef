@@ -1,7 +1,7 @@
 {
     "name": "Infrastructure",
     "rootNamespace": "",
-    "references": [ "Core.AssetManagement", "Core.Save", "Core.Timer", "Core.SceneManagement", "Core.UI", "Core.Utils", "Content", "UniTask", "Unity.Addressables", "Unity.ResourceManager", "VContainer" ],
+    "references": [ "Core.AssetManagement", "Core.Save", "Core.Timer", "Core.SceneManagement", "Core.UI", "Core.Utils", "Core.Sound", "Content", "UniTask", "Unity.Addressables", "Unity.ResourceManager", "VContainer" ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

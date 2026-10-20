@@ -22,9 +22,15 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         private readonly HashSet<int> _busySlots = new();
         private ItemController[] _items = Array.Empty<ItemController>();
         private ItemChainConfig _itemChain;
+        // Собрали этот предмет — цель уровня выполнена (LevelConfig.GoalItem).
+        private ItemConfig _goalItem;
         private bool _isInteractable = true;
 
         public event Action<ItemController> OnItemSpawned;
+        public event Action<ItemController> OnItemPicked;
+        public event Action<ItemController> OnItemMoved;
+        public event Action<ItemController> OnItemReturned;
+        public event Action<ItemController, ItemController> OnItemsSwapped;
         public event Action<ItemController> OnItemMerged;
         public event Action<ItemController> OnGoalItemCreated;
 
@@ -49,6 +55,7 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             Clear();
 
             _itemChain = levelConfig.ItemChain;
+            _goalItem = levelConfig.GoalItem;
             _items = new ItemController[levelConfig.SlotsCount];
 
             _boardView.Init(levelConfig.Columns, levelConfig.Rows);
@@ -180,6 +187,7 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             _items[targetId] = dragged;
 
             Lock(targetId);
+            OnItemMoved?.Invoke(dragged);
             await _slots[targetId].Attach(dragged.View);
             Unlock(targetId);
         }
@@ -196,9 +204,13 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             Lock(targetId);
             target.View.CanDrag = false;
 
-            await UniTask.WhenAll(
+            var attachTasks = UniTask.WhenAll(
                 _slots[targetId].Attach(dragged.View),
                 _slots[sourceId].Attach(target.View));
+
+            OnItemsSwapped?.Invoke(dragged, target);
+
+            await attachTasks;
 
             target.View.CanDrag = _isInteractable;
             Unlock(sourceId);
@@ -219,15 +231,15 @@ namespace Assets.Game.Modules.Content.Board.Scripts
 
             await _slots[targetId].Attach(dragged.View);
 
-            _itemFactory.Destroy(dragged);
-            _itemFactory.Destroy(target);
+            DestroyItem(dragged);
+            DestroyItem(target);
 
             var merged = CreateAt(targetId, nextConfig);
             merged.View.CanDrag = false;
 
             OnItemMerged?.Invoke(merged);
 
-            bool isGoal = _itemChain.IsLast(nextConfig);
+            bool isGoal = nextConfig == _goalItem;
 
             if (isGoal)
                 OnGoalItemCreated?.Invoke(merged);
@@ -248,8 +260,34 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             _items[slotId] = item;
 
             item.View.SetInteractable(_isInteractable);
+            item.View.OnDragStarted += HandleOnItemDragStarted;
+            item.View.OnReturned += HandleOnItemReturned;
 
             return item;
+        }
+
+        private void DestroyItem(ItemController item)
+        {
+            if (item.IsNull())
+                return;
+
+            if (item.View.IsNotNull())
+            {
+                item.View.OnDragStarted -= HandleOnItemDragStarted;
+                item.View.OnReturned -= HandleOnItemReturned;
+            }
+
+            _itemFactory.Destroy(item);
+        }
+
+        private void HandleOnItemDragStarted(ItemView itemView)
+        {
+            OnItemPicked?.Invoke(itemView.Controller);
+        }
+
+        private void HandleOnItemReturned(ItemView itemView)
+        {
+            OnItemReturned?.Invoke(itemView.Controller);
         }
 
         private List<int> GetFreeSlotIds()
@@ -278,7 +316,7 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         private void Clear()
         {
             foreach (var item in _items)
-                _itemFactory.Destroy(item);
+                DestroyItem(item);
 
             foreach (var slot in _slots)
                 _slotFactory.Destroy(slot);
