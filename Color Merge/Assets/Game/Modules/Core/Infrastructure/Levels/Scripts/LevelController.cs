@@ -102,7 +102,14 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             // Доска собрана за шторкой Mid Loader'а — теперь её можно показать.
             await _screenFader.FadeOutAsync(SHOW_LEVEL_FADE, cancellation);
 
-            await StartLevelFlow(cancellation);
+            try
+            {
+                await StartLevelFlow(cancellation);
+            }
+            catch (OperationCanceledException)
+            {
+                // Сцену уровня выгрузили посреди игры (меню, рестарт) — это не ошибка.
+            }
         }
 
         public void Dispose()
@@ -129,7 +136,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _generator.Setup(chain, maxLevel: _levelConfig.GoalItemLevel - 1, _levelConfig.GeneratorCharges);
 
             _upgrades.Reset();
-            _upgradeGeneratorSystem.Setup(chain);
+            _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
+            _generator.SetCentered(!_levelConfig.IsGeneratorUpgradeEnabled);
 
             _levelTimer.Reset();
             _hudView.SetLevelName(_levelConfig.name);

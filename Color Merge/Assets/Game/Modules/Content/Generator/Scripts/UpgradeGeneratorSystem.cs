@@ -20,6 +20,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
 
         private ItemChainConfig _chain;
         private bool _isInteractable = true;
+        private bool _isEnabled = true;
 
         public event Action OnUpgraded;
         public event Action OnEnergyGained;
@@ -49,9 +50,12 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         }
 
         // Вызывает LevelController после Generator.Setup.
-        public void Setup(ItemChainConfig chain)
+        // isEnabled = false — уровень без улучшений: кнопки нет, энергия не начисляется.
+        public void Setup(ItemChainConfig chain, bool isEnabled)
         {
             _chain = chain;
+            _isEnabled = isEnabled;
+            _upgradeButtonView.SetVisible(isEnabled);
             _upgrades.SetGeneratorLevel(_generator.Level);
             UpdateButton();
         }
@@ -65,7 +69,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         // merged — результат мерджа; исходные предметы были на уровень ниже.
         private void HandleOnItemMerged(ItemController merged)
         {
-            if (_chain == null)
+            if (_chain == null || !_isEnabled)
                 return;
 
             int sourceLevel = _chain.GetLevel(merged.Config) - 1;
@@ -79,7 +83,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
 
         private void HandleOnUpgradeClicked()
         {
-            if (!_isInteractable || !_generator.CanUpgrade)
+            if (!_isEnabled || !_isInteractable || !_generator.CanUpgrade)
                 return;
 
             if (!_upgrades.TrySpendEnergy(ENERGY_PER_UPGRADE))

@@ -14,6 +14,9 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         [SerializeField] private TMP_Text _levelText;
         [SerializeField] private Image _icon;
 
+        private float _sceneX;
+        private bool _isPositionCached;
+
         public event Action OnClicked;
 
         private void OnEnable()
@@ -46,6 +49,20 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         {
             if (_icon != null)
                 _icon.sprite = sprite;
+        }
+
+        // Без кнопки улучшения генератор стоит по центру, с ней — на своём месте из сцены.
+        public void SetCentered(bool isCentered)
+        {
+            var rt = (RectTransform)transform;
+
+            if (!_isPositionCached)
+            {
+                _sceneX = rt.anchoredPosition.x;
+                _isPositionCached = true;
+            }
+
+            rt.anchoredPosition = new Vector2(isCentered ? 0f : _sceneX, rt.anchoredPosition.y);
         }
 
         public void SetInteractable(bool isInteractable)

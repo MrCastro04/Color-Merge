@@ -33,6 +33,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         [Header("Generator")]
         [Tooltip("-1 — без ограничения")]
         [SerializeField] private int _generatorCharges = -1;
+        [Tooltip("Показывать кнопку улучшения генератора (энергия за мерджи)")]
+        [SerializeField] private bool _generatorUpgradeEnabled = true;
 
         [Header("Stars (секунды)")]
         [Tooltip("Прошёл быстрее — 3 звезды")]
@@ -49,6 +51,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public IReadOnlyList<InitialItem> InitialItems => _initialItems;
         public int GeneratorCharges => _generatorCharges;
         public bool HasGeneratorLimit => _generatorCharges >= 0;
+        public bool IsGeneratorUpgradeEnabled => _generatorUpgradeEnabled;
 
         public LevelMode Mode => _mode;
         public bool IsTimerMode => _mode == LevelMode.TIMER;

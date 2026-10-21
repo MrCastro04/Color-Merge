@@ -30,6 +30,11 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             StopPulse();
         }
 
+        public void SetVisible(bool isVisible)
+        {
+            gameObject.SetActive(isVisible);
+        }
+
         public void SetReady(int currentLevel, int nextLevel)
         {
             _labelText.text = $"Lvl {currentLevel} -> Lvl {nextLevel}";
