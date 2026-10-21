@@ -16,9 +16,9 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
         public event Action OnOkClicked;
 
-        public void SetLevel(int lockedLevelIndex)
+        public void SetLevel(int previousLevelNumber)
         {
-            _messageText.text = $"Complete level {lockedLevelIndex}\nto unlock it!";
+            _messageText.text = $"Complete level {previousLevelNumber}\nto unlock it!";
 
             if (_isListening)
                 return;

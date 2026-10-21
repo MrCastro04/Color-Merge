@@ -18,9 +18,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
     {
         private const float SHOW_MENU_FADE = 0.3f;
 
-        // Порядок уровней в окне выбора: сцена + ID рекорда (LevelConfig.ID). Пока открыт только первый.
+        // Порядок уровней в окне выбора: сцена + ID рекорда (LevelConfig.ID). Level 0 — обучающий, пока открыт только он.
         private static readonly (string Scene, string RecordId)[] LEVELS =
         {
+            (SCENE_NAMES.LEVEL_0, "level_00"),
             (SCENE_NAMES.LEVEL_1, "level_01"),
             (SCENE_NAMES.LEVEL_2, "level_02"),
             (SCENE_NAMES.LEVEL_3, "level_03"),
@@ -123,11 +124,11 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             return states;
         }
 
-        // Закрытый уровень: подсказка «пройди предыдущий». levelIndex с нуля → предыдущий уровень = levelIndex по счёту с 1.
+        // Закрытый уровень: подсказка «пройди предыдущий». Уровни нумеруются с нуля → предыдущий = levelIndex - 1.
         private void HandleOnLockedLevelClicked(int levelIndex)
         {
             _sfx.Play(SFXOneShotType.Return);
-            _lockedLevelPopup.SetLevel(levelIndex);
+            _lockedLevelPopup.SetLevel(levelIndex - 1);
             _lockedLevelPopup.ShowAsync(_cancellationToken).Forget();
         }
 

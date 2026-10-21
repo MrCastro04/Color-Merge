@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Assets.Game.Modules.Content.Item.Scripts;
+using Assets.Game.Modules.Content.Level.Scripts.Conditions;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -8,21 +9,15 @@ namespace Assets.Game.Modules.Content.Level.Scripts
 {
     // Уровень целиком настраивается здесь, без изменения кода.
     // ID клетки = row * Columns + column, отсчёт с левого верхнего угла.
+    // Условия прохождения — список _conditions (добавляются кнопкой в инспекторе, LevelConfigEditor).
     [CreateAssetMenu(menuName = "Game/Level/Level Config", fileName = "Level_")]
     public class LevelConfig : ScriptableObject
     {
-        public const float MIN_TIME_LIMIT = 60f;
-        public const float DEFAULT_TIME_LIMIT = 120f;
-
         [SerializeField] private string _id;
         [SerializeField] private ItemChainConfig _itemChain;
 
-        [Header("Goal")]
-        [SerializeField] private LevelMode _mode = LevelMode.COLLECT_ITEM;
-        [Tooltip("Уровень предмета в ItemChain, который надо собрать: 1 — первый")]
-        [SerializeField, Min(1)] private int _goalItemLevel = 7;
-        [Tooltip("Только для TIMER: время на уровень, секунды (не меньше 60)")]
-        [SerializeField, Min(MIN_TIME_LIMIT)] private float _timeLimit = DEFAULT_TIME_LIMIT;
+        [Header("Conditions")]
+        [SerializeReference] private List<LevelCondition> _conditions = new();
 
         [Header("Board")]
         [SerializeField, Min(1)] private int _columns = 5;
@@ -33,8 +28,10 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         [Header("Generator")]
         [Tooltip("-1 — без ограничения")]
         [SerializeField] private int _generatorCharges = -1;
+        [Tooltip("Показывать кнопку улучшения генератора (энергия за мерджи)")]
+        [SerializeField] private bool _generatorUpgradeEnabled = true;
 
-        [Header("Stars (секунды)")]
+        [Header("Stars (секунды, только с условием Timer)")]
         [Tooltip("Прошёл быстрее — 3 звезды")]
         [SerializeField, Min(0)] private float _threeStarsTime = 90f;
         [Tooltip("Прошёл быстрее — 2 звезды, иначе 1")]
@@ -49,26 +46,55 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public IReadOnlyList<InitialItem> InitialItems => _initialItems;
         public int GeneratorCharges => _generatorCharges;
         public bool HasGeneratorLimit => _generatorCharges >= 0;
+        public bool IsGeneratorUpgradeEnabled => _generatorUpgradeEnabled;
 
-        public LevelMode Mode => _mode;
-        public bool IsTimerMode => _mode == LevelMode.TIMER;
-        public float TimeLimit => Mathf.Max(MIN_TIME_LIMIT, _timeLimit);
-        public int GoalItemLevel => Mathf.Clamp(_goalItemLevel, 1, _itemChain.Items.Count);
-        public ItemConfig GoalItem => _itemChain.GetByLevel(GoalItemLevel);
+        public IReadOnlyList<LevelCondition> Conditions => _conditions;
+        public bool HasTimer => _conditions.Exists(condition => condition is Conditions.Timer);
 
+        // Цель-предмет: самый высокий Get_Item_With_Level_X; нет такого условия — вся цепочка.
+        public int TargetItemLevel
+        {
+            get
+            {
+                int level = 0;
+
+                foreach (var condition in _conditions)
+                {
+                    if (condition is Get_Item_With_Level_X getItem)
+                        level = Mathf.Max(level, getItem.ItemLevel);
+                }
+
+                return level > 0 ? Mathf.Min(level, _itemChain.Items.Count) : _itemChain.Items.Count;
+            }
+        }
+
+        public bool HasItemGoal => _conditions.Exists(condition => condition is Get_Item_With_Level_X);
+
+        // Генератор не выдаёт цель-предмет сам (до цели минус один),
+        // но условие на прокачку генератора всегда достижимо.
+        public int GeneratorMaxLevel
+        {
+            get
+            {
+                int max = HasItemGoal ? TargetItemLevel - 1 : _itemChain.Items.Count;
+
+                foreach (var condition in _conditions)
+                {
+                    if (condition is Upgraded_Generator_With_Level_X generator)
+                        max = Mathf.Max(max, generator.GeneratorLevel);
+                }
+
+                return Mathf.Clamp(max, 1, _itemChain.Items.Count);
+            }
+        }
+
+        // Без таймера звёзды за время не считаются — всегда 3.
         public int GetStars(float time)
         {
+            if (!HasTimer) return 3;
             if (time <= _threeStarsTime) return 3;
             if (time <= _twoStarsTime) return 2;
             return 1;
-        }
-
-        private void OnValidate()
-        {
-            _timeLimit = Mathf.Max(MIN_TIME_LIMIT, _timeLimit);
-
-            if (_itemChain != null && _itemChain.Items.Count > 0)
-                _goalItemLevel = Mathf.Clamp(_goalItemLevel, 1, _itemChain.Items.Count);
         }
 
         [Serializable]

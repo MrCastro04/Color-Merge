@@ -6,22 +6,33 @@ using Assets.Game.Modules.Content.Generator.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
 using Assets.Game.Modules.Content.Level.Scripts;
+using Assets.Game.Modules.Content.Level.Scripts.Conditions;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
 using Assets.Game.Modules.Content.UI.Scripts;
 using Assets.Game.Modules.Core.AssetManagement.Scripts;
 using Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts;
+using Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts;
 using Assets.Game.Modules.Core.UI.Scripts;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 {
     // Сценарий уровня (как Tutorial_N_Controller в Combo-Dungeon):
-    // загрузка конфига → сборка доски → игра → победа / поражение.
+    // загрузка конфига → сборка доски → тутор (если есть) → StartLevelFlow (игра до победы / поражения) → экран результата.
+    // Победа — выполнены все условия LevelConfig.Conditions (LevelConditionsChecker.IsAllConditionsCompleted).
     public class LevelController : IAsyncStartable, IDisposable
     {
         private const float SHOW_LEVEL_FADE = 0.4f;
+        private const int SHOW_LOSE_DELAY_MS = 400;
+
+        private enum LevelResult
+        {
+            NONE,
+            WIN,
+            LOSE_OUT_OF_MOVES,
+            LOSE_TIME_UP,
+        }
 
         private readonly IAssetProvider _assetProvider;
         private readonly LevelLoader _levelLoader;
@@ -29,30 +40,38 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly IItemFactory _itemFactory;
         private readonly ISlotFactory _slotFactory;
         private readonly BoardController _boardController;
-        private readonly Generator _generator;
+        private readonly GeneratorController _generatorController;
+        private readonly UpgradeGeneratorSystem _upgradeGeneratorSystem;
+        private readonly PlayerUpgradesInLevel _upgrades;
+        private readonly LevelConditionsChecker _conditionsChecker;
         private readonly LevelTimer _levelTimer;
         private readonly BestTimeRepository _bestTimeRepository;
         private readonly HudView _hudView;
         private readonly WinScreen _winScreen;
+        private readonly LoseScreen _loseScreen;
+        private readonly ChainProgressView _chainProgressView;
         private readonly MusicPlayer _musicPlayer;
         private readonly ScreenFader _screenFader;
         private readonly SettingsController _settingsController;
-        private readonly LoseScreen _loseScreen;
-        private readonly ChainProgressView _chainProgressView;
+        private readonly ILevelTutorial _levelTutorial;
 
         private LevelConfig _levelConfig;
-        private CancellationToken _cancellationToken;
-        private bool _isFinished;
+        private LevelResult _result;
+        // Последний собранный мерджем предмет: если он закрыл условие на предмет — играет анимацию победы.
+        private ItemController _lastMergedItem;
         private bool _wasTimerRunningBeforeSettings;
 
         public LevelController(
             IAssetProvider assetProvider, LevelLoader levelLoader,
             LevelConfigReference levelConfigReference,
             IItemFactory itemFactory, ISlotFactory slotFactory,
-            BoardController boardController, Generator generator,
+            BoardController boardController, GeneratorController generatorController,
+            UpgradeGeneratorSystem upgradeGeneratorSystem, PlayerUpgradesInLevel upgrades,
+            LevelConditionsChecker conditionsChecker,
             LevelTimer levelTimer, BestTimeRepository bestTimeRepository,
-            HudView hudView, WinScreen winScreen, MusicPlayer musicPlayer, ScreenFader screenFader,
-            SettingsController settingsController, LoseScreen loseScreen, ChainProgressView chainProgressView)
+            HudView hudView, WinScreen winScreen, LoseScreen loseScreen, ChainProgressView chainProgressView,
+            MusicPlayer musicPlayer, ScreenFader screenFader, SettingsController settingsController,
+            ILevelTutorial levelTutorial)
         {
             _assetProvider = assetProvider;
             _levelLoader = levelLoader;
@@ -60,21 +79,24 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _itemFactory = itemFactory;
             _slotFactory = slotFactory;
             _boardController = boardController;
-            _generator = generator;
+            _generatorController = generatorController;
+            _upgradeGeneratorSystem = upgradeGeneratorSystem;
+            _upgrades = upgrades;
+            _conditionsChecker = conditionsChecker;
             _levelTimer = levelTimer;
             _bestTimeRepository = bestTimeRepository;
             _hudView = hudView;
             _winScreen = winScreen;
+            _loseScreen = loseScreen;
+            _chainProgressView = chainProgressView;
             _musicPlayer = musicPlayer;
             _screenFader = screenFader;
             _settingsController = settingsController;
-            _loseScreen = loseScreen;
-            _chainProgressView = chainProgressView;
+            _levelTutorial = levelTutorial;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
         {
-            _cancellationToken = cancellation;
             _winScreen.HideImmediate();
             _loseScreen.HideImmediate();
 
@@ -89,9 +111,17 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             // Доска собрана за шторкой Mid Loader'а — теперь её можно показать.
             await _screenFader.FadeOutAsync(SHOW_LEVEL_FADE, cancellation);
 
-            // TIMER: обратный отсчёт идёт сразу, как только игрок видит доску (не ждёт первого мерджа).
-            if (_levelConfig.IsTimerMode && !_isFinished)
-                _levelTimer.Start();
+            try
+            {
+                // Тутор есть только на обучающем уровне (TUTOR SCENARIO в сцене Level_0).
+                await _levelTutorial.PlayAsync(_levelConfig.ItemChain, cancellation);
+
+                await StartLevelFlow(cancellation);
+            }
+            catch (OperationCanceledException)
+            {
+                // Сцену уровня выгрузили посреди игры (меню, рестарт) — это не ошибка.
+            }
         }
 
         public void Dispose()
@@ -110,26 +140,102 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
         private void BuildLevel()
         {
+            var chain = _levelConfig.ItemChain;
+
+            _result = LevelResult.NONE;
             _boardController.Build(_levelConfig);
-            _generator.Setup(_levelConfig.ItemChain.First, _levelConfig.GeneratorCharges);
+
+            _generatorController.Setup(chain, _levelConfig.GeneratorMaxLevel, _levelConfig.GeneratorCharges);
+
+            _upgrades.Reset();
+            _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
+            _generatorController.SetCentered(!_levelConfig.IsGeneratorUpgradeEnabled);
+
+            _conditionsChecker.Setup(_levelConfig);
 
             _levelTimer.Reset();
             _hudView.SetLevelName(_levelConfig.name);
-            SetupChainProgress();
-            HandleOnTimeChanged(0f);
+            _hudView.SetTimerVisible(_conditionsChecker.HasTimer);
 
-            bool hasBestTime = _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
-            _hudView.SetBestTime(hasBestTime, bestTime);
+            if (_conditionsChecker.HasTimer)
+            {
+                UpdateTimeView(0f);
+
+                bool hasBestTime = _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
+                _hudView.SetBestTime(hasBestTime, bestTime);
+            }
+
+            SetupChainProgress();
+        }
+
+        // Игра идёт, пока не выполнены все условия или не наступило поражение.
+        // Победу и «нет ходов» выставляют события, лимиты времени (только с Timer) проверяются здесь каждый кадр.
+        private async UniTask StartLevelFlow(CancellationToken cancellation)
+        {
+            while (_result == LevelResult.NONE)
+            {
+                if (_conditionsChecker.IsTimeUp())
+                    _result = LevelResult.LOSE_TIME_UP;
+
+                await UniTask.Yield(cancellation);
+            }
+
+            StopGameplay();
+
+            if (_result == LevelResult.WIN)
+                await ShowWinAsync(cancellation);
+            else
+                await ShowLoseAsync(cancellation);
+        }
+
+        private void StopGameplay()
+        {
+            _levelTimer.Stop();
+            _boardController.SetInteractable(false);
+            _generatorController.SetInteractable(false);
+            _upgradeGeneratorSystem.SetInteractable(false);
+        }
+
+        private async UniTask ShowWinAsync(CancellationToken cancellation)
+        {
+            float time = _levelTimer.Elapsed;
+
+            if (IsWinItem(_lastMergedItem))
+                await _lastMergedItem.View.PlayWinAsync(cancellation);
+
+            if (_conditionsChecker.HasTimer)
+            {
+                bool isNewRecord = _bestTimeRepository.TrySave(_levelConfig.ID, time);
+                _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
+                _winScreen.SetResult(time, bestTime, isNewRecord);
+            }
+            else
+            {
+                _winScreen.SetResultWithoutTime();
+            }
+
+            await _winScreen.ShowWithStarsAsync(_levelConfig.GetStars(time), cancellation);
+        }
+
+        private async UniTask ShowLoseAsync(CancellationToken cancellation)
+        {
+            if (_result == LevelResult.LOSE_TIME_UP)
+                _loseScreen.SetReason("TIME'S UP", "You ran out of time.\nTry again!");
+            else
+                _loseScreen.SetReason("OUT OF MOVES", "No merges left.\nTry again!");
+
+            await UniTask.Delay(SHOW_LOSE_DELAY_MS, cancellationToken: cancellation);
+            await _loseScreen.ShowAsync(cancellation);
         }
 
         private void Subscribe()
         {
             _boardController.OnItemMerged += HandleOnItemMerged;
             _boardController.OnItemSpawned += HandleOnItemSpawned;
-            _boardController.OnGoalItemCreated += HandleOnGoalItemCreated;
-            _generator.OnChargesEnded += CheckLose;
-            _generator.OnSpawnFailed += CheckLose;
-            _levelTimer.OnTimeChanged += HandleOnTimeChanged;
+            _generatorController.OnChargesEnded += CheckOutOfMoves;
+            _generatorController.OnSpawnFailed += CheckOutOfMoves;
+            _upgrades.OnChanged += HandleOnUpgradesChanged;
+            _levelTimer.OnTimeChanged += UpdateTimeView;
             _winScreen.OnRestartClicked += HandleOnRestartClicked;
             _winScreen.OnMenuClicked += HandleOnMenuClicked;
             _loseScreen.OnRestartClicked += HandleOnRestartClicked;
@@ -143,10 +249,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             _boardController.OnItemMerged -= HandleOnItemMerged;
             _boardController.OnItemSpawned -= HandleOnItemSpawned;
-            _boardController.OnGoalItemCreated -= HandleOnGoalItemCreated;
-            _generator.OnChargesEnded -= CheckLose;
-            _generator.OnSpawnFailed -= CheckLose;
-            _levelTimer.OnTimeChanged -= HandleOnTimeChanged;
+            _generatorController.OnChargesEnded -= CheckOutOfMoves;
+            _generatorController.OnSpawnFailed -= CheckOutOfMoves;
+            _upgrades.OnChanged -= HandleOnUpgradesChanged;
+            _levelTimer.OnTimeChanged -= UpdateTimeView;
             _winScreen.OnRestartClicked -= HandleOnRestartClicked;
             _winScreen.OnMenuClicked -= HandleOnMenuClicked;
             _loseScreen.OnRestartClicked -= HandleOnRestartClicked;
@@ -156,118 +262,84 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _settingsController.OnMenuRequested -= HandleOnMenuClicked;
         }
 
-        // Панель над доской: цепочка до цели уровня; стартовый прогресс — лучший предмет стартовой расстановки.
+        // Панель над доской: цепочка до цели-предмета. Прогресс — лучший предмет игрока на поле (PlayerUpgradesInLevel).
         private void SetupChainProgress()
         {
             var chain = _levelConfig.ItemChain;
             var path = new List<ItemConfig>();
 
-            for (int level = 1; level <= _levelConfig.GoalItemLevel; level++)
+            for (int level = 1; level <= _levelConfig.TargetItemLevel; level++)
                 path.Add(chain.GetByLevel(level));
 
             _chainProgressView.Setup(path);
 
-            int bestLevel = 0;
-
             foreach (var item in _boardController.GetItems())
-                bestLevel = Mathf.Max(bestLevel, chain.GetLevel(item.Config));
+                ReportItem(item);
 
-            _chainProgressView.SetReachedLevel(bestLevel);
+            _chainProgressView.SetReachedLevel(_upgrades.MaxItemLevel);
         }
 
-        private void UpdateChainProgress(ItemController item)
+        private void ReportItem(ItemController item)
         {
-            _chainProgressView.SetReachedLevel(_levelConfig.ItemChain.GetLevel(item.Config));
+            _upgrades.ReportItemLevel(_levelConfig.ItemChain.GetLevel(item.Config));
+        }
+
+        private bool IsWinItem(ItemController item)
+        {
+            return item != null && item.View != null && _levelConfig.HasItemGoal
+                   && _levelConfig.ItemChain.GetLevel(item.Config) >= _levelConfig.TargetItemLevel;
+        }
+
+        // Прогресс вырос (предмет или генератор) — возможно, выполнены все условия.
+        private void HandleOnUpgradesChanged()
+        {
+            _chainProgressView.SetReachedLevel(_upgrades.MaxItemLevel);
+
+            if (_result == LevelResult.NONE && _conditionsChecker.TryCompleteAll())
+                _result = LevelResult.WIN;
         }
 
         private void HandleOnItemMerged(ItemController item)
         {
-            UpdateChainProgress(item);
+            _lastMergedItem = item;
 
-            if (!_levelTimer.IsRunning && !_isFinished)
+            // Таймер (только с условием Timer) стартует с первого мерджа.
+            if (_conditionsChecker.HasTimer && !_levelTimer.IsRunning && _result == LevelResult.NONE)
                 _levelTimer.Start();
 
-            // Собрали предмет-цель — это победа, не поражение.
-            if (item.Config != _levelConfig.GoalItem)
-                CheckLose();
-        }
+            ReportItem(item);
 
-        // COLLECT_ITEM — секундомер; TIMER — оставшееся время, на нуле поражение.
-        private void HandleOnTimeChanged(float elapsed)
-        {
-            if (!_levelConfig.IsTimerMode)
-            {
-                _hudView.SetTime(elapsed);
-                return;
-            }
-
-            float remaining = Mathf.Max(0f, _levelConfig.TimeLimit - elapsed);
-            _hudView.SetRemainingTime(remaining);
-
-            if (remaining <= 0f && !_isFinished)
-                LoseAsync("TIME'S UP", "You ran out of time.\nTry again!").Forget();
+            CheckOutOfMoves();
         }
 
         private void HandleOnItemSpawned(ItemController item)
         {
-            UpdateChainProgress(item);
-
-            CheckLose();
+            ReportItem(item);
+            CheckOutOfMoves();
         }
 
-        private void HandleOnGoalItemCreated(ItemController goalItem)
+        // Нет ходов: пар для мерджа нет, и новый предмет взять негде (генератор пуст или доска заполнена).
+        private void CheckOutOfMoves()
         {
-            WinAsync(goalItem).Forget();
-        }
-
-        // Поражение: пар для мерджа нет, и новый предмет взять негде (генератор пуст или доска заполнена).
-        private void CheckLose()
-        {
-            if (_isFinished || _boardController.HasAvailableMerge())
+            if (_result != LevelResult.NONE || _boardController.HasAvailableMerge())
                 return;
 
-            bool canSpawn = _generator.HasCharges && _boardController.HasFreeSlot;
+            bool canSpawn = _generatorController.HasCharges && _boardController.HasFreeSlot;
 
             if (!canSpawn)
-                LoseAsync("OUT OF MOVES", "No merges left.\nTry again!").Forget();
+                _result = LevelResult.LOSE_OUT_OF_MOVES;
         }
 
-        private async UniTaskVoid LoseAsync(string title, string message)
+        // Есть невыполненное условие с лимитом — обратный отсчёт до ближайшего, иначе секундомер.
+        private void UpdateTimeView(float elapsed)
         {
-            if (_isFinished)
+            if (!_conditionsChecker.HasTimer)
                 return;
 
-            _isFinished = true;
-            _loseScreen.SetReason(title, message);
-
-            _levelTimer.Stop();
-            _boardController.SetInteractable(false);
-            _generator.SetInteractable(false);
-
-            await UniTask.Delay(400, cancellationToken: _cancellationToken);
-            await _loseScreen.ShowAsync(_cancellationToken);
-        }
-
-        private async UniTaskVoid WinAsync(ItemController goalItem)
-        {
-            if (_isFinished)
-                return;
-
-            _isFinished = true;
-
-            _levelTimer.Stop();
-            _boardController.SetInteractable(false);
-            _generator.SetInteractable(false);
-
-            float time = _levelTimer.Elapsed;
-            bool isNewRecord = _bestTimeRepository.TrySave(_levelConfig.ID, time);
-            _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
-
-            await goalItem.View.PlayWinAsync(_cancellationToken);
-
-            _winScreen.SetResult(time, bestTime, isNewRecord);
-
-            await _winScreen.ShowWithStarsAsync(_levelConfig.GetStars(time), _cancellationToken);
+            if (_conditionsChecker.TryGetNearestDeadline(out float remaining))
+                _hudView.SetRemainingTime(remaining);
+            else
+                _hudView.SetTime(elapsed);
         }
 
         // Пока открыты настройки — пауза: таймер стоит, RESUME продолжает.
@@ -279,7 +351,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
         private void HandleOnSettingsClosed()
         {
-            if (_wasTimerRunningBeforeSettings && !_isFinished)
+            if (_wasTimerRunningBeforeSettings && _result == LevelResult.NONE)
                 _levelTimer.Start();
         }
 

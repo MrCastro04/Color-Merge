@@ -1,3 +1,5 @@
+using Assets.Game.Modules.Core.Utils.Scripts;
+using Assets.Game.Modules.Core.Utils.Scripts.Extensions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,17 +7,23 @@ namespace Assets.Game.Modules.Content.Board.Scripts
 {
     // Сетка клеток. Размер клетки подгоняется под доступную область (9:16, 9:19.5, 3:4):
     // клетка квадратная, берётся минимум из ширины и высоты на одну клетку.
+    // На тутор доска поднимается над затемнением (IChangeSortGroupInCanvas) — свой Canvas с GraphicRaycaster.
     [RequireComponent(typeof(RectTransform))]
-    public class BoardView : MonoBehaviour
+    public class BoardView : MonoBehaviour, IChangeSortGroupInCanvas
     {
         [SerializeField] private RectTransform _slotsContainer;
         [SerializeField] private GridLayoutGroup _grid;
         [SerializeField] private float _spacing = 8f;
+        [SerializeField] private Canvas _sortingCanvas;
 
         private int _columns;
         private int _rows;
 
         public RectTransform SlotsContainer => _slotsContainer;
+
+        public string DesiredGroup => SORTING_LAYERS.TUTOR;
+        public string StartGroup { get; set; } = SORTING_LAYERS.DEFAULT;
+        public Canvas SortingCanvas => _sortingCanvas;
 
         public void Init(int columns, int rows)
         {

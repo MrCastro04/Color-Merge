@@ -1,7 +1,7 @@
 {
     "name": "Core.Utils",
     "rootNamespace": "",
-    "references": [ "UniTask" ],
+    "references": [ "UniTask", "DOTween.Modules", "VContainer", "Unity.InputSystem" ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
