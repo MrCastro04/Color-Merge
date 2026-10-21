@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Level.Scripts.LevelConfig
   _id: level_03
   _itemChain: {fileID: 11400000, guid: 9f9e62b8a819b444099ad8ea42e0bdd9, type: 2}
+  _mode: 0
+  _goalItemLevel: 7
+  _timeLimit: 120
   _columns: 5
   _rows: 7
   _blockedSlots: 
@@ -55,3 +58,6 @@ MonoBehaviour:
   - SlotID: 34
     ItemStartLevel: 1
   _generatorCharges: -1
+  _generatorUpgradeEnabled: 1
+  _threeStarsTime: 90
+  _twoStarsTime: 180
