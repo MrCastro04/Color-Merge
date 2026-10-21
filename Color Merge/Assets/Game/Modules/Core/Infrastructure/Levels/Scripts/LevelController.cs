@@ -10,6 +10,7 @@ using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
 using Assets.Game.Modules.Content.UI.Scripts;
 using Assets.Game.Modules.Core.AssetManagement.Scripts;
 using Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts;
+using Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts;
 using Assets.Game.Modules.Core.UI.Scripts;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -50,6 +51,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly MusicPlayer _musicPlayer;
         private readonly ScreenFader _screenFader;
         private readonly SettingsController _settingsController;
+        private readonly ILevelTutorial _levelTutorial;
 
         private LevelConfig _levelConfig;
         private LevelResult _result;
@@ -64,7 +66,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             UpgradeGeneratorSystem upgradeGeneratorSystem, PlayerUpgradesInLevel upgrades,
             LevelTimer levelTimer, BestTimeRepository bestTimeRepository,
             HudView hudView, WinScreen winScreen, LoseScreen loseScreen, ChainProgressView chainProgressView,
-            MusicPlayer musicPlayer, ScreenFader screenFader, SettingsController settingsController)
+            MusicPlayer musicPlayer, ScreenFader screenFader, SettingsController settingsController,
+            ILevelTutorial levelTutorial)
         {
             _assetProvider = assetProvider;
             _levelLoader = levelLoader;
@@ -84,6 +87,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _musicPlayer = musicPlayer;
             _screenFader = screenFader;
             _settingsController = settingsController;
+            _levelTutorial = levelTutorial;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
@@ -104,6 +108,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             try
             {
+                // Тутор (только на уровне с TUTOR SCENARIO и только первый раз) — до старта отсчёта.
+                await _levelTutorial.PlayAsync(_levelConfig.ItemChain, cancellation);
+                ResetTimerAfterTutorial();
+
                 await StartLevelFlow(cancellation);
             }
             catch (OperationCanceledException)
@@ -173,6 +181,13 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                 await ShowWinAsync(cancellation);
             else
                 await ShowLoseAsync(cancellation);
+        }
+
+        // Учебный мердж запускает секундомер (COLLECT_ITEM) — время уровня считаем с нуля после тутора.
+        private void ResetTimerAfterTutorial()
+        {
+            _levelTimer.Stop();
+            _levelTimer.Reset();
         }
 
         private void StopGameplay()

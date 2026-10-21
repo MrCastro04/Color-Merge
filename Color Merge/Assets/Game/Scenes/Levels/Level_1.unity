@@ -451,6 +451,8 @@ GameObject:
   - component: {fileID: 84323090}
   - component: {fileID: 84323089}
   - component: {fileID: 84323088}
+  - component: {fileID: 84323093}
+  - component: {fileID: 84323092}
   m_Layer: 5
   m_Name: GeneratorButton
   m_TagString: Untagged
@@ -497,6 +499,9 @@ MonoBehaviour:
   _chargesText: {fileID: 1387888446}
   _levelText: {fileID: 873959639}
   _icon: {fileID: 1519475705}
+  _sortingCanvas: {fileID: 84323093}
+  _maxPulseScale: 1.12
+  _pulseDuration: 0.45
 --- !u!114 &84323089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -579,6 +584,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 84323086}
   m_CullTransparentMesh: 1
+--- !u!114 &84323092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 84323086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &84323093
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 84323086}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &91227976
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,6 +1146,8 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
+  _tutorScenario: {fileID: 1728578523}
+  _tutorFinger: {fileID: 1728578524}
 --- !u!4 &169515576
 Transform:
   m_ObjectHideFlags: 0
@@ -1857,6 +1904,8 @@ GameObject:
   - component: {fileID: 409428616}
   - component: {fileID: 409428618}
   - component: {fileID: 409428617}
+  - component: {fileID: 409428620}
+  - component: {fileID: 409428619}
   m_Layer: 5
   m_Name: ChainProgress
   m_TagString: Untagged
@@ -1898,6 +1947,7 @@ MonoBehaviour:
   _container: {fileID: 409428616}
   _iconSize: {x: 100, y: 100}
   _lockedAlpha: 0.3
+  _sortingCanvas: {fileID: 409428620}
 --- !u!114 &409428618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1924,6 +1974,46 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &409428619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409428615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &409428620
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409428615}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &417701174
 GameObject:
   m_ObjectHideFlags: 0
@@ -2645,6 +2735,8 @@ GameObject:
   m_Component:
   - component: {fileID: 548124297}
   - component: {fileID: 548124298}
+  - component: {fileID: 548124300}
+  - component: {fileID: 548124299}
   m_Layer: 5
   m_Name: Board
   m_TagString: Untagged
@@ -2687,6 +2779,47 @@ MonoBehaviour:
   _slotsContainer: {fileID: 476013582}
   _grid: {fileID: 476013583}
   _spacing: 8
+  _sortingCanvas: {fileID: 548124300}
+--- !u!114 &548124299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548124296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &548124300
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548124296}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &550910430
 GameObject:
   m_ObjectHideFlags: 0
@@ -3037,7 +3170,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3740,7 +3873,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -7308,7 +7441,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1051702748
   m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!224 &1675861833
@@ -7573,6 +7706,93 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1704839406}
   m_CullTransparentMesh: 1
+--- !u!1001 &1728578522
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1539277859534847871, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: _steps.Array.data[3].RequiredButton
+      value: 
+      objectReference: {fileID: 84323089}
+    - target: {fileID: 1752855619095566528, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5954630142126849869, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+      propertyPath: m_Name
+      value: TUTOR SCENARIO
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+--- !u!114 &1728578523 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1539277859534847871, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+  m_PrefabInstance: {fileID: 1728578522}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1b96c6bba299a4fb30068b9914c7e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Tutorial.TutorScenario
+--- !u!114 &1728578524 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 609797212931279713, guid: 34891507a8816874bbf9f7316652389a, type: 3}
+  m_PrefabInstance: {fileID: 1728578522}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d720f7d8bc2eeba4286e721736c711f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Tutorial.Tutor_Scenario.Scripts.MoveableTutorArrow
 --- !u!1 &1818576216
 GameObject:
   m_ObjectHideFlags: 0
@@ -8862,3 +9082,4 @@ SceneRoots:
   - {fileID: 643104628}
   - {fileID: 1685663280}
   - {fileID: 1675861833}
+  - {fileID: 1728578522}

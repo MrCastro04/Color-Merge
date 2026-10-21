@@ -5,7 +5,11 @@ using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
 using Assets.Game.Modules.Content.Level.Scripts;
 using Assets.Game.Modules.Content.Slot.Scripts;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
+using Assets.Game.Modules.Content.Tutorial;
+using Assets.Game.Modules.Content.Tutorial.Tutor_Scenario.Scripts;
 using Assets.Game.Modules.Content.UI.Scripts;
+using Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts;
+using Assets.Game.Modules.Core.Utils.Scripts;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -18,6 +22,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
     public class LevelScope : LifetimeScope
     {
         [SerializeField] private LevelConfigReference _levelConfig;
+
+        [Header("Тутор — только на уровне, где он есть (Level_1), иначе пусто")]
+        [SerializeField] private TutorScenario _tutorScenario;
+        [SerializeField] private MoveableTutorArrow _tutorFinger;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -32,7 +40,24 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             RegisterUI(builder);
 
+            builder.Register<InputController>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+
+            RegisterTutor(builder);
+
             builder.RegisterEntryPoint<LevelController>();
+        }
+
+        private void RegisterTutor(IContainerBuilder builder)
+        {
+            if (_tutorScenario == null)
+            {
+                builder.Register<EmptyLevelTutorial>(Lifetime.Scoped).As<ILevelTutorial>();
+                return;
+            }
+
+            builder.RegisterComponent(_tutorScenario).AsSelf().AsImplementedInterfaces();
+            builder.RegisterComponent(_tutorFinger);
+            builder.Register<Tutorial_1_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
         }
 
         private static void RegisterBoard(IContainerBuilder builder)

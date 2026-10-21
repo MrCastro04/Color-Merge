@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Assets.Game.Modules.Content.Item.Scripts;
+using Assets.Game.Modules.Core.Utils.Scripts;
+using Assets.Game.Modules.Core.Utils.Scripts.Extensions;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,14 +10,24 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 {
     // Панель над доской: цепочка предметов по порядку улучшения (до цели уровня включительно).
     // Достигнутые ступени яркие, ещё не собранные — полупрозрачные; новая ступень «подпрыгивает».
-    public class ChainProgressView : MonoBehaviour
+    // На тутор поднимается над затемнением (IChangeSortGroupInCanvas).
+    public class ChainProgressView : MonoBehaviour, IChangeSortGroupInCanvas
     {
         [SerializeField] private RectTransform _container;
         [SerializeField] private Vector2 _iconSize = new(100f, 100f);
         [SerializeField, Range(0f, 1f)] private float _lockedAlpha = 0.3f;
+        [SerializeField] private Canvas _sortingCanvas;
 
         private readonly List<Image> _icons = new();
         private int _reachedLevel;
+
+        public string DesiredGroup => SORTING_LAYERS.TUTOR;
+        public string StartGroup { get; set; } = SORTING_LAYERS.DEFAULT;
+        public Canvas SortingCanvas => _sortingCanvas;
+
+        // Первая и последняя (цель уровня) иконки цепочки — на них указывают стрелки тутора.
+        public RectTransform FirstIcon => _icons.Count > 0 ? (RectTransform)_icons[0].transform : null;
+        public RectTransform GoalIcon => _icons.Count > 0 ? (RectTransform)_icons[^1].transform : null;
 
         public void Setup(IReadOnlyList<ItemConfig> chain)
         {
