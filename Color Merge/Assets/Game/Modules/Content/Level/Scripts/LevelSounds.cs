@@ -16,16 +16,19 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         private readonly Generator.Scripts.Generator _generator;
         private readonly WinScreen _winScreen;
         private readonly LoseScreen _loseScreen;
+        private readonly Generator.Scripts.UpgradeGeneratorSystem _upgradeGeneratorSystem;
 
         public LevelSounds(
             SFXOneShotPlayer sfx, BoardController boardController,
-            Generator.Scripts.Generator generator, WinScreen winScreen, LoseScreen loseScreen)
+            Generator.Scripts.Generator generator, WinScreen winScreen, LoseScreen loseScreen,
+            Generator.Scripts.UpgradeGeneratorSystem upgradeGeneratorSystem)
         {
             _sfx = sfx;
             _boardController = boardController;
             _generator = generator;
             _winScreen = winScreen;
             _loseScreen = loseScreen;
+            _upgradeGeneratorSystem = upgradeGeneratorSystem;
         }
 
         public void Initialize()
@@ -38,6 +41,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             _boardController.OnItemMerged += HandleOnItemMerged;
             _boardController.OnGoalItemCreated += HandleOnGoalItemCreated;
             _generator.OnSpawnFailed += HandleOnSpawnFailed;
+            _upgradeGeneratorSystem.OnUpgraded += HandleOnGeneratorUpgraded;
             _winScreen.OnRestartClicked += HandleOnButtonClicked;
             _winScreen.OnMenuClicked += HandleOnButtonClicked;
             _winScreen.OnStarShown += HandleOnStarShown;
@@ -55,6 +59,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             _boardController.OnItemMerged -= HandleOnItemMerged;
             _boardController.OnGoalItemCreated -= HandleOnGoalItemCreated;
             _generator.OnSpawnFailed -= HandleOnSpawnFailed;
+            _upgradeGeneratorSystem.OnUpgraded -= HandleOnGeneratorUpgraded;
             _winScreen.OnRestartClicked -= HandleOnButtonClicked;
             _winScreen.OnMenuClicked -= HandleOnButtonClicked;
             _winScreen.OnStarShown -= HandleOnStarShown;
@@ -71,6 +76,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         private void HandleOnGoalItemCreated(ItemController item) => _sfx.Play(SFXOneShotType.Win);
         private void HandleOnSpawnFailed() => _sfx.Play(SFXOneShotType.Return);
         private void HandleOnButtonClicked() => _sfx.Play(SFXOneShotType.ButtonClick);
+        private void HandleOnGeneratorUpgraded() => _sfx.Play(SFXOneShotType.Merge);
         private void HandleOnStarShown(int starIndex) => _sfx.Play(SFXOneShotType.Spawn);
     }
 }

@@ -49,6 +49,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             builder.RegisterComponentInHierarchy<GeneratorButtonView>();
             builder.Register<Generator>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+
+            builder.RegisterComponentInHierarchy<UpgradeButtonView>();
+            builder.Register<PlayerUpgradesInLevel>(Lifetime.Scoped);
+            builder.Register<UpgradeGeneratorSystem>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
         }
 
         private static void RegisterUI(IContainerBuilder builder)

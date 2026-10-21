@@ -5,17 +5,23 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.Generator.Scripts
 {
-    // Кнопка-генератор: спавнит предмет 1-го уровня в случайную свободную клетку.
+    // Кнопка-генератор: спавнит предмет своего уровня в случайную свободную клетку.
+    // Наружу отдаёт только свой уровень; улучшается через Upgrade() — его вызывает UpgradeGeneratorSystem.
     public class Generator : IInitializable, IDisposable
     {
         private readonly BoardController _boardController;
         private readonly GeneratorButtonView _buttonView;
 
-        private ItemConfig _itemToSpawn;
+        private ItemChainConfig _chain;
+        private int _maxLevel;
         private int _charges = -1;
 
+        public int Level { get; private set; } = 1;
+        public bool CanUpgrade => Level < _maxLevel;
         public int Charges => _charges;
         public bool HasCharges => _charges != 0;
+
+        private ItemConfig ItemToSpawn => _chain?.GetByLevel(Level);
 
         public event Action OnChargesEnded;
         // Нажали, но свободных клеток нет.
@@ -37,14 +43,28 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             _buttonView.OnClicked -= HandleOnClicked;
         }
 
-        // charges < 0 — без ограничения
-        public void Setup(ItemConfig itemToSpawn, int charges)
+        // maxLevel — выше этого уровня генератор не улучшается (чтобы не выдавать цель уровня напрямую).
+        // charges < 0 — без ограничения.
+        public void Setup(ItemChainConfig chain, int maxLevel, int charges)
         {
-            _itemToSpawn = itemToSpawn;
+            _chain = chain;
+            _maxLevel = Math.Max(1, maxLevel);
             _charges = charges;
+            Level = 1;
 
             _buttonView.SetCharges(_charges);
             _buttonView.SetInteractable(HasCharges);
+            UpdateView();
+        }
+
+        public void Upgrade()
+        {
+            if (!CanUpgrade)
+                return;
+
+            Level++;
+            UpdateView();
+            _buttonView.PlayUpgrade();
         }
 
         public void SetInteractable(bool isInteractable)
@@ -52,13 +72,19 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             _buttonView.SetInteractable(isInteractable && HasCharges);
         }
 
+        private void UpdateView()
+        {
+            _buttonView.SetLevel(Level);
+            _buttonView.SetIcon(ItemToSpawn.Icon);
+        }
+
         private void HandleOnClicked()
         {
-            if (_itemToSpawn == null || !HasCharges)
+            if (_chain == null || !HasCharges)
                 return;
 
             // TODO: визуальный фидбек «доска заполнена» (тряска кнопки)
-            if (!_boardController.TrySpawnAtRandomFreeSlot(_itemToSpawn))
+            if (!_boardController.TrySpawnAtRandomFreeSlot(ItemToSpawn))
             {
                 OnSpawnFailed?.Invoke();
                 return;

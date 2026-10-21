@@ -6,10 +6,13 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.Generator.Scripts
 {
+    // Кнопка генератора: иконка предмета, который он сейчас создаёт, «Lvl N» сверху справа, заряды.
     public class GeneratorButtonView : MonoBehaviour
     {
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _chargesText;
+        [SerializeField] private TMP_Text _levelText;
+        [SerializeField] private Image _icon;
 
         public event Action OnClicked;
 
@@ -33,9 +36,30 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             _chargesText.text = charges.ToString();
         }
 
+        public void SetLevel(int level)
+        {
+            if (_levelText != null)
+                _levelText.text = $"Lvl {level}";
+        }
+
+        public void SetIcon(Sprite sprite)
+        {
+            if (_icon != null)
+                _icon.sprite = sprite;
+        }
+
         public void SetInteractable(bool isInteractable)
         {
             _button.interactable = isInteractable;
+        }
+
+        public void PlayUpgrade()
+        {
+            if (_icon == null)
+                return;
+
+            _icon.transform.DOKill(true);
+            _icon.transform.DOPunchScale(Vector3.one * 0.35f, 0.45f, 6, 0.5f).SetLink(gameObject);
         }
 
         private void HandleOnClick()
