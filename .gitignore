@@ -115,3 +115,7 @@ InitTestScene*.unity*
 # Odin Inspector (Sirenix) — платный ассет Asset Store, в репозиторий не выкладываем
 /Color Merge/Assets/Plugins/Sirenix/
 /Color Merge/Assets/Plugins/Sirenix.meta
+
+# Text Animator (Febucci) — ассет Asset Store, в репозиторий не выкладываем
+/Color Merge/Assets/Plugins/Febucci/
+/Color Merge/Assets/Plugins/Febucci.meta
