@@ -1146,8 +1146,8 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  _tutorScenario: {fileID: 1728578523}
-  _tutorFinger: {fileID: 1728578524}
+  _tutorScenario: {fileID: 0}
+  _tutorFinger: {fileID: 0}
 --- !u!4 &169515576
 Transform:
   m_ObjectHideFlags: 0
@@ -7706,93 +7706,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1704839406}
   m_CullTransparentMesh: 1
---- !u!1001 &1728578522
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1539277859534847871, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: _steps.Array.data[3].RequiredButton
-      value: 
-      objectReference: {fileID: 84323089}
-    - target: {fileID: 1752855619095566528, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_AdditionalShaderChannelsFlag
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3013588447222921720, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5954630142126849869, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-      propertyPath: m_Name
-      value: TUTOR SCENARIO
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 34891507a8816874bbf9f7316652389a, type: 3}
---- !u!114 &1728578523 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1539277859534847871, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-  m_PrefabInstance: {fileID: 1728578522}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b1b96c6bba299a4fb30068b9914c7e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Tutorial.TutorScenario
---- !u!114 &1728578524 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 609797212931279713, guid: 34891507a8816874bbf9f7316652389a, type: 3}
-  m_PrefabInstance: {fileID: 1728578522}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d720f7d8bc2eeba4286e721736c711f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Tutorial.Tutor_Scenario.Scripts.MoveableTutorArrow
 --- !u!1 &1818576216
 GameObject:
   m_ObjectHideFlags: 0
@@ -9082,4 +8995,3 @@ SceneRoots:
   - {fileID: 643104628}
   - {fileID: 1685663280}
   - {fileID: 1675861833}
-  - {fileID: 1728578522}

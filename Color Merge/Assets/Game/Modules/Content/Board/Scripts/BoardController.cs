@@ -22,8 +22,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         private readonly HashSet<int> _busySlots = new();
         private ItemController[] _items = Array.Empty<ItemController>();
         private ItemChainConfig _itemChain;
-        // Собрали этот предмет — цель уровня выполнена (LevelConfig.GoalItem).
-        private ItemConfig _goalItem;
         private bool _isInteractable = true;
 
         public event Action<ItemController> OnItemSpawned;
@@ -32,7 +30,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         public event Action<ItemController> OnItemReturned;
         public event Action<ItemController, ItemController> OnItemsSwapped;
         public event Action<ItemController> OnItemMerged;
-        public event Action<ItemController> OnGoalItemCreated;
 
         public IReadOnlyList<SlotController> Slots => _slots;
         public bool HasFreeSlot => GetFreeSlotIds().Count > 0;
@@ -55,7 +52,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             Clear();
 
             _itemChain = levelConfig.ItemChain;
-            _goalItem = levelConfig.GoalItem;
             _items = new ItemController[levelConfig.SlotsCount];
 
             _boardView.Init(levelConfig.Columns, levelConfig.Rows);
@@ -238,11 +234,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             merged.View.CanDrag = false;
 
             OnItemMerged?.Invoke(merged);
-
-            bool isGoal = nextConfig == _goalItem;
-
-            if (isGoal)
-                OnGoalItemCreated?.Invoke(merged);
 
             await merged.View.PlayMergeAsync();
 

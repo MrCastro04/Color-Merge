@@ -13,6 +13,8 @@ namespace Assets.Game.Modules.Content.UI.Scripts
     // Экран победы: время, рекорд, 1–3 звезды (появляются по очереди), конфетти.
     public class WinScreen : UIScreen
     {
+        private const string WITHOUT_TIME_TEXT = "WELL DONE!";
+
         [SerializeField] private TMP_Text _timeText;
         [SerializeField] private TMP_Text _bestTimeText;
         [SerializeField] private GameObject _newRecordLabel;
@@ -42,11 +44,25 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
         public void SetResult(float time, float bestTime, bool isNewRecord)
         {
+            _timeText.gameObject.SetActive(true);
+            _bestTimeText.gameObject.SetActive(true);
+
             _timeText.text = TimeFormatter.Format(time);
             _bestTimeText.text = $"BEST {TimeFormatter.Format(bestTime)}";
 
             if (_newRecordLabel != null)
                 _newRecordLabel.SetActive(isNewRecord);
+        }
+
+        // Уровень без условия Timer: вместо времени — похвала, рекорд не показывается.
+        public void SetResultWithoutTime()
+        {
+            _timeText.gameObject.SetActive(true);
+            _timeText.text = WITHOUT_TIME_TEXT;
+            _bestTimeText.gameObject.SetActive(false);
+
+            if (_newRecordLabel != null)
+                _newRecordLabel.SetActive(false);
         }
 
         public void SetInteractable(bool isInteractable)

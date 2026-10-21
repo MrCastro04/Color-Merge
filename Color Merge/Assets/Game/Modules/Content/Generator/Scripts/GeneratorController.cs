@@ -7,7 +7,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
 {
     // Кнопка-генератор: спавнит предмет своего уровня в случайную свободную клетку.
     // Наружу отдаёт только свой уровень; улучшается через Upgrade() — его вызывает UpgradeGeneratorSystem.
-    public class Generator : IInitializable, IDisposable
+    public class GeneratorController : IInitializable, IDisposable
     {
         private readonly BoardController _boardController;
         private readonly GeneratorButtonView _buttonView;
@@ -27,7 +27,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         // Нажали, но свободных клеток нет.
         public event Action OnSpawnFailed;
 
-        public Generator(BoardController boardController, GeneratorButtonView buttonView)
+        public GeneratorController(BoardController boardController, GeneratorButtonView buttonView)
         {
             _boardController = boardController;
             _buttonView = buttonView;

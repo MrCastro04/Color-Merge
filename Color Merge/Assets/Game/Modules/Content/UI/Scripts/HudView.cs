@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Таймер и рекорд.
-    // В режиме TIMER показывается оставшееся время; последние секунды — красным.
+    // Таймер и рекорд (только на уровне с условием Timer).
+    // Есть невыполненное условие с лимитом — показывается оставшееся время; последние секунды — красным.
     public class HudView : MonoBehaviour
     {
         private const float WARNING_TIME = 10f;
@@ -20,23 +20,36 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         private bool _isColorCached;
         private bool _isWarning;
 
+        // Уровень без условия Timer — ни таймера, ни рекорда.
+        public void SetTimerVisible(bool isVisible)
+        {
+            _timeText.gameObject.SetActive(isVisible);
+
+            if (!isVisible)
+                _bestTimeText.gameObject.SetActive(false);
+        }
+
+        // Секундомер.
         public void SetTime(float seconds)
         {
             _timeText.text = TimeFormatter.Format(seconds);
+            SetWarning(false);
         }
 
         // Обратный отсчёт: меньше WARNING_TIME — текст краснеет и пульсирует.
         public void SetRemainingTime(float seconds)
         {
-            SetTime(seconds);
+            _timeText.text = TimeFormatter.Format(seconds);
+            SetWarning(seconds <= WARNING_TIME);
+        }
 
+        private void SetWarning(bool isWarning)
+        {
             if (!_isColorCached)
             {
                 _timeColor = _timeText.color;
                 _isColorCached = true;
             }
-
-            bool isWarning = seconds <= WARNING_TIME;
 
             if (isWarning == _isWarning)
                 return;

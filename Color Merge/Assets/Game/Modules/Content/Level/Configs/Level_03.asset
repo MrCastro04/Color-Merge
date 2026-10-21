@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Level.Scripts.LevelConfig
   _id: level_03
   _itemChain: {fileID: 11400000, guid: 9f9e62b8a819b444099ad8ea42e0bdd9, type: 2}
-  _mode: 0
-  _goalItemLevel: 7
-  _timeLimit: 120
+  _conditions:
+  - rid: 482838925939835042
+  - rid: 482838925939835043
+  - rid: 482838925939835044
   _columns: 5
   _rows: 7
   _blockedSlots: 
@@ -61,3 +62,21 @@ MonoBehaviour:
   _generatorUpgradeEnabled: 1
   _threeStarsTime: 90
   _twoStarsTime: 180
+  references:
+    version: 2
+    RefIds:
+    - rid: 482838925939835042
+      type: {class: Timer, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
+      data: 
+    - rid: 482838925939835043
+      type: {class: Get_Item_With_Level_X, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
+      data:
+        _hasTimer: 0
+        _timeLimit: 120
+        _itemLevel: 7
+    - rid: 482838925939835044
+      type: {class: Upgraded_Generator_With_Level_X, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
+      data:
+        _hasTimer: 1
+        _timeLimit: 180
+        _generatorLevel: 3

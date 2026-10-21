@@ -3,6 +3,7 @@ using Assets.Game.Modules.Content.Generator.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
 using Assets.Game.Modules.Content.Level.Scripts;
+using Assets.Game.Modules.Content.Level.Scripts.Conditions;
 using Assets.Game.Modules.Content.Slot.Scripts;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
 using Assets.Game.Modules.Content.Tutorial;
@@ -23,7 +24,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
     {
         [SerializeField] private LevelConfigReference _levelConfig;
 
-        [Header("Тутор — только на уровне, где он есть (Level_1), иначе пусто")]
+        [Header("Тутор — только на обучающем уровне (Level_0), иначе пусто")]
         [SerializeField] private TutorScenario _tutorScenario;
         [SerializeField] private MoveableTutorArrow _tutorFinger;
 
@@ -36,6 +37,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             RegisterGenerator(builder);
 
             builder.Register<LevelTimer>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+            builder.Register<LevelConditionsChecker>(Lifetime.Scoped);
             builder.Register<LevelSounds>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
 
             RegisterUI(builder);
@@ -57,7 +59,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             builder.RegisterComponent(_tutorScenario).AsSelf().AsImplementedInterfaces();
             builder.RegisterComponent(_tutorFinger);
-            builder.Register<Tutorial_1_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
+            builder.Register<Tutorial_0_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
         }
 
         private static void RegisterBoard(IContainerBuilder builder)
@@ -73,7 +75,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private static void RegisterGenerator(IContainerBuilder builder)
         {
             builder.RegisterComponentInHierarchy<GeneratorButtonView>();
-            builder.Register<Generator>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+            builder.Register<GeneratorController>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
 
             builder.RegisterComponentInHierarchy<UpgradeButtonView>();
             builder.Register<PlayerUpgradesInLevel>(Lifetime.Scoped);

@@ -7,31 +7,27 @@ using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Tutorial;
 using Assets.Game.Modules.Content.Tutorial.Tutor_Scenario.Scripts;
 using Assets.Game.Modules.Content.UI.Scripts;
-using Assets.Game.Modules.Core.Save.Scripts;
 using Assets.Game.Modules.Core.Utils.Scripts.Extensions;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 {
-    // Тутор первого уровня (как Tutorial_0_Controller в Combo-Dungeon): шаги PlayTutorN по порядку,
-    // перед/после текста — колбеки (подсветка через сортинг-слой Tutor, пульс, палец).
-    // Проигрывается один раз — после прохождения ставится флаг в сохранении.
-    public class Tutorial_1_Controller : ILevelTutorial, IWaiter
+    // Тутор обучающего уровня Level_0 (как Tutorial_0_Controller в Combo-Dungeon): шаги PlayTutorN по порядку,
+    // перед/после текста — колбеки (подсветка через сортинг-слой Tutor, пульс, палец, стрелки).
+    // Level_0 и есть обучение — тутор играет при каждом входе на уровень.
+    public class Tutorial_0_Controller : ILevelTutorial, IWaiter
     {
-        private const string COMPLETED_KEY = "tutorial_level_01_completed";
-
         // Затемнение тутора — слой Tutor, order 1 (выше основного UI по рейкастам), текст — order 10.
         // Подсвеченный объект встаёт между ними.
         private const int HIGHLIGHT_ORDER = 5;
         private const int FINGER_REFRESH_DELAY_MS = 350;
 
-        private readonly ISaveService _saveService;
         private readonly TutorScenario _tutorScenario;
         private readonly MoveableTutorArrow _finger;
         private readonly BoardController _boardController;
         private readonly BoardView _boardView;
-        private readonly Generator _generator;
+        private readonly GeneratorController _generatorController;
         private readonly GeneratorButtonView _generatorButtonView;
         private readonly ChainProgressView _chainProgressView;
 
@@ -42,19 +38,17 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         private ItemController _mergeFrom;
         private ItemController _mergeTo;
 
-        public Tutorial_1_Controller(
-            ISaveService saveService,
+        public Tutorial_0_Controller(
             TutorScenario tutorScenario, MoveableTutorArrow finger,
             BoardController boardController, BoardView boardView,
-            Generator generator, GeneratorButtonView generatorButtonView,
+            GeneratorController generatorController, GeneratorButtonView generatorButtonView,
             ChainProgressView chainProgressView)
         {
-            _saveService = saveService;
             _tutorScenario = tutorScenario;
             _finger = finger;
             _boardController = boardController;
             _boardView = boardView;
-            _generator = generator;
+            _generatorController = generatorController;
             _generatorButtonView = generatorButtonView;
             _chainProgressView = chainProgressView;
         }
@@ -64,11 +58,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             _chain = chain;
             _finger.gameObject.SetActive(false);
 
-            if (_saveService.GetInt(COMPLETED_KEY) == 1)
-                return;
-
             _boardController.SetInteractable(false);
-            _generator.SetInteractable(false);
+            _generatorController.SetInteractable(false);
 
             await PlayTutor0(ct);
             await PlayTutor1(ct);
@@ -77,10 +68,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             await PlayTutor4(ct);
 
             _boardController.SetInteractable(true);
-            _generator.SetInteractable(true);
-
-            _saveService.SetInt(COMPLETED_KEY, 1);
-            _saveService.Save();
+            _generatorController.SetInteractable(true);
         }
 
         private async UniTask PlayTutor0(CancellationToken ct = default)
@@ -142,7 +130,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             _preTutorCallbacks
                 .With(() => generatorButton.gameObject.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => PointArrows(3, generatorButton.RT, generatorButton.RT))
-                .With(() => _generator.SetInteractable(true));
+                .With(() => _generatorController.SetInteractable(true));
 
             _postTutorCallbacks.With(() => generatorButton.gameObject.StartPulseObj());
 
@@ -150,7 +138,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             await generatorButton.gameObject.StopPulseObj();
             generatorButton.transform.localScale = Vector3.one;
 
-            _generator.SetInteractable(false);
+            _generatorController.SetInteractable(false);
             await generatorButton.gameObject.ResetSortGroupInObj();
             await this.Wait(0.5f, ct);
         }
@@ -158,8 +146,15 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         private async UniTask PlayTutor4(CancellationToken ct = default)
         {
             // тутор - собери цель, время пошло с первого мерджа
-            _preTutorCallbacks.With(() => PointArrows(4, _chainProgressView.GoalIcon));
+            var chainProgress = _chainProgressView;
+
+            // цепочка подсвечена, стрелка — на цель уровня
+            _preTutorCallbacks
+                .With(() => chainProgress.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
+                .With(() => PointArrows(4, chainProgress.GoalIcon));
+
             await _tutorScenario.RunStepWithCallbacks(4, _preTutorCallbacks, _postTutorCallbacks, ct: ct);
+            await chainProgress.ResetSortGroupInObj();
             await this.Wait(0.3f, ct);
         }
 

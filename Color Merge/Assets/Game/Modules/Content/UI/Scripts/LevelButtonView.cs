@@ -32,7 +32,8 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             Index = index;
             IsLocked = state.IsLocked;
 
-            _numberText.text = (index + 1).ToString();
+            // Уровни нумеруются с нуля: Level 0 — обучающий.
+            _numberText.text = index.ToString();
             _numberText.gameObject.SetActive(!state.IsLocked);
             _lockIcon.SetActive(state.IsLocked);
             _background.color = state.IsLocked ? _lockedColor : _unlockedColor;

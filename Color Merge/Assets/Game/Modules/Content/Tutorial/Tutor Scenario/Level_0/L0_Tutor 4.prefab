@@ -102,16 +102,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7980484790740235135, guid: cca9227756a8d284abbc78fc6b5f0f66, type: 3}
       propertyPath: _text
-      value: 'Great job! Now create the goal item.
+      value: 'Great job! Now create the goal item
 
-        The timer starts with
-        your first merge.
+        to complete the level!
 
-        <size=60%><color=#FFE066>Tap to continue</color></size>'
+        <size=60%><color=#FFE066>Tap
+        to continue</color></size>'
       objectReference: {fileID: 0}
     - target: {fileID: 8730378702895884925, guid: cca9227756a8d284abbc78fc6b5f0f66, type: 3}
       propertyPath: m_Name
-      value: L1_Tutor 4
+      value: L0_Tutor 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

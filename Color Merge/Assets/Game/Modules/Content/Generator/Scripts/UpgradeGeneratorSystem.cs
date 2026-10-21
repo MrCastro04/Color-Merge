@@ -13,7 +13,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
     {
         public const int ENERGY_PER_UPGRADE = 3;
 
-        private readonly Generator _generator;
+        private readonly GeneratorController _generatorController;
         private readonly BoardController _boardController;
         private readonly PlayerUpgradesInLevel _upgrades;
         private readonly UpgradeButtonView _upgradeButtonView;
@@ -26,10 +26,10 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         public event Action OnEnergyGained;
 
         public UpgradeGeneratorSystem(
-            Generator generator, BoardController boardController,
+            GeneratorController generatorController, BoardController boardController,
             PlayerUpgradesInLevel upgrades, UpgradeButtonView upgradeButtonView)
         {
-            _generator = generator;
+            _generatorController = generatorController;
             _boardController = boardController;
             _upgrades = upgrades;
             _upgradeButtonView = upgradeButtonView;
@@ -56,7 +56,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             _chain = chain;
             _isEnabled = isEnabled;
             _upgradeButtonView.SetVisible(isEnabled);
-            _upgrades.SetGeneratorLevel(_generator.Level);
+            _upgrades.SetGeneratorLevel(_generatorController.Level);
             UpdateButton();
         }
 
@@ -74,7 +74,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
 
             int sourceLevel = _chain.GetLevel(merged.Config) - 1;
 
-            if (sourceLevel != _generator.Level)
+            if (sourceLevel != _generatorController.Level)
                 return;
 
             _upgrades.AddEnergy(1);
@@ -83,28 +83,28 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
 
         private void HandleOnUpgradeClicked()
         {
-            if (!_isEnabled || !_isInteractable || !_generator.CanUpgrade)
+            if (!_isEnabled || !_isInteractable || !_generatorController.CanUpgrade)
                 return;
 
             if (!_upgrades.TrySpendEnergy(ENERGY_PER_UPGRADE))
                 return;
 
-            _generator.Upgrade();
-            _upgrades.SetGeneratorLevel(_generator.Level);
+            _generatorController.Upgrade();
+            _upgrades.SetGeneratorLevel(_generatorController.Level);
 
             OnUpgraded?.Invoke();
         }
 
         private void UpdateButton()
         {
-            if (!_generator.CanUpgrade)
+            if (!_generatorController.CanUpgrade)
             {
                 _upgradeButtonView.SetMaxed();
                 return;
             }
 
             if (_isInteractable && _upgrades.Energy >= ENERGY_PER_UPGRADE)
-                _upgradeButtonView.SetReady(_generator.Level, _generator.Level + 1);
+                _upgradeButtonView.SetReady(_generatorController.Level, _generatorController.Level + 1);
             else
                 _upgradeButtonView.SetNotReady(Math.Min(_upgrades.Energy, ENERGY_PER_UPGRADE), ENERGY_PER_UPGRADE);
         }
