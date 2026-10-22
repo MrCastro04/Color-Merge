@@ -1344,9 +1344,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 169515574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8f158cb2364deb468bb8849adf4a1aa, type: 3}
+  m_Script: {fileID: 11500000, guid: 05ca0683e4806a846b59509621412bb5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Infrastructure::Assets.Game.Modules.Core.Infrastructure.Levels.Scripts.LevelScope
+  m_EditorClassIdentifier: Infrastructure::Assets.Game.Modules.Core.Infrastructure.Levels.Level_9.Level_9_Scope
   parentReference:
     TypeName: 
   autoRun: 1
@@ -1357,7 +1357,6 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
-  _tutorialType: 6
   _tutorScenario: {fileID: 705351996}
   _tutorFinger: {fileID: 705351997}
 --- !u!4 &169515576
