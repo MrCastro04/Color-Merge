@@ -7,7 +7,7 @@ using Assets.Game.Modules.Content.Level.Scripts;
 using Assets.Game.Modules.Content.Level.Scripts.Conditions;
 using Assets.Game.Modules.Content.Slot.Scripts;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
-using Assets.Game.Modules.Content.UI.Scripts;
+using Assets.Game.Modules.Content.GUI.Scripts;
 using Assets.Game.Modules.Core.UI.Scripts;
 using Assets.Game.Modules.Core.Utils.Scripts;
 using UnityEngine;

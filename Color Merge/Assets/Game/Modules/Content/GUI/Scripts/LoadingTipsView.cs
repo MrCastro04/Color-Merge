@@ -5,7 +5,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
-namespace Assets.Game.Modules.Content.UI.Scripts
+namespace Assets.Game.Modules.Content.GUI.Scripts
 {
     public class LoadingTipsView : MonoBehaviour
     {

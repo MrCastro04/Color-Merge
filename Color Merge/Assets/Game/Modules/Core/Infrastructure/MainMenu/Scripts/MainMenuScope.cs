@@ -1,4 +1,4 @@
-using Assets.Game.Modules.Content.UI.Scripts;
+using Assets.Game.Modules.Content.GUI.Scripts;
 using VContainer;
 using VContainer.Unity;
 

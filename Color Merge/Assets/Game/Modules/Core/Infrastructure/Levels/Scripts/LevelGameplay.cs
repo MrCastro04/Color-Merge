@@ -9,7 +9,7 @@ using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
 using Assets.Game.Modules.Content.Level.Scripts;
 using Assets.Game.Modules.Content.Level.Scripts.Conditions;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
-using Assets.Game.Modules.Content.UI.Scripts;
+using Assets.Game.Modules.Content.GUI.Scripts;
 using Assets.Game.Modules.Core.AssetManagement.Scripts;
 using Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts;
 using Assets.Game.Modules.Core.UI.Scripts;

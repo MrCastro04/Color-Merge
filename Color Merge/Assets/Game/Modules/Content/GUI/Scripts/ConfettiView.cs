@@ -4,7 +4,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Game.Modules.Content.UI.Scripts
+namespace Assets.Game.Modules.Content.GUI.Scripts
 {
     [RequireComponent(typeof(RectTransform))]
     public class ConfettiView : MonoBehaviour

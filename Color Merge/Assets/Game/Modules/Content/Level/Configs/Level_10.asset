@@ -27,7 +27,7 @@ MonoBehaviour:
         Content]], System.Core
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 2
     - Name: 
       Entry: 7
       Data: 1|Assets.Game.Modules.Content.Level.Scripts.Conditions.Get_Item_With_Level_X,
@@ -35,6 +35,15 @@ MonoBehaviour:
     - Name: _itemLevel
       Entry: 3
       Data: 7
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|Assets.Game.Modules.Content.Level.Scripts.Conditions.Timer, Content
+    - Name: _seconds
+      Entry: 4
+      Data: 150
     - Name: 
       Entry: 8
       Data: 
@@ -71,5 +80,5 @@ MonoBehaviour:
   _candyBombCost: 5
   _generatorCharges: -1
   _generatorUpgradeEnabled: 1
-  _threeStarsTime: 90
-  _twoStarsTime: 180
+  _threeStarsTime: 75
+  _twoStarsTime: 112.5

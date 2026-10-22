@@ -5,7 +5,7 @@ using Assets.Game.Modules.Core.Vibration.Scripts;
 using Cysharp.Threading.Tasks;
 using VContainer.Unity;
 
-namespace Assets.Game.Modules.Content.UI.Scripts
+namespace Assets.Game.Modules.Content.GUI.Scripts
 {
     public class SettingsController : IInitializable, IDisposable
     {

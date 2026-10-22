@@ -6,7 +6,7 @@ using Assets.Game.Modules.Content.Generator.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Tutorial;
 using Assets.Game.Modules.Content.Tutorial.Tutor_Scenario.Scripts;
-using Assets.Game.Modules.Content.UI.Scripts;
+using Assets.Game.Modules.Content.GUI.Scripts;
 using Assets.Game.Modules.Core.Infrastructure.Levels.Scripts;
 using Assets.Game.Modules.Core.Utils.Scripts.Extensions;
 using Cysharp.Threading.Tasks;

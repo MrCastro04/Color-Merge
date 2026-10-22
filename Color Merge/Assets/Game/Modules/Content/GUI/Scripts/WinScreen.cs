@@ -8,7 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Game.Modules.Content.UI.Scripts
+namespace Assets.Game.Modules.Content.GUI.Scripts
 {
     public class WinScreen : UIScreen
     {

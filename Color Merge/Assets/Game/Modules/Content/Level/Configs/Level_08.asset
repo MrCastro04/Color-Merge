@@ -33,7 +33,7 @@ MonoBehaviour:
       Data: 1|Assets.Game.Modules.Content.Level.Scripts.Conditions.Timer, Content
     - Name: _seconds
       Entry: 4
-      Data: 300
+      Data: 150
     - Name: 
       Entry: 8
       Data: 
@@ -96,5 +96,5 @@ MonoBehaviour:
   _candyBombCost: 5
   _generatorCharges: -1
   _generatorUpgradeEnabled: 1
-  _threeStarsTime: 90
-  _twoStarsTime: 180
+  _threeStarsTime: 75
+  _twoStarsTime: 112.5

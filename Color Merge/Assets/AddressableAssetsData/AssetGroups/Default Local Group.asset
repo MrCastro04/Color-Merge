@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc648c06b21845141a2adce6b8f13117
+    m_Address: GameUI Atlas
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d02abc2cfb6bdc5498482ad412e50267
     m_Address: SFX_Swap
     m_ReadOnly: 0
