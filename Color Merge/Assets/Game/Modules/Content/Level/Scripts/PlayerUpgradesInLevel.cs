@@ -10,6 +10,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public int Energy { get; private set; }
         // Уровень лучшего предмета, который игрок собрал на поле (не тот, что выдаёт генератор).
         public int MaxItemLevel { get; private set; }
+        // Сколько мерджей сделано на уровне (условие Make_Merge_X_Times).
+        public int MergesCount { get; private set; }
 
         public event Action OnChanged;
 
@@ -18,6 +20,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             GeneratorLevel = 1;
             Energy = 0;
             MaxItemLevel = 0;
+            MergesCount = 0;
             OnChanged?.Invoke();
         }
 
@@ -41,6 +44,12 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             Energy -= amount;
             OnChanged?.Invoke();
             return true;
+        }
+
+        public void ReportMerge()
+        {
+            MergesCount++;
+            OnChanged?.Invoke();
         }
 
         // Только растёт.

@@ -27,6 +27,12 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         [SerializeField] private List<int> _blockedSlots = new();
         [SerializeField] private List<InitialItem> _initialItems = new();
 
+        [Header("Candy Connector")]
+        [Tooltip("Особый предмет: предмет X + конфета → предмет X+1")]
+        [SerializeField] private CandyConnectorConfig _candyConnector;
+        [Tooltip("Клетки, где стоят конфеты на старте")]
+        [SerializeField] private List<InitialCandy> _initialCandies = new();
+
         [Header("Generator")]
         [Tooltip("-1 — без ограничения")]
         [SerializeField] private int _generatorCharges = -1;
@@ -47,6 +53,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public int SlotsCount => _columns * _rows;
         public IReadOnlyList<int> BlockedSlots => _blockedSlots;
         public IReadOnlyList<InitialItem> InitialItems => _initialItems;
+        public CandyConnectorConfig CandyConnector => _candyConnector;
+        public IReadOnlyList<InitialCandy> InitialCandies => _initialCandies;
         public int GeneratorCharges => _generatorCharges;
         public bool HasGeneratorLimit => _generatorCharges >= 0;
         public bool IsGeneratorUpgradeEnabled => _generatorUpgradeEnabled;
@@ -72,6 +80,23 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         }
 
         public bool HasItemGoal => _conditions.Exists(condition => condition is Get_Item_With_Level_X);
+
+        // Сколько мерджей нужно (самое большое Make_Merge_X_Times); 0 — условия на мерджи нет.
+        public int MergesTarget
+        {
+            get
+            {
+                int target = 0;
+
+                foreach (var condition in _conditions)
+                {
+                    if (condition is Make_Merge_X_Times merges)
+                        target = Mathf.Max(target, merges.MergesCount);
+                }
+
+                return target;
+            }
+        }
 
         // Генератор не выдаёт цель-предмет сам (до цели минус один),
         // но условие на прокачку генератора всегда достижимо.
@@ -107,6 +132,12 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             [FormerlySerializedAs("Level")]
             [Tooltip("Уровень предмета в ItemChain: 1 — первый")]
             [Min(1)] public int ItemStartLevel;
+        }
+
+        [Serializable]
+        public struct InitialCandy
+        {
+            public int SlotID;
         }
     }
 }

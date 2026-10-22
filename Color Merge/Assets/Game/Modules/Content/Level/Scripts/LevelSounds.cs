@@ -47,6 +47,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             _upgradeGeneratorSystem.OnUpgraded += HandleOnGeneratorUpgraded;
             _winScreen.OnRestartClicked += HandleOnButtonClicked;
             _winScreen.OnMenuClicked += HandleOnButtonClicked;
+            _winScreen.OnContinueClicked += HandleOnButtonClicked;
             _winScreen.OnStarShown += HandleOnStarShown;
             _loseScreen.OnRestartClicked += HandleOnButtonClicked;
             _loseScreen.OnMenuClicked += HandleOnButtonClicked;
@@ -65,6 +66,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             _upgradeGeneratorSystem.OnUpgraded -= HandleOnGeneratorUpgraded;
             _winScreen.OnRestartClicked -= HandleOnButtonClicked;
             _winScreen.OnMenuClicked -= HandleOnButtonClicked;
+            _winScreen.OnContinueClicked -= HandleOnButtonClicked;
             _winScreen.OnStarShown -= HandleOnStarShown;
             _loseScreen.OnRestartClicked -= HandleOnButtonClicked;
             _loseScreen.OnMenuClicked -= HandleOnButtonClicked;

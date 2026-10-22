@@ -11,6 +11,7 @@ using UnityEngine.UI;
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
     // Экран победы: время, рекорд, 1–3 звезды (появляются по очереди), конфетти.
+    // CONTINUE — следующий уровень (на последнем — в меню), RESTART, MENU.
     public class WinScreen : UIScreen
     {
         private const string WITHOUT_TIME_TEXT = "WELL DONE!";
@@ -20,6 +21,7 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         [SerializeField] private GameObject _newRecordLabel;
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _menuButton;
+        [SerializeField] private Button _continueButton;
 
         [Header("Stars")]
         [SerializeField] private Image[] _stars = Array.Empty<Image>();
@@ -31,6 +33,7 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
         public event Action OnRestartClicked;
         public event Action OnMenuClicked;
+        public event Action OnContinueClicked;
         // Для звука: каждая зажжённая звезда.
         public event Action<int> OnStarShown;
 
@@ -40,6 +43,9 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
             _restartButton.onClick.AddListener(() => OnRestartClicked?.Invoke());
             _menuButton.onClick.AddListener(() => OnMenuClicked?.Invoke());
+
+            if (_continueButton != null)
+                _continueButton.onClick.AddListener(() => OnContinueClicked?.Invoke());
         }
 
         public void SetResult(float time, float bestTime, bool isNewRecord)
@@ -80,6 +86,9 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         {
             _restartButton.interactable = isInteractable;
             _menuButton.interactable = isInteractable;
+
+            if (_continueButton != null)
+                _continueButton.interactable = isInteractable;
         }
 
         // Окно появилось → конфетти + звёзды по одной.

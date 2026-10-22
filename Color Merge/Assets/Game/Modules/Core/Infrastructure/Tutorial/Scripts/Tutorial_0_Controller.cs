@@ -176,7 +176,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 
                     int level = _chain.GetLevel(items[i].Config);
 
-                    if (level >= bestLevel)
+                    // Конфеты не в цепочке (уровень 0) — не учебная пара.
+                    if (level <= 0 || level >= bestLevel)
                         continue;
 
                     bestLevel = level;

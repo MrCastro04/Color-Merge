@@ -17,6 +17,7 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         [SerializeField] private TMP_Text _timeText;
         [SerializeField] private TMP_Text _bestTimeText;
         [SerializeField] private TMP_Text _levelText;
+        [SerializeField] private TMP_Text _mergesText;
         [SerializeField] private Color _warningColor = new(1f, 0.35f, 0.35f, 1f);
         [SerializeField] private Canvas _sortingCanvas;
 
@@ -90,6 +91,18 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             if (hasBestTime)
                 _bestTimeText.text = $"BEST {TimeFormatter.Format(seconds)}";
         }
+
+        // Счётчик условия Make_Merge_X_Times: target = 0 — условия нет, счётчик скрыт.
+        public void SetMerges(int done, int target)
+        {
+            if (_mergesText == null)
+                return;
+
+            _mergesText.gameObject.SetActive(target > 0);
+            _mergesText.text = $"MERGES {Mathf.Min(done, target)}/{target}";
+        }
+
+        public RectTransform MergesTextRT => (RectTransform)_mergesText.transform;
 
         public void SetLevelName(string levelName)
         {

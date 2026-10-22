@@ -11,5 +11,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
         public const string LEVEL_2 = "Level_2";
         public const string LEVEL_3 = "Level_3";
         public const string LEVEL_4 = "Level_4";
+        public const string LEVEL_5 = "Level_5";
+        public const string LEVEL_6 = "Level_6";
     }
 }

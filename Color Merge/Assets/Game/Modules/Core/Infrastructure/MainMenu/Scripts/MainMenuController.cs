@@ -18,17 +18,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
     {
         private const float SHOW_MENU_FADE = 0.3f;
 
-        // Порядок уровней в окне выбора: сцена + ID (LevelConfig.ID) для рекорда и прогресса + учебный ли уровень.
-        // Учебные (0–2): перед загрузкой окно «новый контент», рекорд не показывается.
-        // Открыт Level 0 и каждый уровень после пройденного предыдущего.
-        private static readonly (string Scene, string LevelId, bool IsTutorial)[] LEVELS =
-        {
-            (SCENE_NAMES.LEVEL_0, "level_00", true),
-            (SCENE_NAMES.LEVEL_1, "level_01", true),
-            (SCENE_NAMES.LEVEL_2, "level_02", true),
-            (SCENE_NAMES.LEVEL_3, "level_03", false),
-            (SCENE_NAMES.LEVEL_4, "level_04", false),
-        };
+        // Уровни — LEVELS.ALL. Открыт Level 0 и каждый уровень после пройденного предыдущего.
 
         private readonly MainMenuView _mainMenuView;
         private readonly LevelSelectView _levelSelectView;
@@ -117,7 +107,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
         {
             _sfx.Play(SFXOneShotType.ButtonClick);
 
-            if (LEVELS[levelIndex].IsTutorial)
+            if (LEVELS.ALL[levelIndex].IsTutorial)
             {
                 _tutorialLevelPopup.SetLevel(levelIndex);
                 _tutorialLevelPopup.SetInteractable(true);
@@ -147,18 +137,18 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _mainMenuView.SetInteractable(false);
             _settingsController.SetInteractable(false);
 
-            _levelLoader.LoadAsync(LEVELS[levelIndex].Scene).Forget();
+            _levelLoader.LoadAsync(LEVELS.ALL[levelIndex].Scene).Forget();
         }
 
         // Лучшее время показывается только у пройденных неучебных уровней.
         private List<LevelButtonState> GetLevelStates()
         {
-            var states = new List<LevelButtonState>(LEVELS.Length);
+            var states = new List<LevelButtonState>(LEVELS.ALL.Length);
 
-            for (int i = 0; i < LEVELS.Length; i++)
+            for (int i = 0; i < LEVELS.ALL.Length; i++)
             {
-                bool isUnlocked = i == 0 || _levelProgress.IsCompleted(LEVELS[i - 1].LevelId);
-                bool hasBestTime = _bestTimeRepository.TryGet(LEVELS[i].LevelId, out var bestTime) && !LEVELS[i].IsTutorial;
+                bool isUnlocked = i == 0 || _levelProgress.IsCompleted(LEVELS.ALL[i - 1].LevelId);
+                bool hasBestTime = _bestTimeRepository.TryGet(LEVELS.ALL[i].LevelId, out var bestTime) && !LEVELS.ALL[i].IsTutorial;
 
                 states.Add(new LevelButtonState(isLocked: !isUnlocked, hasBestTime, bestTime));
             }

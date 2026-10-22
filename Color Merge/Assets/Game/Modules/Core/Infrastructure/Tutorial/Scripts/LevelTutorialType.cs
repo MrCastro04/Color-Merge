@@ -10,5 +10,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         TIMER,
         // Level_2: кнопка улучшения генератора — Tutorial_2_Controller.
         GENERATOR_UPGRADE,
+        // Level_5: конфета Candy_Connector — Tutorial_3_Controller.
+        CANDY,
     }
 }

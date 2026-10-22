@@ -78,6 +78,17 @@ namespace Assets.Game.Modules.Content.Board.Scripts
                 CreateAt(initialItem.SlotID, _itemChain.GetByLevel(initialItem.ItemStartLevel));
             }
 
+            if (levelConfig.CandyConnector.IsNotNull())
+            {
+                foreach (var candy in levelConfig.InitialCandies)
+                {
+                    if (!IsValidId(candy.SlotID) || _slots[candy.SlotID].IsBlocked || _items[candy.SlotID].IsNotNull())
+                        continue;
+
+                    CreateAt(candy.SlotID, levelConfig.CandyConnector);
+                }
+            }
+
             _isInteractable = true;
         }
 
@@ -108,22 +119,37 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             }
         }
 
-        // Есть ли на доске пара, которую можно смерджить.
+        // Есть ли на доске пара, которую можно смерджить (в том числе предмет + конфета).
         public bool HasAvailableMerge()
         {
             var seen = new HashSet<ItemConfig>();
+            bool hasCandy = false;
+            bool hasUpgradableItem = false;
 
             foreach (var item in _items)
             {
-                if (item.IsNull() || !_itemChain.TryGetNext(item.Config, out _))
+                if (item.IsNull())
                     continue;
+
+                if (IsCandy(item))
+                {
+                    hasCandy = true;
+                    continue;
+                }
+
+                if (!_itemChain.TryGetNext(item.Config, out _))
+                    continue;
+
+                hasUpgradableItem = true;
 
                 if (!seen.Add(item.Config))
                     return true;
             }
 
-            return false;
+            return hasCandy && hasUpgradableItem;
         }
+
+        public static bool IsCandy(ItemController item) => item.IsNotNull() && item.Config is CandyConnectorConfig;
 
         public IReadOnlyList<ItemController> GetItems()
         {
@@ -165,13 +191,27 @@ namespace Assets.Game.Modules.Content.Board.Scripts
                 return;
             }
 
-            if (dragged.IsSameAs(target) && _itemChain.TryGetNext(dragged.Config, out var next))
+            if (TryGetMergeResult(dragged, target, out var next))
             {
                 MergeAsync(sourceId, targetId, next).Forget();
                 return;
             }
 
+            // Разные предметы, две конфеты, конфета с последним предметом цепочки — меняются местами.
             SwapAsync(sourceId, targetId).Forget();
+        }
+
+        // Два одинаковых предмета → следующий уровень; предмет + конфета (в любую сторону) → следующий уровень предмета.
+        private bool TryGetMergeResult(ItemController dragged, ItemController target, out ItemConfig next)
+        {
+            bool isDraggedCandy = IsCandy(dragged);
+            bool isTargetCandy = IsCandy(target);
+
+            if (isDraggedCandy != isTargetCandy)
+                return _itemChain.TryGetNext(isDraggedCandy ? target.Config : dragged.Config, out next);
+
+            next = null;
+            return !isDraggedCandy && dragged.IsSameAs(target) && _itemChain.TryGetNext(dragged.Config, out next);
         }
 
         // Все *Async ниже до первого await синхронно вызывают SlotController.Attach → ItemView.ConfirmDrop.

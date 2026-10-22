@@ -133,12 +133,16 @@ namespace Assets.Game.Modules.Content.Level.Editor
             var conditions = config.Conditions;
             var itemGoals = conditions.OfType<Get_Item_With_Level_X>().ToList();
             var generatorGoals = conditions.OfType<Upgraded_Generator_With_Level_X>().ToList();
+            var mergeGoals = conditions.OfType<Make_Merge_X_Times>().ToList();
 
             if (conditions.Any(condition => condition == null))
                 EditorGUILayout.HelpBox("В списке есть пустое условие — удали его.", MessageType.Error);
 
-            if (itemGoals.Count == 0 && generatorGoals.Count == 0)
-                EditorGUILayout.HelpBox("Нет условий-целей (Get_Item / Upgraded_Generator): уровень пройдётся с первым мерджем.", MessageType.Warning);
+            if (itemGoals.Count == 0 && generatorGoals.Count == 0 && mergeGoals.Count == 0)
+                EditorGUILayout.HelpBox("Нет условий-целей (Get_Item / Upgraded_Generator / Make_Merge): уровень пройдётся с первым мерджем.", MessageType.Warning);
+
+            if (config.InitialCandies.Count > 0 && config.CandyConnector == null)
+                EditorGUILayout.HelpBox("Конфеты на поле есть, а Candy Connector не задан — они не появятся.", MessageType.Error);
 
             if (!config.HasTimer && conditions.OfType<TimedLevelCondition>().Any(condition => condition.HasTimer))
                 EditorGUILayout.HelpBox("Лимит времени (_hasTimer) работает только вместе с условием Timer.", MessageType.Warning);

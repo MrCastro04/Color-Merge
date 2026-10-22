@@ -57,7 +57,9 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly ILevelTutorial _levelTutorial;
 
         private LevelConfig _levelConfig;
+
         private LevelResult _result;
+
         // Последний собранный мерджем предмет: если он закрыл условие на предмет — играет анимацию победы.
         private ItemController _lastMergedItem;
         private bool _wasTimerRunningBeforeSettings;
@@ -150,6 +152,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _generatorController.Setup(chain, _levelConfig.GeneratorMaxLevel, _levelConfig.GeneratorCharges);
 
             _upgrades.Reset();
+            _hudView.SetMerges(0, _levelConfig.MergesTarget);
             _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
             _generatorController.SetCentered(!_levelConfig.IsGeneratorUpgradeEnabled);
 
@@ -251,6 +254,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _levelTimer.OnTimeChanged += UpdateTimeView;
             _winScreen.OnRestartClicked += HandleOnRestartClicked;
             _winScreen.OnMenuClicked += HandleOnMenuClicked;
+            _winScreen.OnContinueClicked += HandleOnContinueClicked;
             _loseScreen.OnRestartClicked += HandleOnRestartClicked;
             _loseScreen.OnMenuClicked += HandleOnMenuClicked;
             _settingsController.OnOpened += HandleOnSettingsOpened;
@@ -268,6 +272,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _levelTimer.OnTimeChanged -= UpdateTimeView;
             _winScreen.OnRestartClicked -= HandleOnRestartClicked;
             _winScreen.OnMenuClicked -= HandleOnMenuClicked;
+            _winScreen.OnContinueClicked -= HandleOnContinueClicked;
             _loseScreen.OnRestartClicked -= HandleOnRestartClicked;
             _loseScreen.OnMenuClicked -= HandleOnMenuClicked;
             _settingsController.OnOpened -= HandleOnSettingsOpened;
@@ -307,6 +312,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private void HandleOnUpgradesChanged()
         {
             _chainProgressView.SetReachedLevel(_upgrades.MaxItemLevel);
+            _hudView.SetMerges(_upgrades.MergesCount, _levelConfig.MergesTarget);
 
             if (_result == LevelResult.NONE && _conditionsChecker.TryCompleteAll())
                 _result = LevelResult.WIN;
@@ -320,6 +326,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             if (_conditionsChecker.HasTimer && !_levelTimer.IsRunning && _result == LevelResult.NONE)
                 _levelTimer.Start();
 
+            _upgrades.ReportMerge();
             ReportItem(item);
 
             CheckOutOfMoves();
@@ -374,6 +381,17 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _winScreen.SetInteractable(false);
             _loseScreen.SetInteractable(false);
             _levelLoader.RestartAsync().Forget();
+        }
+
+        // С экрана победы: следующий уровень по LEVELS.ALL (он уже открыт — этот пройден), с последнего — в меню.
+        private void HandleOnContinueClicked()
+        {
+            _winScreen.SetInteractable(false);
+
+            int next = LEVELS.IndexOfScene(_levelLoader.CurrentLevelScene) + 1;
+            bool hasNext = next > 0 && next < LEVELS.ALL.Length;
+
+            _levelLoader.LoadAsync(hasNext ? LEVELS.ALL[next].Scene : SCENE_NAMES.MAIN_MENU).Forget();
         }
 
         // С экрана победы, поражения или из настроек.
