@@ -12,8 +12,8 @@ using Cysharp.Threading.Tasks;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 {
-    // Тутор Level_5 — конфета (Candy_Connector): что делает, учебный мердж в конфету (палец), цель — N мерджей.
-    // Шаги PlayTutorN как в Tutorial_0_Controller; доска и генератор на время тутора выключены.
+    // Тутор Level_5 — цукерка (Candy_Connector): що робить, навчальний мердж у цукерку (палець), мета — N мерджів.
+    // Кроки PlayTutorN як у Tutorial_0_Controller; дошка й генератор на час тутора вимкнені.
     public class Tutorial_3_Controller : ILevelTutorial, IWaiter
     {
         private const int HIGHLIGHT_ORDER = 5;

@@ -12,8 +12,8 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 {
-    // Тутор Level_9 — конфетная бомба: кнопка и энергия, что делает взрыв, бесплатный заряд и первый взрыв
-    // (шаг закрывается взрывом — SkipCondition.External). Шаги PlayTutorN как в Tutorial_0_Controller.
+    // Тутор Level_9 — цукеркова бомба: кнопка й енергія, що робить вибух, безкоштовний заряд і перший вибух
+    // (крок закривається вибухом — SkipCondition.External). Кроки PlayTutorN як у Tutorial_0_Controller.
     public class Tutorial_5_Controller : ILevelTutorial, IWaiter
     {
         private const int HIGHLIGHT_ORDER = 5;

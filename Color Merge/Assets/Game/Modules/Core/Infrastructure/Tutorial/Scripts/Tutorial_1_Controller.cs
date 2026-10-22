@@ -11,8 +11,8 @@ using Cysharp.Threading.Tasks;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 {
-    // Тутор Level_1 — таймер: когда стартует, зачем спешить (звёзды), что бывает лимит времени.
-    // Шаги PlayTutorN как в Tutorial_0_Controller; доска и генератор на время тутора выключены.
+    // Тутор Level_1 — таймер: коли стартує, навіщо поспішати (зірки), що буває ліміт часу.
+    // Кроки PlayTutorN як у Tutorial_0_Controller; дошка й генератор на час тутора вимкнені.
     public class Tutorial_1_Controller : ILevelTutorial, IWaiter
     {
         private const int HIGHLIGHT_ORDER = 5;

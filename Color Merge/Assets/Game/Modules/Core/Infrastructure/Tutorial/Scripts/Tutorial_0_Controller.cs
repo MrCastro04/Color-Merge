@@ -13,9 +13,9 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 {
-    // Тутор обучающего уровня Level_0 (как Tutorial_0_Controller в Combo-Dungeon): шаги PlayTutorN по порядку,
-    // перед/после текста — колбеки (подсветка через сортинг-слой Tutor, пульс, палец, стрелки).
-    // Level_0 и есть обучение — тутор играет при каждом входе на уровень.
+    // Тутор навчального рівня Level_0 (як Tutorial_0_Controller у Combo-Dungeon): кроки PlayTutorN по черзі,
+    // до/після тексту — колбеки (підсвічування через сортинг-шар Tutor, пульс, палець, стрілки).
+    // Level_0 і є навчанням — тутор грає під час кожного входу на рівень.
     public class Tutorial_0_Controller : ILevelTutorial, IWaiter
     {
         private const int HIGHLIGHT_ORDER = 5;

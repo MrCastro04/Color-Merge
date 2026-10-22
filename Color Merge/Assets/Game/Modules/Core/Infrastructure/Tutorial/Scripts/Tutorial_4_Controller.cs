@@ -11,8 +11,8 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 {
-    // Тутор Level_7 — стены (заблокированные клетки): туда нельзя поставить предмет, генератор туда не спавнит.
-    // Шаги PlayTutorN как в Tutorial_0_Controller; доска и генератор на время тутора выключены.
+    // Тутор Level_7 — стіни (заблоковані клітинки): туди не можна поставити предмет, генератор туди не спавнить.
+    // Кроки PlayTutorN як у Tutorial_0_Controller; дошка й генератор на час тутора вимкнені.
     public class Tutorial_4_Controller : ILevelTutorial, IWaiter
     {
         private const int HIGHLIGHT_ORDER = 5;

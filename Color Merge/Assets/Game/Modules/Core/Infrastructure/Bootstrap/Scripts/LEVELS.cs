@@ -17,6 +17,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
             (SCENE_NAMES.LEVEL_8, "level_08", false),
             (SCENE_NAMES.LEVEL_9, "level_09", true),
             (SCENE_NAMES.LEVEL_10, "level_10", false),
+            (SCENE_NAMES.LEVEL_11, "level_11", false),
         };
 
         public static int IndexOfScene(string scene) => Array.FindIndex(ALL, level => level.Scene == scene);

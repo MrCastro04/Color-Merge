@@ -10,8 +10,8 @@ using Cysharp.Threading.Tasks;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 {
-    // Тутор Level_2 — кнопка улучшения генератора: как копится энергия, что даёт улучшение, цель уровня.
-    // Шаги PlayTutorN как в Tutorial_0_Controller; доска, генератор и кнопка на время тутора выключены.
+    // Тутор Level_2 — кнопка покращення генератора: як накопичується енергія, що дає покращення, мета рівня.
+    // Кроки PlayTutorN як у Tutorial_0_Controller; дошка, генератор і кнопка на час тутора вимкнені.
     public class Tutorial_2_Controller : ILevelTutorial, IWaiter
     {
         private const int HIGHLIGHT_ORDER = 5;
