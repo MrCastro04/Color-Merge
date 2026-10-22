@@ -76,6 +76,9 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             if (sourceLevel != _generatorController.Level)
                 return;
 
+            if (!_generatorController.CanUpgrade || _upgrades.Energy >= ENERGY_PER_UPGRADE)
+                return;
+
             _upgrades.AddEnergy(1);
             OnEnergyGained?.Invoke();
         }
