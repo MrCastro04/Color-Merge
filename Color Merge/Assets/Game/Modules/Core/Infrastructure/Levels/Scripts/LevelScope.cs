@@ -78,6 +78,9 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                 case LevelTutorialType.CANDY:
                     builder.Register<Tutorial_3_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
                     break;
+                case LevelTutorialType.WALL:
+                    builder.Register<Tutorial_4_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
+                    break;
             }
         }
 

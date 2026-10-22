@@ -16,6 +16,8 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
         [SerializeField] protected int _id = 0;
         [SerializeField] protected Image _backgroundImage;
         [SerializeField] protected Color _blockedColor = new(0.3f, 0.3f, 0.3f, 1f);
+        [Tooltip("Стена поверх заблокированной клетки (Square/Dark из GUI-пака)")]
+        [SerializeField] protected GameObject _wall;
 
         protected HolderView _holderView;
         protected bool _isBlocked;
@@ -40,12 +42,16 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
             _id = id;
         }
 
+        // Заблокированная клетка — стена: на неё ничего не поставить, генератор туда не спавнит.
         public void SetBlocked(bool isBlocked)
         {
             _isBlocked = isBlocked;
 
             if (_backgroundImage.IsNotNull() && isBlocked)
                 _backgroundImage.color = _blockedColor;
+
+            if (_wall.IsNotNull())
+                _wall.SetActive(isBlocked);
         }
 
         public virtual void OnDrop(PointerEventData eventData)

@@ -16,6 +16,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
             (SCENE_NAMES.LEVEL_4, "level_04", false),
             (SCENE_NAMES.LEVEL_5, "level_05", true),
             (SCENE_NAMES.LEVEL_6, "level_06", false),
+            (SCENE_NAMES.LEVEL_7, "level_07", true),
         };
 
         // -1 — сцена не уровень.

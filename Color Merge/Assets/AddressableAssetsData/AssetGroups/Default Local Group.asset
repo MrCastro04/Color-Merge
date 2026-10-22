@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eecb84663e46b0d44a514b18c42ac79c
+    m_Address: Level_07
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f635aa30e67cffd4cbfbd97c41472ef8
     m_Address: Music_MainMenu
     m_ReadOnly: 0
