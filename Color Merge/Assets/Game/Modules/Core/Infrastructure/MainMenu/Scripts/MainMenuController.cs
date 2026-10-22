@@ -86,6 +86,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
         private void Subscribe()
         {
             _mainMenuView.OnPlayClicked += HandleOnPlayClicked;
+            _mainMenuView.OnQuitClicked += HandleOnQuitClicked;
             _levelSelectView.OnLevelSelected += HandleOnLevelSelected;
             _levelSelectView.OnLockedLevelClicked += HandleOnLockedLevelClicked;
             _levelSelectView.OnCloseClicked += HandleOnLevelSelectCloseClicked;
@@ -99,6 +100,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
         private void Unsubscribe()
         {
             _mainMenuView.OnPlayClicked -= HandleOnPlayClicked;
+            _mainMenuView.OnQuitClicked -= HandleOnQuitClicked;
             _levelSelectView.OnLevelSelected -= HandleOnLevelSelected;
             _levelSelectView.OnLockedLevelClicked -= HandleOnLockedLevelClicked;
             _levelSelectView.OnCloseClicked -= HandleOnLevelSelectCloseClicked;
@@ -113,6 +115,18 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
         {
             _sfx.Play(SFXOneShotType.ButtonClick);
             _levelSelectView.ShowAsync(_cancellationToken).Forget();
+        }
+
+        // QUIT — выход из игры (в редакторе — остановка Play Mode).
+        private void HandleOnQuitClicked()
+        {
+            _sfx.Play(SFXOneShotType.ButtonClick);
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            UnityEngine.Application.Quit();
+#endif
         }
 
         // Учебный уровень — сначала окно «новый контент», обычный — сразу загрузка.

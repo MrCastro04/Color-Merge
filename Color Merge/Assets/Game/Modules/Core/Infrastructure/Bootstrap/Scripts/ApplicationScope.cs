@@ -9,6 +9,7 @@ using Assets.Game.Modules.Core.Save.Scripts;
 using Assets.Game.Modules.Core.SceneManagement.Scripts;
 using Assets.Game.Modules.Core.Sound.Scripts;
 using Assets.Game.Modules.Core.UI.Scripts;
+using Assets.Game.Modules.Core.Vibration.Scripts;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -65,6 +66,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
             builder.RegisterInstance(_sfxOneShotConfig);
 
             builder.Register<SoundService>(Lifetime.Singleton).As<ISoundService>().WithParameter(_musicSource);
+            builder.Register<VibrationService>(Lifetime.Singleton).As<IVibrationService>();
             builder.Register<MusicPlayer>(Lifetime.Singleton);
             builder.Register<SFXOneShotPlayer>(Lifetime.Singleton);
         }

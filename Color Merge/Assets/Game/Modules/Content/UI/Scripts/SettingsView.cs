@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Окно настроек: громкость музыки и звуков. Сама громкость меняется снаружи (контроллер → ISoundService).
+    // Окно настроек: громкость музыки и звуков, галочка вибрации. Сама громкость меняется снаружи (контроллер → ISoundService).
     // В меню окно закрывается крестиком; на уровне внизу кнопки MENU и RESUME (крестика нет).
     // Необязательные кнопки можно не назначать.
     public class SettingsView : UIScreen
     {
         [SerializeField] private Slider _musicSlider;
         [SerializeField] private Slider _sfxSlider;
+        [SerializeField] private Toggle _vibrationToggle;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _resumeButton;
         [SerializeField] private Button _menuButton;
@@ -20,6 +21,7 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
         public event Action<float> OnMusicVolumeChanged;
         public event Action<float> OnSfxVolumeChanged;
+        public event Action<bool> OnVibrationChanged;
         public event Action OnCloseClicked;
         public event Action OnMenuClicked;
         public event Action OnClearProgressClicked;
@@ -30,6 +32,9 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
             _musicSlider.onValueChanged.AddListener(value => OnMusicVolumeChanged?.Invoke(value));
             _sfxSlider.onValueChanged.AddListener(value => OnSfxVolumeChanged?.Invoke(value));
+
+            if (_vibrationToggle != null)
+                _vibrationToggle.onValueChanged.AddListener(isOn => OnVibrationChanged?.Invoke(isOn));
 
             if (_closeButton != null)
                 _closeButton.onClick.AddListener(() => OnCloseClicked?.Invoke());
@@ -45,10 +50,13 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         }
 
         // Без вызова событий — только показать текущие значения.
-        public void SetValues(float musicVolume, float sfxVolume)
+        public void SetValues(float musicVolume, float sfxVolume, bool isVibrationEnabled)
         {
             _musicSlider.SetValueWithoutNotify(musicVolume);
             _sfxSlider.SetValueWithoutNotify(sfxVolume);
+
+            if (_vibrationToggle != null)
+                _vibrationToggle.SetIsOnWithoutNotify(isVibrationEnabled);
         }
 
         public void SetButtonsInteractable(bool isInteractable)

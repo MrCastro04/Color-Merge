@@ -5,20 +5,25 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Главное меню: большая кнопка «Играть» (дышит, чтобы притягивать взгляд).
+    // Главное меню: большая кнопка «Играть» (дышит, чтобы притягивать взгляд), под ней маленькая QUIT.
     // Кнопка настроек — отдельный SettingsButtonView (общий с уровнем).
     public class MainMenuView : MonoBehaviour
     {
         [SerializeField] private Button _playButton;
+        [SerializeField] private Button _quitButton;
         [SerializeField] private float _playPulseScale = 1.06f;
 
         private Tween _playPulse;
 
         public event Action OnPlayClicked;
+        public event Action OnQuitClicked;
 
         private void OnEnable()
         {
             _playButton.onClick.AddListener(HandleOnPlayClicked);
+
+            if (_quitButton != null)
+                _quitButton.onClick.AddListener(HandleOnQuitClicked);
 
             _playPulse = _playButton.transform
                 .DOScale(_playPulseScale, 0.8f)
@@ -31,6 +36,9 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         {
             _playButton.onClick.RemoveListener(HandleOnPlayClicked);
 
+            if (_quitButton != null)
+                _quitButton.onClick.RemoveListener(HandleOnQuitClicked);
+
             _playPulse?.Kill();
             _playButton.transform.localScale = Vector3.one;
         }
@@ -38,8 +46,12 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         public void SetInteractable(bool isInteractable)
         {
             _playButton.interactable = isInteractable;
+
+            if (_quitButton != null)
+                _quitButton.interactable = isInteractable;
         }
 
         private void HandleOnPlayClicked() => OnPlayClicked?.Invoke();
+        private void HandleOnQuitClicked() => OnQuitClicked?.Invoke();
     }
 }
