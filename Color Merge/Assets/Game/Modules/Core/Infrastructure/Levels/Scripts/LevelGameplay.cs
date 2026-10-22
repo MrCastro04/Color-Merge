@@ -204,9 +204,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             foreach (var condition in _levelConfig.Conditions)
             {
-                if (condition is Get_Item_With_Level_X getItem)
-                    goals.AddItemGoal(_levelConfig.ItemChain.GetByLevel(Math.Min(getItem.ItemLevel, _levelConfig.ItemChain.Items.Count)).Icon);
-                else if (condition is Upgraded_Generator_With_Level_X generator)
+                if (condition is Upgraded_Generator_With_Level_X generator)
                     goals.AddGeneratorGoal(generator.GeneratorLevel);
             }
         }

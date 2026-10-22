@@ -1,14 +1,12 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.GUI.Scripts
 {
     public class LevelGoalsView : MonoBehaviour
     {
         [SerializeField] private RectTransform _container;
-        [SerializeField] private Image _itemGoalTemplate;
         [SerializeField] private GameObject _generatorGoalTemplate;
         [SerializeField] private TMP_Text _generatorGoalLevelText;
 
@@ -26,12 +24,6 @@ namespace Assets.Game.Modules.Content.GUI.Scripts
             gameObject.SetActive(false);
         }
 
-        public void AddItemGoal(Sprite icon)
-        {
-            var image = Instantiate(_itemGoalTemplate, _container);
-            image.sprite = icon;
-            Add(image.gameObject);
-        }
 
         public void AddGeneratorGoal(int generatorLevel)
         {

@@ -118,8 +118,8 @@ PrefabInstance:
 
         around it into Candies!
 
-        <size=60%><color=#FFE066>Tap
-        to continue</color></size>'
+        <size=60%><voffset=-10><color=#FF8A00><incr
+        a=0.75 f=0.6 w=0>Tap to continue</incr></color></voffset></size>'
       objectReference: {fileID: 0}
     - target: {fileID: 8730378702895884925, guid: cca9227756a8d284abbc78fc6b5f0f66, type: 3}
       propertyPath: m_Name
