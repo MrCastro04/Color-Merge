@@ -11,6 +11,8 @@ namespace Assets.Game.Modules.Core.Save.Scripts
         void SetFloat(string key, float value);
 
         void DeleteKey(string key);
+        // Стирает всё сохранённое (прогресс, рекорды, громкость).
+        void DeleteAll();
         void Save();
     }
 }

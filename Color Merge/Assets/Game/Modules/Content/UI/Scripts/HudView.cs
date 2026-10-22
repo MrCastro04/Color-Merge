@@ -18,6 +18,7 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         [SerializeField] private TMP_Text _bestTimeText;
         [SerializeField] private TMP_Text _levelText;
         [SerializeField] private TMP_Text _mergesText;
+        [SerializeField] private LevelGoalsView _goals;
         [SerializeField] private Color _warningColor = new(1f, 0.35f, 0.35f, 1f);
         [SerializeField] private Canvas _sortingCanvas;
 
@@ -103,6 +104,9 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         }
 
         public RectTransform MergesTextRT => (RectTransform)_mergesText.transform;
+
+        // Значки условий победы сверху слева.
+        public LevelGoalsView Goals => _goals;
 
         public void SetLevelName(string levelName)
         {

@@ -15,11 +15,14 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _resumeButton;
         [SerializeField] private Button _menuButton;
+        [Tooltip("Только в главном меню: стереть весь прогресс")]
+        [SerializeField] private Button _clearProgressButton;
 
         public event Action<float> OnMusicVolumeChanged;
         public event Action<float> OnSfxVolumeChanged;
         public event Action OnCloseClicked;
         public event Action OnMenuClicked;
+        public event Action OnClearProgressClicked;
 
         protected override void Awake()
         {
@@ -36,6 +39,9 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
             if (_menuButton != null)
                 _menuButton.onClick.AddListener(() => OnMenuClicked?.Invoke());
+
+            if (_clearProgressButton != null)
+                _clearProgressButton.onClick.AddListener(() => OnClearProgressClicked?.Invoke());
         }
 
         // Без вызова событий — только показать текущие значения.

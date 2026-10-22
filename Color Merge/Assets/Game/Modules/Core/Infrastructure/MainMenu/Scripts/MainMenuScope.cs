@@ -13,6 +13,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             builder.RegisterComponentInHierarchy<LevelSelectView>();
             builder.RegisterComponentInHierarchy<LockedLevelPopup>();
             builder.RegisterComponentInHierarchy<TutorialLevelPopup>();
+            builder.RegisterComponentInHierarchy<MessagePopup>();
 
             RegisterSettings(builder);
 

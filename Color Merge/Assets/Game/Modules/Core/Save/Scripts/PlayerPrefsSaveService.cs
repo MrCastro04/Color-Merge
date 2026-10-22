@@ -13,6 +13,7 @@ namespace Assets.Game.Modules.Core.Save.Scripts
         public void SetFloat(string key, float value) => PlayerPrefs.SetFloat(key, value);
 
         public void DeleteKey(string key) => PlayerPrefs.DeleteKey(key);
+        public void DeleteAll() => PlayerPrefs.DeleteAll();
         public void Save() => PlayerPrefs.Save();
     }
 }
