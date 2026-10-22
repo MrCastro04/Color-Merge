@@ -3,16 +3,13 @@ using Assets.Game.Modules.Content.Board.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
 using Assets.Game.Modules.Content.Level.Scripts;
+using Assets.Game.Modules.Core.UI.Scripts;
 using Assets.Game.Modules.Core.Vibration.Scripts;
 using UnityEngine;
 using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.CandyBomb.Scripts
 {
-    // Конфетная бомба (как UpgradeGeneratorSystem для генератора):
-    // каждый мердж (и с конфетой) → +1 энергия; энергии хватает на цену уровня → кнопка активна;
-    // нажали → на кнопке появляется бомба; перенесли на клетку → BoardController взрывает её,
-    // здесь — эффект, вибрация и сброс кнопки. Бомбы в конфиге уровня нет — кнопка скрыта.
     public class CandyBombSystem : IInitializable, IDisposable
     {
         private readonly BoardController _boardController;
@@ -20,6 +17,8 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
         private readonly IItemFactory _itemFactory;
         private readonly ExplosionView _explosionView;
         private readonly IVibrationService _vibrationService;
+        private readonly BombDimView _dimView;
+        private readonly ScreenShakeView _screenShakeView;
 
         private CandyBombConfig _config;
         private ItemController _bomb;
@@ -34,18 +33,22 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
 
         public CandyBombSystem(
             BoardController boardController, CandyBombButtonView buttonView, IItemFactory itemFactory,
-            ExplosionView explosionView, IVibrationService vibrationService)
+            ExplosionView explosionView, IVibrationService vibrationService,
+            BombDimView dimView, ScreenShakeView screenShakeView)
         {
             _boardController = boardController;
             _buttonView = buttonView;
             _itemFactory = itemFactory;
             _explosionView = explosionView;
             _vibrationService = vibrationService;
+            _dimView = dimView;
+            _screenShakeView = screenShakeView;
         }
 
         public void Initialize()
         {
             _boardController.OnItemMerged += HandleOnItemMerged;
+            _boardController.OnBombDropped += HandleOnBombDropped;
             _boardController.OnBombExploded += HandleOnBombExploded;
             _buttonView.OnClicked += HandleOnButtonClicked;
         }
@@ -53,11 +56,11 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
         public void Dispose()
         {
             _boardController.OnItemMerged -= HandleOnItemMerged;
+            _boardController.OnBombDropped -= HandleOnBombDropped;
             _boardController.OnBombExploded -= HandleOnBombExploded;
             _buttonView.OnClicked -= HandleOnButtonClicked;
         }
 
-        // Вызывает LevelController при сборке уровня.
         public void Setup(LevelConfig levelConfig)
         {
             _config = levelConfig.CandyBomb;
@@ -69,7 +72,6 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
             UpdateView();
         }
 
-        // Тутор дарит заряд, чтобы игрок сразу попробовал бомбу.
         public void AddEnergy(int amount)
         {
             if (!IsEnabled)
@@ -105,6 +107,11 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
             OnBombCreated?.Invoke();
         }
 
+        private void HandleOnBombDropped(int centerId, CandyBombConfig config)
+        {
+            _dimView.Show(config.DimAlpha, config.DimFadeInDuration);
+        }
+
         private void HandleOnBombExploded(int centerId, CandyBombConfig config)
         {
             _bomb = null;
@@ -113,7 +120,9 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
             var slot = (RectTransform)_boardController.Slots[centerId].View.transform;
             float cellSize = slot.rect.width * slot.lossyScale.x;
 
+            _dimView.Hide(config.DimFadeOutDuration);
             _explosionView.Play(slot.position, cellSize * (config.Radius + 0.5f));
+            _screenShakeView.Shake(config.ShakeDuration, config.ShakeStrength, config.ShakeVibrato);
             _vibrationService.VibrateStrong();
 
             UpdateView();

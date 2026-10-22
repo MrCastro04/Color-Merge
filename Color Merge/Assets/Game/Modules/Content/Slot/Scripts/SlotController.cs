@@ -6,8 +6,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.Slot.Scripts
 {
-    // Перенесён из SlotController (Combo-Dungeon). Отличие одно: дроп не прикрепляется здесь,
-    // а уходит в ISlotDropHandler (BoardController), который выбирает move / swap / merge.
     public class SlotController : IInitializable, IDisposable
     {
         protected readonly SlotView _slotView;
@@ -51,18 +49,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
             OnItemAttached?.Invoke(itemView);
         }
 
-        public virtual async UniTask<bool> TryAttach(ItemView itemView)
-        {
-            if (!CanAccept(itemView))
-                return false;
-
-            await ConfirmAndAttachToSlot(itemView);
-
-            return true;
-        }
-
-        // Без проверки занятости: решение уже принял BoardController (swap / merge).
-        // ConfirmDrop вызывается синхронно — до OnEndDrag, иначе предмет вернётся в прежний слот.
         public UniTask Attach(ItemView itemView)
         {
             return ConfirmAndAttachToSlot(itemView);
@@ -71,13 +57,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
         public void Place(ItemView itemView)
         {
             _slotView.PlaceItem(itemView.RT);
-        }
-
-        protected bool CanAccept(ItemView itemView)
-        {
-            return itemView != null &&
-                   !IsBlocked &&
-                   (!IsOccupied || _slotView.ItemView == itemView);
         }
 
         protected async UniTask ConfirmAndAttachToSlot(ItemView itemView)

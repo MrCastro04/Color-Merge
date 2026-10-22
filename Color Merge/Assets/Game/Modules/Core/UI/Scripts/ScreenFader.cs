@@ -6,8 +6,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.UI.Scripts
 {
-    // Шторка поверх всех сцен (как ScreenFader в Combo-Dungeon). Живёт в Boot (DontDestroyOnLoad), стартует закрытой.
-    // FadeIn — экран темнеет (шторка закрывает), FadeOut — шторка уходит, сцену видно.
     [RequireComponent(typeof(CanvasGroup))]
     public class ScreenFader : MonoBehaviour
     {

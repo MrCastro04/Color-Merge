@@ -12,7 +12,6 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
             if (obj.DesiredGroup == String.Empty || obj.DesiredGroup.IsNull()) 
                 group = SORTING_LAYERS.TUTOR;
 
-            // Вложенный канвас поднимается над родителем только с overrideSorting — включаем на время подсветки.
             obj.SortingCanvas.overrideSorting = true;
             obj.SortingCanvas.sortingLayerName = group;
             obj.SortingCanvas.sortingOrder = orderInLayer;

@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Шаблонные фразы под полосой загрузки: показываются по одной в случайном порядке, без повторов подряд.
     public class LoadingTipsView : MonoBehaviour
     {
         [SerializeField] private TMP_Text _text;
@@ -29,7 +28,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             _text.gameObject.SetActive(isVisible);
         }
 
-        // Крутит фразы, пока не отменят токен.
         public async UniTask PlayAsync(CancellationToken cancellationToken)
         {
             var order = new List<string>(_phrases);

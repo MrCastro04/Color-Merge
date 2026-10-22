@@ -5,11 +5,8 @@ using UnityEngine.SceneManagement;
 
 namespace Assets.Game.Modules.Core.SceneManagement.Scripts
 {
-    // В отличие от Combo-Dungeon здесь нет LifetimeScope.EnqueueParent: Core не знает про VContainer.
-    // Родителя скоупа сцене выставляет LevelLoader (Infrastructure) на время загрузки / активации.
     public class SceneLoader : ISceneLoader
     {
-        // При allowSceneActivation = false Unity останавливает progress на 0.9 — это и есть «загружено».
         private const float READY_PROGRESS = 0.9f;
 
         public async UniTask LoadAsync(string sceneName, CancellationToken cancellationToken = default)

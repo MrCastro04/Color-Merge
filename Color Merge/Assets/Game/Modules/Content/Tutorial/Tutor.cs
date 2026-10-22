@@ -18,7 +18,6 @@ namespace Assets.Game.Modules.Content.Tutorial
         [HideInInspector] public bool IsActive;
         public bool IsTyping => _typewriter.isShowingText;
 
-        // Стрелки шага (Container/Arrows) — показываются вместе с текстом, цель им задаёт контроллер тутора.
         public IReadOnlyList<ArrowContainer> Arrows => _arrows;
 
         private void OnEnable()

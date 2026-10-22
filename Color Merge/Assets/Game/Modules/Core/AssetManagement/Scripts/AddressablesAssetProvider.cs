@@ -7,8 +7,6 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Assets.Game.Modules.Core.AssetManagement.Scripts
 {
-    // Грузит ассеты через Addressables и держит хендлы в кэше:
-    // повторная загрузка по тому же ключу не создаёт новый хендл, Release/ReleaseAll отпускают их.
     public class AddressablesAssetProvider : IAssetProvider, IDisposable
     {
         private readonly Dictionary<string, AsyncOperationHandle> _handles = new();
@@ -17,7 +15,7 @@ namespace Assets.Game.Modules.Core.AssetManagement.Scripts
             where T : UnityEngine.Object
         {
             if (reference == null || !reference.RuntimeKeyIsValid())
-                throw new ArgumentException($"AssetReference для {typeof(T).Name} не назначен.");
+                throw new ArgumentException($"AssetReference для {typeof(T).Name} не призначено.");
 
             return LoadAsync<T>(reference.RuntimeKey.ToString(), cancellationToken);
         }

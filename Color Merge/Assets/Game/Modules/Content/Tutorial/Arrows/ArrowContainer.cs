@@ -11,14 +11,11 @@ namespace Assets.Game.Modules.Content.Tutorial.Arrows
 
         public ArrowDirectionType Direction = ArrowDirectionType.RIGHT;
 
-        // Ход «туда-обратно» в единицах канваса (Screen Space - Overlay: переводится в пиксели экрана через масштаб канваса)
         public float MoveDistance = 30f;
 
         [Min(0.01f)] public float DurationAnimation = 0.5f;
 
-        // От центра стрелки до её острия, в единицах канваса (картинка 100 × масштаб 1.5).
         public float TipOffset = 75f;
-
 
         private Vector3 _startPosition;
         private Tween _moveTween;
@@ -42,8 +39,6 @@ namespace Assets.Game.Modules.Content.Tutorial.Arrows
                 _rt.position = _startPosition;
         }
 
-        // Ставит стрелку перед целью — остриём к её краю со стороны Direction (DOWN — сверху, RIGHT — слева и т.д.).
-        // Цели, которые зависят от раскладки (иконка цели в цепочке, генератор), задаются в рантайме.
         public void PointAt(RectTransform target, float gap = 10f)
         {
             if (_rt == null)
@@ -55,7 +50,6 @@ namespace Assets.Game.Modules.Content.Tutorial.Arrows
             PointAt(new Bounds((corners[0] + corners[2]) * 0.5f, corners[2] - corners[0]), gap);
         }
 
-        // То же по мировым границам (например, только цифры таймера, а не всё поле текста).
         public void PointAt(Bounds targetBounds, float gap = 10f)
         {
             if (_rt == null)

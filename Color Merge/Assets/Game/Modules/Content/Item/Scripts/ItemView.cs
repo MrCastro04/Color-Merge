@@ -11,9 +11,6 @@ using VContainer;
 
 namespace Assets.Game.Modules.Content.Item.Scripts
 {
-    // Драг перенесён из CardView (Combo-Dungeon) один в один:
-    // на время драга предмет уходит в верхний канвас, слот подтверждает дроп через ConfirmDrop,
-    // без подтверждения предмет возвращается в прежний слот.
     [RequireComponent(typeof(RectTransform))]
     [RequireComponent(typeof(CanvasGroup))]
     [DisallowMultipleComponent]
@@ -33,7 +30,6 @@ namespace Assets.Game.Modules.Content.Item.Scripts
         private RectTransform _dragCanvasRT;
 
         public event Action<ItemView> OnDragStarted;
-        // Дроп не подтвердили — предмет летит обратно в свой слот.
         public event Action<ItemView> OnReturned;
 
         public RectTransform RT => _rt;

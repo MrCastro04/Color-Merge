@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.CandyBomb.Scripts
 {
-    // Взрыв конфетной бомбы поверх UI: вспышка-конфета и разлёт кусочков конфетти пака (как ConfettiView —
-    // ParticleSystem не виден поверх Screen Space Overlay-канваса). Висит на верхнем канвасе (Drag Canvas).
     [RequireComponent(typeof(RectTransform))]
     public class ExplosionView : MonoBehaviour
     {
@@ -15,7 +13,6 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
         [SerializeField] private Vector2 _pieceSize = new(90f, 90f);
         [SerializeField] private float _duration = 0.6f;
 
-        // radiusWorld — докуда разлетаются кусочки (мировые единицы, примерно граница радиуса взрыва).
         public void Play(Vector3 worldPosition, float radiusWorld)
         {
             PlayFlash(worldPosition, radiusWorld);
@@ -53,7 +50,6 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
 
         private void SpawnPiece(Vector3 worldPosition, float radiusWorld)
         {
-            // Текстура пака — лист 2×2 разноцветных кусочков.
             var uv = new Rect(Random.Range(0, 2) * 0.5f, Random.Range(0, 2) * 0.5f, 0.5f, 0.5f);
             var piece = CreatePiece("Piece", worldPosition, uv);
             var rt = (RectTransform)piece.transform;

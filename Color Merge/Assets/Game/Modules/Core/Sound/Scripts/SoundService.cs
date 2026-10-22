@@ -4,10 +4,6 @@ using Object = UnityEngine.Object;
 
 namespace Assets.Game.Modules.Core.Sound.Scripts
 {
-    // Контроллер звука (называется сервисом).
-    // Музыка — через один AudioSource, который сервис получает снаружи (живёт всю игру).
-    // Одноразовые звуки — свой объект с AudioSource на каждый запуск, удаляется после проигрывания;
-    // питч слегка случайный, чтобы один и тот же звук не надоедал.
     public class SoundService : ISoundService
     {
         private const string MUSIC_VOLUME_KEY = "sound_music_volume";
@@ -40,7 +36,6 @@ namespace Assets.Game.Modules.Core.Sound.Scripts
             _musicSource.volume = MusicVolume;
         }
 
-        // Тот же клип уже играет — не перезапускаем (музыка не обрывается при рестарте уровня).
         public void PlayMusic(AudioClip clip, bool loop = true)
         {
             if (clip == null)
@@ -67,7 +62,6 @@ namespace Assets.Game.Modules.Core.Sound.Scripts
                 return;
 
             var go = new GameObject($"SFX {clip.name}");
-            // Под объектом музыки (DontDestroyOnLoad) — звук не обрывается при смене сцены.
             go.transform.SetParent(_musicSource.transform, false);
 
             var source = go.AddComponent<AudioSource>();
@@ -75,7 +69,11 @@ namespace Assets.Game.Modules.Core.Sound.Scripts
             source.spatialBlend = 0f;
             source.clip = clip;
             source.volume = SfxVolume * volumeScale;
-            source.pitch = randomizePitch ? Random.Range(MIN_PITCH, MAX_PITCH) : 1f;
+
+            if (randomizePitch)
+                source.pitch = Random.Range(MIN_PITCH, MAX_PITCH);
+            else
+                source.pitch = 1f;
             source.Play();
 
             Object.Destroy(go, clip.length / source.pitch + 0.1f);

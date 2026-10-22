@@ -2,7 +2,6 @@ using Assets.Game.Modules.Core.Save.Scripts;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
-    // Пройденные уровни между сессиями: пройден уровень — в меню открывается следующий.
     public class LevelProgressRepository
     {
         private const string KEY_PREFIX = "level_completed_";

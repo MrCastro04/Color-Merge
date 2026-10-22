@@ -11,8 +11,6 @@ using DG.Tweening;
 
 namespace Assets.Game.Modules.Content.Board.Scripts
 {
-    // Модель доски и решение по дропу: move / swap / merge.
-    // Кто где лежит, знает только _items — слоты в процессе анимации не опрашиваются.
     public class BoardController : ISlotDropHandler, IDisposable
     {
         private readonly BoardView _boardView;
@@ -23,7 +21,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         private readonly HashSet<int> _busySlots = new();
         private ItemController[] _items = Array.Empty<ItemController>();
         private ItemChainConfig _itemChain;
-        // Во что взрыв бомбы превращает предметы и стены (LevelConfig.CandyConnector).
         private ItemConfig _candyConfig;
         private int _columns;
         private int _rows;
@@ -35,7 +32,7 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         public event Action<ItemController> OnItemReturned;
         public event Action<ItemController, ItemController> OnItemsSwapped;
         public event Action<ItemController> OnItemMerged;
-        // Бомба взорвалась в клетке centerId (эффект, вибрация, звук — снаружи).
+        public event Action<int, CandyBombConfig> OnBombDropped;
         public event Action<int, CandyBombConfig> OnBombExploded;
 
         public IReadOnlyList<SlotController> Slots => _slots;
@@ -53,7 +50,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             Clear();
         }
 
-        // Фабрики должны быть прогреты (WarmUpAsync) до вызова.
         public void Build(LevelConfig levelConfig)
         {
             Clear();
@@ -129,7 +125,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             }
         }
 
-        // Есть ли на доске пара, которую можно смерджить (в том числе предмет + конфета).
         public bool HasAvailableMerge()
         {
             var seen = new HashSet<ItemConfig>();
@@ -179,7 +174,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             if (!_isInteractable || itemView.IsNull() || itemView.Controller.IsNull())
                 return;
 
-            // Бомба не лежит на доске (её приносят с кнопки) — дроп на любую клетку без стены взрывает её там.
             if (itemView.Controller.Config is CandyBombConfig bomb)
             {
                 if (!targetSlot.IsBlocked && !_busySlots.Contains(targetSlot.ID))
@@ -191,7 +185,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             int sourceId = IndexOf(itemView.Controller);
             int targetId = targetSlot.ID;
 
-            // Не подтверждаем дроп — ItemView сам вернётся в прежний слот.
             if (sourceId < 0 || targetSlot.IsBlocked || _busySlots.Contains(sourceId) || _busySlots.Contains(targetId))
                 return;
 
@@ -216,24 +209,26 @@ namespace Assets.Game.Modules.Content.Board.Scripts
                 return;
             }
 
-            // Разные предметы, две конфеты, конфета с последним предметом цепочки — меняются местами.
             SwapAsync(sourceId, targetId).Forget();
         }
 
-        // Два одинаковых предмета → следующий уровень; предмет + конфета (в любую сторону) → следующий уровень предмета.
         private bool TryGetMergeResult(ItemController dragged, ItemController target, out ItemConfig next)
         {
             bool isDraggedCandy = IsCandy(dragged);
             bool isTargetCandy = IsCandy(target);
 
             if (isDraggedCandy != isTargetCandy)
-                return _itemChain.TryGetNext(isDraggedCandy ? target.Config : dragged.Config, out next);
+            {
+                if (isDraggedCandy)
+                    return _itemChain.TryGetNext(target.Config, out next);
+                else
+                    return _itemChain.TryGetNext(dragged.Config, out next);
+            }
 
             next = null;
             return !isDraggedCandy && dragged.IsSameAs(target) && _itemChain.TryGetNext(dragged.Config, out next);
         }
 
-        // Все *Async ниже до первого await синхронно вызывают SlotController.Attach → ItemView.ConfirmDrop.
         private async UniTaskVoid MoveAsync(int sourceId, int targetId)
         {
             var dragged = _items[sourceId];
@@ -302,8 +297,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             Unlock(targetId);
         }
 
-        // Бомба долетает до клетки, раздувается и сжимается — взрыв: в квадрате радиуса R вокруг (без центра)
-        // предметы и стены превращаются в конфеты, пустые клетки и конфеты не меняются, за краем доски — ничего.
         private async UniTaskVoid DetonateAsync(int centerId, ItemController bomb, CandyBombConfig config)
         {
             var bombView = bomb.View;
@@ -312,6 +305,7 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             bombView.ConfirmDrop();
             bombView.CanDrag = false;
             Lock(centerId);
+            OnBombDropped?.Invoke(centerId, config);
 
             await bombRt
                 .DOMove(_slots[centerId].View.transform.position, 0.15f)

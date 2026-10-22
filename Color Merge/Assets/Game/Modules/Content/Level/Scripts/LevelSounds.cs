@@ -8,8 +8,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
-    // Озвучка уровня: слушает события доски, генератора и экрана победы и запускает одноразовые звуки.
-    // Сами системы про звук ничего не знают.
     public class LevelSounds : IInitializable, IDisposable
     {
         private readonly SFXOneShotPlayer _sfx;

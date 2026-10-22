@@ -5,7 +5,6 @@ using UnityEngine.AddressableAssets;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
-    // Список музыки игры: тип → клип в Addressables. Клип грузится при первом запуске (MusicPlayer).
     [CreateAssetMenu(menuName = "Game/Sound/Music Theme", fileName = "MusicTheme")]
     public class MusicTheme : ScriptableObject
     {

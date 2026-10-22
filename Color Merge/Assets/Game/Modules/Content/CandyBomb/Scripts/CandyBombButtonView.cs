@@ -11,9 +11,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.CandyBomb.Scripts
 {
-    // Кнопка конфетной бомбы (слева от генератора): сверху молния и «энергия/цена».
-    // Хватает энергии — кнопка активна; нажали — на месте кнопки появляется бомба (в _holder),
-    // её можно перетащить на поле; пока бомба ждёт, кнопка пульсирует.
     public class CandyBombButtonView : MonoBehaviour, IChangeSortGroupInCanvas
     {
         [SerializeField] private Button _button;
@@ -60,11 +57,17 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
             _energyText.text = $"{Mathf.Min(energy, cost)}/{cost}";
         }
 
-        // Можно ли нажать: хватает энергии и бомба ещё не ждёт на кнопке.
         public void SetInteractable(bool isInteractable)
         {
             _button.interactable = isInteractable;
-            _icon.color = new Color(1f, 1f, 1f, isInteractable ? 1f : _inactiveAlpha);
+            float alpha;
+
+            if (isInteractable)
+                alpha = 1f;
+            else
+                alpha = _inactiveAlpha;
+
+            _icon.color = new Color(1f, 1f, 1f, alpha);
         }
 
         public void PlaceBomb(ItemView bombView)
@@ -73,7 +76,6 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
             bombView.PlaySpawnAsync().Forget();
         }
 
-        // Бомба ждёт на кнопке — кнопка мягко пульсирует, иконка под бомбой скрыта.
         public void SetReady(bool isReady)
         {
             _readyPulse?.Kill();

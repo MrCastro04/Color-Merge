@@ -6,9 +6,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.Generator.Scripts
 {
-    // Улучшение генератора за энергию.
-    // Мердж двух предметов того же уровня, что сейчас выдаёт генератор, → +1 энергия.
-    // ENERGY_PER_UPGRADE энергии → кнопка активна; нажали → генератор.Upgrade().
     public class UpgradeGeneratorSystem : IInitializable, IDisposable
     {
         public const int ENERGY_PER_UPGRADE = 3;
@@ -49,8 +46,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             _upgrades.OnChanged -= UpdateButton;
         }
 
-        // Вызывает LevelController после Generator.Setup.
-        // isEnabled = false — уровень без улучшений: кнопки нет, энергия не начисляется.
         public void Setup(ItemChainConfig chain, bool isEnabled)
         {
             _chain = chain;
@@ -60,7 +55,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             UpdateButton();
         }
 
-        // Слева есть кнопка конфетной бомбы — кнопка улучшения сдвигается вправо вместе с генератором.
         public void SetShift(float shiftX)
         {
             _upgradeButtonView.SetShift(shiftX);
@@ -72,7 +66,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             UpdateButton();
         }
 
-        // merged — результат мерджа; исходные предметы были на уровень ниже.
         private void HandleOnItemMerged(ItemController merged)
         {
             if (_chain == null || !_isEnabled)

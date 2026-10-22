@@ -14,8 +14,6 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
             return false;
         }
 
-        // Перегрузки для UnityEngine.Object: у Unity перегружен оператор ==, который считает
-        // уничтоженный (Destroy) объект null. Без них "мёртвый" объект считался бы живым.
         public static bool IsNull(this UnityEngine.Object obj)
         {
             if (obj == null) return true;

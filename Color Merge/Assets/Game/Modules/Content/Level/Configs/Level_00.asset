@@ -12,11 +12,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9284afc0fecaa6242901cf79e7d36d34, type: 3}
   m_Name: Level_00
   m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Level.Scripts.LevelConfig
-  _id: level_00
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _conditions
+      Entry: 7
+      Data: 0|System.Collections.Generic.HashSet`1[[Assets.Game.Modules.Content.Level.Scripts.Conditions.LevelCondition,
+        Content]], System.Core
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 1|Assets.Game.Modules.Content.Level.Scripts.Conditions.Get_Item_With_Level_X,
+        Content
+    - Name: _itemLevel
+      Entry: 3
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   _itemChain: {fileID: 11400000, guid: 9f9e62b8a819b444099ad8ea42e0bdd9, type: 2}
-  _isTutorial: 1
-  _conditions:
-  - rid: 482838943652118625
   _columns: 5
   _rows: 7
   _blockedSlots: 
@@ -29,16 +57,11 @@ MonoBehaviour:
     ItemStartLevel: 2
   - SlotID: 23
     ItemStartLevel: 2
+  _candyConnector: {fileID: 0}
+  _initialCandies: []
+  _candyBomb: {fileID: 0}
+  _candyBombCost: 5
   _generatorCharges: -1
   _generatorUpgradeEnabled: 0
   _threeStarsTime: 90
   _twoStarsTime: 180
-  references:
-    version: 2
-    RefIds:
-    - rid: 482838943652118625
-      type: {class: Get_Item_With_Level_X, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
-      data:
-        _hasTimer: 0
-        _timeLimit: 120
-        _itemLevel: 3

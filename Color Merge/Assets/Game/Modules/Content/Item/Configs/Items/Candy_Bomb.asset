@@ -16,3 +16,9 @@ MonoBehaviour:
   _icon: {fileID: 21300000, guid: af901f63ebffad349aaf0fc45e8c2f86, type: 3}
   _color: {r: 1, g: 1, b: 1, a: 1}
   _radius: 1
+  _dimAlpha: 0.7
+  _dimFadeInDuration: 0.2
+  _dimFadeOutDuration: 0.15
+  _shakeDuration: 0.35
+  _shakeStrength: 25
+  _shakeVibrato: 20

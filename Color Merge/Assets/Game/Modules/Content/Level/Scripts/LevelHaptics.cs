@@ -6,8 +6,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
-    // Вибрация уровня (как LevelSounds для звука): короткий отклик телефона на каждый мердж.
-    // Выключается галочкой в настройках (IVibrationService.IsEnabled).
     public class LevelHaptics : IInitializable, IDisposable
     {
         private readonly BoardController _boardController;

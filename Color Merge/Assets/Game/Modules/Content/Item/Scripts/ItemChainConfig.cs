@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Content.Item.Scripts
 {
-    // Цепочка мерджа: два предмета [i] дают предмет [i + 1]. Последний предмет — цель уровня.
     [CreateAssetMenu(menuName = "Game/Item/Item Chain Config", fileName = "ItemChain")]
     public class ItemChainConfig : ScriptableObject
     {
@@ -16,10 +15,7 @@ namespace Assets.Game.Modules.Content.Item.Scripts
         public ItemConfig First => _items[0];
         public ItemConfig Last => _items[_items.Count - 1];
 
-        // 1 — первый уровень
         public int GetLevel(ItemConfig config) => _items.IndexOf(config) + 1;
-
-        public bool IsLast(ItemConfig config) => config == Last;
 
         public bool TryGetNext(ItemConfig config, out ItemConfig next)
         {
@@ -40,7 +36,7 @@ namespace Assets.Game.Modules.Content.Item.Scripts
         private void OnValidate()
         {
             if (_items.Count < MIN_CHAIN_LENGTH || _items.Count > MAX_CHAIN_LENGTH)
-                Debug.LogWarning($"{name}: в цепочке {_items.Count} предметов, нужно {MIN_CHAIN_LENGTH}–{MAX_CHAIN_LENGTH}.", this);
+                Debug.LogWarning($"{name}: у ланцюжку {_items.Count} предметів, потрібно {MIN_CHAIN_LENGTH}–{MAX_CHAIN_LENGTH}.", this);
         }
     }
 }

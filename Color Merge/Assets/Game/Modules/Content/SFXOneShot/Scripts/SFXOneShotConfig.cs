@@ -5,7 +5,6 @@ using UnityEngine.AddressableAssets;
 
 namespace Assets.Game.Modules.Content.SFXOneShot.Scripts
 {
-    // Перечень одноразовых звуков: тип → клип в Addressables + громкость и случайный питч.
     [CreateAssetMenu(menuName = "Game/Sound/SFX One Shot Config", fileName = "SFXOneShot")]
     public class SFXOneShotConfig : ScriptableObject
     {

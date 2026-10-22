@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Конфетти поверх UI. ParticleSystem из пака не виден поверх Screen Space Overlay-канваса,
-    // поэтому кусочки — RawImage с той же текстурой пака (2×2 листа), анимация на DOTween.
     [RequireComponent(typeof(RectTransform))]
     public class ConfettiView : MonoBehaviour
     {
@@ -23,7 +21,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             _rt = (RectTransform)transform;
         }
 
-        // Взрыв из центра вверх, потом кусочки падают вниз, кружась, и гаснут.
         public async UniTask PlayAsync(CancellationToken cancellationToken = default)
         {
             if (_rt == null)
@@ -52,7 +49,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             var image = go.GetComponent<RawImage>();
             image.texture = _texture;
             image.raycastTarget = false;
-            // Один из 4 кусочков листа 2×2.
             image.uvRect = new Rect(Random.Range(0, 2) * 0.5f, Random.Range(0, 2) * 0.5f, 0.5f, 0.5f);
 
             var burst = new Vector2(Random.Range(-area.x * 0.5f, area.x * 0.5f), Random.Range(area.y * 0.1f, area.y * 0.45f));

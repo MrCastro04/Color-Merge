@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
 {
-    // Глобальный резолвер: находит IPulseObject-компонент на GameObject и запускает/останавливает пульс.
     public static class ExPulseResolver
     {
         public static UniTask StartPulseObj(this GameObject go)
         {
-            return go.TryGetComponent(out IPulseObject pulseObj)
-                ? pulseObj.StartPulse()
-                : UniTask.CompletedTask;
+            if (go.TryGetComponent(out IPulseObject pulseObj))
+                return pulseObj.StartPulse();
+            else
+                return UniTask.CompletedTask;
         }
 
         public static async UniTask StopPulseObj(this GameObject go)

@@ -1,6 +1,5 @@
 namespace Assets.Game.Modules.Core.Timer.Scripts
 {
-    // Секундомер без привязки к MonoBehaviour: время двигает тот, кто вызывает Tick.
     public class Stopwatch
     {
         public float Elapsed { get; private set; }

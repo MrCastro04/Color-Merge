@@ -13,13 +13,9 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
 {
-    // Сценарий главного меню: шторка уходит, музыка меню, «Играть» → окно выбора уровня → уровень через Mid Loader.
-    // Окно настроек ведёт SettingsController (общий с уровнем).
     public class MainMenuController : IAsyncStartable, IDisposable
     {
         private const float SHOW_MENU_FADE = 0.3f;
-
-        // Уровни — LEVELS.ALL. Открыт Level 0 и каждый уровень после пройденного предыдущего.
 
         private readonly MainMenuView _mainMenuView;
         private readonly LevelSelectView _levelSelectView;
@@ -35,6 +31,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
         private readonly LevelProgressRepository _levelProgress;
         private readonly LockedLevelPopup _lockedLevelPopup;
         private readonly TutorialLevelPopup _tutorialLevelPopup;
+        private readonly LevelsConfig _levelsConfig;
 
         private CancellationToken _cancellationToken;
 
@@ -43,7 +40,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             SettingsView settingsView, ISaveService saveService, MessagePopup messagePopup,
             LevelLoader levelLoader, ScreenFader screenFader, MusicPlayer musicPlayer, SFXOneShotPlayer sfx,
             BestTimeRepository bestTimeRepository, LevelProgressRepository levelProgress,
-            LockedLevelPopup lockedLevelPopup, TutorialLevelPopup tutorialLevelPopup)
+            LockedLevelPopup lockedLevelPopup, TutorialLevelPopup tutorialLevelPopup, LevelsConfig levelsConfig)
         {
             _mainMenuView = mainMenuView;
             _levelSelectView = levelSelectView;
@@ -59,6 +56,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelProgress = levelProgress;
             _lockedLevelPopup = lockedLevelPopup;
             _tutorialLevelPopup = tutorialLevelPopup;
+            _levelsConfig = levelsConfig;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
@@ -117,7 +115,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelSelectView.ShowAsync(_cancellationToken).Forget();
         }
 
-        // QUIT — выход из игры (в редакторе — остановка Play Mode).
         private void HandleOnQuitClicked()
         {
             _sfx.Play(SFXOneShotType.ButtonClick);
@@ -129,12 +126,11 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
 #endif
         }
 
-        // Учебный уровень — сначала окно «новый контент», обычный — сразу загрузка.
         private void HandleOnLevelSelected(int levelIndex)
         {
             _sfx.Play(SFXOneShotType.ButtonClick);
 
-            if (LEVELS.ALL[levelIndex].IsTutorial)
+            if (_levelsConfig.Get(levelIndex).IsTutorial)
             {
                 _tutorialLevelPopup.SetLevel(levelIndex);
                 _tutorialLevelPopup.SetInteractable(true);
@@ -164,18 +160,18 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _mainMenuView.SetInteractable(false);
             _settingsController.SetInteractable(false);
 
-            _levelLoader.LoadAsync(LEVELS.ALL[levelIndex].Scene).Forget();
+            _levelLoader.LoadAsync(_levelsConfig.Get(levelIndex).SceneName).Forget();
         }
 
-        // Лучшее время показывается только у пройденных неучебных уровней.
         private List<LevelButtonState> GetLevelStates()
         {
-            var states = new List<LevelButtonState>(LEVELS.ALL.Length);
+            var states = new List<LevelButtonState>(_levelsConfig.Count);
 
-            for (int i = 0; i < LEVELS.ALL.Length; i++)
+            for (int i = 0; i < _levelsConfig.Count; i++)
             {
-                bool isUnlocked = i == 0 || _levelProgress.IsCompleted(LEVELS.ALL[i - 1].LevelId);
-                bool hasBestTime = _bestTimeRepository.TryGet(LEVELS.ALL[i].LevelId, out var bestTime) && !LEVELS.ALL[i].IsTutorial;
+                var level = _levelsConfig.Get(i);
+                bool isUnlocked = i == 0 || _levelProgress.IsCompleted(_levelsConfig.Get(i - 1).Id);
+                bool hasBestTime = _bestTimeRepository.TryGet(level.Id, out var bestTime) && !level.IsTutorial;
 
                 states.Add(new LevelButtonState(isLocked: !isUnlocked, hasBestTime, bestTime));
             }
@@ -183,7 +179,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             return states;
         }
 
-        // Закрытый уровень: подсказка «пройди предыдущий». Уровни нумеруются с нуля → предыдущий = levelIndex - 1.
         private void HandleOnLockedLevelClicked(int levelIndex)
         {
             _sfx.Play(SFXOneShotType.Return);
@@ -197,7 +192,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _lockedLevelPopup.HideAsync(_cancellationToken).Forget();
         }
 
-        // Настройки → CLEAR PROGRESS (только в меню): стираем все сохранения, кнопки уровней — заново, окно-подтверждение.
         private void HandleOnClearProgressClicked()
         {
             _sfx.Play(SFXOneShotType.ButtonClick);

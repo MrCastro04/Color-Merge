@@ -61,25 +61,6 @@ namespace Assets.Game.Modules.Content.Tutorial
 
         public Tutor GetTutor(int index) => _steps[index].Tutor;
 
-        public bool TryGetActiveTutor(out int index, out Tutor tutor)
-        {
-            for (int i = 0; i < _steps.Length; i++)
-            {
-                Tutor currentTutor = _steps[i].Tutor;
-                if (currentTutor != null && currentTutor.IsActive)
-                {
-                    index = i;
-                    tutor = currentTutor;
-                    return true;
-                }
-            }
-
-            index = -1;
-            tutor = null;
-            return false;
-        }
-
-
         private void OnDisable()
         {
             if (_inputController != null)
@@ -106,7 +87,6 @@ namespace Assets.Game.Modules.Content.Tutorial
             }
         }
 
-        // showArrowsAfterText is retained for existing callers; tutorial arrows are no longer spawned.
         public async UniTask RunStepWithCallbacks(int index,
             List<Func<UniTask>> PRECallbacks = null,
             List<Func<UniTask>> POSTCallbacks = null,
@@ -159,7 +139,6 @@ namespace Assets.Game.Modules.Content.Tutorial
 
             await _activeTutor.ShowText(ct);
 
-            // Run callbacks after the tutorial text has finished.
             if (afterShowCallbacks != null && afterShowCallbacks.Count > 0)
             {
                 foreach (var callback in afterShowCallbacks)
@@ -225,7 +204,6 @@ namespace Assets.Game.Modules.Content.Tutorial
         {
             if (_activeTutor == null) return;
 
-            // 1-й тап — долистать печать текста (на любом шаге), 2-й — пропустить шаг с условием Tap
             if (_activeTutor.IsTyping)
             {
                 _activeTutor.SkipTyping();
@@ -246,7 +224,6 @@ namespace Assets.Game.Modules.Content.Tutorial
             _skipRequested = true;
         }
 
-        // Для шагов с SkipCondition.External — закрыть шаг снаружи.
         public void RequestSkip()
         {
             if (_activeTutor != null && _activeStep.SkipCondition == SkipCondition.External)

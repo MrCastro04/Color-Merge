@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Окно выбора уровня в главном меню. Висит на сцене закрытым, открывается по «Играть».
-    // Какие уровни открыты, решает контроллер (Setup).
     public class LevelSelectView : UIScreen
     {
         [SerializeField] private List<LevelButtonView> _levelButtons = new();
@@ -21,12 +19,16 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
         public int LevelsCount => _levelButtons.Count;
 
-        // states[i] — состояние i-й кнопки; кнопок больше, чем состояний, — лишние закрыты.
         public void Setup(IReadOnlyList<LevelButtonState> states)
         {
             for (int i = 0; i < _levelButtons.Count; i++)
             {
-                var state = i < states.Count ? states[i] : new LevelButtonState(true, false, 0f);
+                LevelButtonState state;
+
+                if (i < states.Count)
+                    state = states[i];
+                else
+                    state = new LevelButtonState(true, false, 0f);
                 _levelButtons[i].Setup(i, state);
             }
 

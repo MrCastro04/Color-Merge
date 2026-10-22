@@ -8,7 +8,6 @@ namespace Assets.Game.Modules.Content.Tutorial.Tutor_Scenario.Scripts
         [SerializeField] private RectTransform _rtArrow;
         [SerializeField] private RectTransform _rtMoveTo;
 
-        // private Tween _swingTween;
         public float DurationAnimation = 1.5f;
 
         private Tween _tweenMoveTo;
@@ -29,7 +28,6 @@ namespace Assets.Game.Modules.Content.Tutorial.Tutor_Scenario.Scripts
                 .SetLink(gameObject);
         }
 
-        // Точки берутся в рантайме (например, два предмета на доске): палец ведёт от from к to и обратно.
         public void Play(Vector3 from, Vector3 to)
         {
             _rtArrow.position = from;

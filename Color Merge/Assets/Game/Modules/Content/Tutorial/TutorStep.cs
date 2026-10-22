@@ -10,7 +10,6 @@ namespace Assets.Game.Modules.Content.Tutorial
         Tap,
         ItemMerged,
         ButtonClick,
-        // Шаг закрывает контроллер тутора (TutorScenario.RequestSkip), например после взрыва бомбы.
         External,
     }
 
@@ -21,7 +20,7 @@ namespace Assets.Game.Modules.Content.Tutorial
         public SkipCondition SkipCondition;
         public bool UseBackgroundFade;
 
-        [Tooltip("Только для SkipCondition = ButtonClick")]
+        [Tooltip("Лише для SkipCondition = ButtonClick")]
         public Button RequiredButton;
     }
 

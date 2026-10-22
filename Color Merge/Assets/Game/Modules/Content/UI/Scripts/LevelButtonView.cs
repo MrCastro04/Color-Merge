@@ -7,9 +7,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Кнопка уровня в окне выбора: номер или замок, под кнопкой — лучшее время (только у пройденных).
-    // Закрытая кнопка нажимается (для звука «нельзя») и покачивается.
-    // Не зависит от Awake: окно выбора может быть выключено на сцене до первого показа.
     public class LevelButtonView : MonoBehaviour
     {
         [SerializeField] private Button _button;
@@ -32,11 +29,14 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             Index = index;
             IsLocked = state.IsLocked;
 
-            // Уровни нумеруются с нуля: Level 0 — обучающий.
             _numberText.text = index.ToString();
             _numberText.gameObject.SetActive(!state.IsLocked);
             _lockIcon.SetActive(state.IsLocked);
-            _background.color = state.IsLocked ? _lockedColor : _unlockedColor;
+
+            if (state.IsLocked)
+                _background.color = _lockedColor;
+            else
+                _background.color = _unlockedColor;
 
             bool showBestTime = !state.IsLocked && state.HasBestTime;
             _bestTimeText.gameObject.SetActive(showBestTime);

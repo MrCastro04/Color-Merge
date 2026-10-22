@@ -5,8 +5,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.Generator.Scripts
 {
-    // Кнопка-генератор: спавнит предмет своего уровня в случайную свободную клетку.
-    // Наружу отдаёт только свой уровень; улучшается через Upgrade() — его вызывает UpgradeGeneratorSystem.
     public class GeneratorController : IInitializable, IDisposable
     {
         private readonly BoardController _boardController;
@@ -24,7 +22,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         private ItemConfig ItemToSpawn => _chain?.GetByLevel(Level);
 
         public event Action OnChargesEnded;
-        // Нажали, но свободных клеток нет.
         public event Action OnSpawnFailed;
 
         public GeneratorController(BoardController boardController, GeneratorButtonView buttonView)
@@ -43,8 +40,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             _buttonView.OnClicked -= HandleOnClicked;
         }
 
-        // maxLevel — выше этого уровня генератор не улучшается (чтобы не выдавать цель уровня напрямую).
-        // charges < 0 — без ограничения.
         public void Setup(ItemChainConfig chain, int maxLevel, int charges)
         {
             _chain = chain;
@@ -88,7 +83,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             if (_chain == null || !HasCharges)
                 return;
 
-            // TODO: визуальный фидбек «доска заполнена» (тряска кнопки)
             if (!_boardController.TrySpawnAtRandomFreeSlot(ItemToSpawn))
             {
                 OnSpawnFailed?.Invoke();

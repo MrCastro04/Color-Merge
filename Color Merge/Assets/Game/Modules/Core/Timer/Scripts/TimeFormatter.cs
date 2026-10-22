@@ -4,7 +4,6 @@ namespace Assets.Game.Modules.Core.Timer.Scripts
 {
     public static class TimeFormatter
     {
-        // 83.456 → "01:23.45"
         public static string Format(float seconds)
         {
             seconds = Mathf.Max(0f, seconds);

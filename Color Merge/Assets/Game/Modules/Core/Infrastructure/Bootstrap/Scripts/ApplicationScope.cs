@@ -16,12 +16,11 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
 {
-    // Лежит в Boot.unity и живёт всю игру: общие сервисы (Singleton).
-    // Сцены меню и уровней получают их через LevelLoader (LifetimeScope.EnqueueParent), как в Combo-Dungeon.
     public class ApplicationScope : LifetimeScope
     {
         [SerializeField] private ItemAssets _itemAssets;
         [SerializeField] private SlotAssets _slotAssets;
+        [SerializeField] private LevelsConfig _levelsConfig;
 
         [Header("Sound")]
         [SerializeField] private AudioSource _musicSource;
@@ -38,6 +37,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
         {
             builder.RegisterInstance(_itemAssets);
             builder.RegisterInstance(_slotAssets);
+            builder.RegisterInstance(_levelsConfig);
  
             builder.Register<AddressablesAssetProvider>(Lifetime.Singleton).As<IAssetProvider>().AsSelf();
             builder.Register<PlayerPrefsSaveService>(Lifetime.Singleton).As<ISaveService>();
@@ -52,7 +52,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
             builder.RegisterEntryPoint<BootController>();
         }
 
-        // Переходы между сценами: шторка (дочерний объект ApplicationScope) + цель загрузки + LevelLoader.
         private void RegisterLoading(IContainerBuilder builder)
         {
             builder.RegisterComponentInHierarchy<ScreenFader>();

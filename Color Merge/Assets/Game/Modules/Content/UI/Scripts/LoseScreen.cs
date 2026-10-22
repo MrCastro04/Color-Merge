@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Экран поражения. Причина задаётся снаружи: ходов нет (OUT OF MOVES) или время вышло (TIME'S UP).
     public class LoseScreen : UIScreen
     {
         [SerializeField] private TMP_Text _titleText;

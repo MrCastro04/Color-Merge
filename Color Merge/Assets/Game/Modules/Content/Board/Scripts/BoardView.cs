@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.Board.Scripts
 {
-    // Сетка клеток. Размер клетки подгоняется под доступную область (9:16, 9:19.5, 3:4):
-    // клетка квадратная, берётся минимум из ширины и высоты на одну клетку.
-    // На тутор доска поднимается над затемнением (IChangeSortGroupInCanvas) — свой Canvas с GraphicRaycaster.
     [RequireComponent(typeof(RectTransform))]
     public class BoardView : MonoBehaviour, IChangeSortGroupInCanvas
     {
@@ -38,8 +35,6 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             FitCells();
         }
 
-        // Вызывать после создания клеток: GridLayoutGroup расставляет детей только на ребилде лейаута,
-        // а HolderView.Set берёт размер холдера сразу.
         public void RebuildLayout()
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(_slotsContainer);

@@ -7,9 +7,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Окно настроек целиком: кнопка-шестерёнка → окно с громкостью (ISoundService) и вибрацией (IVibrationService).
-    // Один и тот же контроллер регистрируется в скоупе меню и в скоупе уровня.
-    // Уровень слушает OnOpened/OnClosed (пауза таймера) и OnMenuRequested (выход в меню).
     public class SettingsController : IInitializable, IDisposable
     {
         private readonly SettingsView _settingsView;
@@ -62,7 +59,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             _settingsButtonView.SetInteractable(isInteractable);
         }
 
-        // Включили вибрацию — сразу короткий отклик, чтобы было понятно, что это.
         private void HandleOnVibrationChanged(bool isEnabled)
         {
             _sfx.Play(SFXOneShotType.ButtonClick);

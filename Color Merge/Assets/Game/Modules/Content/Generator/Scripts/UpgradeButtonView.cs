@@ -8,16 +8,13 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.Generator.Scripts
 {
-    // Кнопка улучшения генератора (стрелка вверх). Активна, когда хватает энергии:
-    // сверху «Lvl N -> Lvl N+1», иначе — молния и сколько энергии накоплено (как у кнопки конфетной бомбы).
-    // На туторе поднимается над затемнением (IChangeSortGroupInCanvas).
     public class UpgradeButtonView : MonoBehaviour, IChangeSortGroupInCanvas
     {
         private const float ENERGY_ICON_GAP = 8f;
 
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _labelText;
-        [Tooltip("Молния слева от «энергия/цена»")]
+        [Tooltip("Блискавка ліворуч від «енергія/ціна»")]
         [SerializeField] private RectTransform _energyIcon;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField, Range(0f, 1f)] private float _inactiveAlpha = 0.5f;
@@ -30,7 +27,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         public event Action OnClicked;
 
         public RectTransform RT => (RectTransform)transform;
-        // Подпись над кнопкой (энергия «0/3» или «Lvl N -> Lvl N+1») — на неё указывает стрелка тутора.
         public RectTransform LabelRT => (RectTransform)_labelText.transform;
 
         public string DesiredGroup => SORTING_LAYERS.TUTOR;
@@ -53,7 +49,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             gameObject.SetActive(isVisible);
         }
 
-        // Сдвиг вправо от места в сцене (слева есть кнопка конфетной бомбы).
         public void SetShift(float shiftX)
         {
             var rt = (RectTransform)transform;
@@ -88,7 +83,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             SetActive(false);
         }
 
-        // Молния стоит вплотную слева от текста (текст по центру, ширина меняется).
         private void SetEnergyIconVisible(bool isVisible)
         {
             if (_energyIcon == null)
@@ -109,7 +103,11 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             bool wasActive = _button.interactable;
 
             _button.interactable = isActive;
-            _canvasGroup.alpha = isActive ? 1f : _inactiveAlpha;
+
+            if (isActive)
+                _canvasGroup.alpha = 1f;
+            else
+                _canvasGroup.alpha = _inactiveAlpha;
 
             if (isActive && !wasActive)
                 StartPulse();

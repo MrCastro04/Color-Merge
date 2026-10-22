@@ -33,7 +33,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
             _prefab = prefab.GetComponent<SlotView>();
         }
 
-        // Как HandController в Combo-Dungeon: у каждого слота свой контроллер, создаётся руками.
         public SlotController Create(int id, Transform parent, ISlotDropHandler dropHandler)
         {
             var view = _resolver.Instantiate(_prefab, parent);
