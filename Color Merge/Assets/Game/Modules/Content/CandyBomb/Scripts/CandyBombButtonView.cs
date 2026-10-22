@@ -60,7 +60,14 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
         public void SetInteractable(bool isInteractable)
         {
             _button.interactable = isInteractable;
-            _icon.color = new Color(1f, 1f, 1f, isInteractable ? 1f : _inactiveAlpha);
+            float alpha;
+
+            if (isInteractable)
+                alpha = 1f;
+            else
+                alpha = _inactiveAlpha;
+
+            _icon.color = new Color(1f, 1f, 1f, alpha);
         }
 
         public void PlaceBomb(ItemView bombView)

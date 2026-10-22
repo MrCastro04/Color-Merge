@@ -218,7 +218,12 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             bool isTargetCandy = IsCandy(target);
 
             if (isDraggedCandy != isTargetCandy)
-                return _itemChain.TryGetNext(isDraggedCandy ? target.Config : dragged.Config, out next);
+            {
+                if (isDraggedCandy)
+                    return _itemChain.TryGetNext(target.Config, out next);
+                else
+                    return _itemChain.TryGetNext(dragged.Config, out next);
+            }
 
             next = null;
             return !isDraggedCandy && dragged.IsSameAs(target) && _itemChain.TryGetNext(dragged.Config, out next);

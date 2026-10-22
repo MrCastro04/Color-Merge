@@ -3,18 +3,14 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Content.Tutorial.Arrows
 {
-    public class ArrowView : MonoBehaviour, IMoveArrow, IFadeObj
+    public class ArrowView : MonoBehaviour, IMoveArrow
     {
-        private CanvasGroup _cg;
         private RectTransform _rt;
         private ArrowDirectionType _arrowDirectionType;
 
         public RectTransform RT => _rt;
         public ArrowDirectionType ArrowDirectionType => _arrowDirectionType;
         public Vector3 EndPoint { get; set; }
-        public float FadeInDuration { get; }
-        public float FadeOutDuration { get; }
-        public CanvasGroup CanvasGroup => _cg;
         
         private Quaternion _rtRotation
         {
@@ -24,7 +20,6 @@ namespace Assets.Game.Modules.Content.Tutorial.Arrows
 
         public void Init(ArrowDirectionType arrowDirectionType)
         {
-            _cg = GetComponent<CanvasGroup>();
             _rt = GetComponent<RectTransform>();
             _arrowDirectionType = arrowDirectionType;
             

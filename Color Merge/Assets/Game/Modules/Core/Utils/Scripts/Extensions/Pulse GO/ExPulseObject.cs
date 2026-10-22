@@ -36,10 +36,22 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
             const float defaultMaxPulseScale = 1.25f;
             const float defaultPulseDuration = 0.5f;
 
-            var minScale = pulseObj.MinPulseScale != 0f ? pulseObj.MinPulseScale : defaultMinPulseScale;
-            var maxScale = pulseObj.MaxPulseScale != 0f ? pulseObj.MaxPulseScale : defaultMaxPulseScale;
-            var duration = pulseObj.PulseDuration != 0f ? pulseObj.PulseDuration : defaultPulseDuration;
-            var ease = pulseObj.PulseEase != default ? pulseObj.PulseEase : defaultPulseEase;
+            var minScale = defaultMinPulseScale;
+            var maxScale = defaultMaxPulseScale;
+            var duration = defaultPulseDuration;
+            var ease = defaultPulseEase;
+
+            if (pulseObj.MinPulseScale != 0f)
+                minScale = pulseObj.MinPulseScale;
+
+            if (pulseObj.MaxPulseScale != 0f)
+                maxScale = pulseObj.MaxPulseScale;
+
+            if (pulseObj.PulseDuration != 0f)
+                duration = pulseObj.PulseDuration;
+
+            if (pulseObj.PulseEase != default)
+                ease = pulseObj.PulseEase;
             var rt = ResolveRT(pulseObj);
 
             rt.localScale = Vector3.one * minScale;
@@ -75,7 +87,10 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
             if (pulseObj.RT.IsNotNull())
                 return pulseObj.RT;
 
-            return pulseObj is Component component ? component.GetComponent<RectTransform>() : null;
+            if (pulseObj is Component component)
+                return component.GetComponent<RectTransform>();
+            else
+                return null;
         }
     }
 }

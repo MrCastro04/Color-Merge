@@ -32,7 +32,11 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             _numberText.text = index.ToString();
             _numberText.gameObject.SetActive(!state.IsLocked);
             _lockIcon.SetActive(state.IsLocked);
-            _background.color = state.IsLocked ? _lockedColor : _unlockedColor;
+
+            if (state.IsLocked)
+                _background.color = _lockedColor;
+            else
+                _background.color = _unlockedColor;
 
             bool showBestTime = !state.IsLocked && state.HasBestTime;
             _bestTimeText.gameObject.SetActive(showBestTime);

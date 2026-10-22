@@ -61,24 +61,6 @@ namespace Assets.Game.Modules.Content.Tutorial
 
         public Tutor GetTutor(int index) => _steps[index].Tutor;
 
-        public bool TryGetActiveTutor(out int index, out Tutor tutor)
-        {
-            for (int i = 0; i < _steps.Length; i++)
-            {
-                Tutor currentTutor = _steps[i].Tutor;
-                if (currentTutor != null && currentTutor.IsActive)
-                {
-                    index = i;
-                    tutor = currentTutor;
-                    return true;
-                }
-            }
-
-            index = -1;
-            tutor = null;
-            return false;
-        }
-
         private void OnDisable()
         {
             if (_inputController != null)

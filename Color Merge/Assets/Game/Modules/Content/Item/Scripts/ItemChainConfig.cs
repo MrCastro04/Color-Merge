@@ -17,8 +17,6 @@ namespace Assets.Game.Modules.Content.Item.Scripts
 
         public int GetLevel(ItemConfig config) => _items.IndexOf(config) + 1;
 
-        public bool IsLast(ItemConfig config) => config == Last;
-
         public bool TryGetNext(ItemConfig config, out ItemConfig next)
         {
             int index = _items.IndexOf(config);

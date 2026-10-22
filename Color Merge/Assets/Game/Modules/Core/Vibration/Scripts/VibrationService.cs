@@ -28,7 +28,11 @@ namespace Assets.Game.Modules.Core.Vibration.Scripts
         public void SetEnabled(bool isEnabled)
         {
             IsEnabled = isEnabled;
-            _saveService.SetInt(ENABLED_KEY, isEnabled ? 1 : 0);
+
+            if (isEnabled)
+                _saveService.SetInt(ENABLED_KEY, 1);
+            else
+                _saveService.SetInt(ENABLED_KEY, 0);
             _saveService.Save();
         }
 

@@ -22,8 +22,27 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         public string StartGroup { get; set; } = SORTING_LAYERS.DEFAULT;
         public Canvas SortingCanvas => _sortingCanvas;
 
-        public RectTransform FirstIcon => _icons.Count > 0 ? (RectTransform)_icons[0].transform : null;
-        public RectTransform GoalIcon => _icons.Count > 0 ? (RectTransform)_icons[^1].transform : null;
+        public RectTransform FirstIcon
+        {
+            get
+            {
+                if (_icons.Count > 0)
+                    return (RectTransform)_icons[0].transform;
+                else
+                    return null;
+            }
+        }
+
+        public RectTransform GoalIcon
+        {
+            get
+            {
+                if (_icons.Count > 0)
+                    return (RectTransform)_icons[^1].transform;
+                else
+                    return null;
+            }
+        }
 
         public void Setup(IReadOnlyList<ItemConfig> chain)
         {

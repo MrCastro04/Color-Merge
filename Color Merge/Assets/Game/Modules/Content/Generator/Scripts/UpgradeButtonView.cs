@@ -103,7 +103,11 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             bool wasActive = _button.interactable;
 
             _button.interactable = isActive;
-            _canvasGroup.alpha = isActive ? 1f : _inactiveAlpha;
+
+            if (isActive)
+                _canvasGroup.alpha = 1f;
+            else
+                _canvasGroup.alpha = _inactiveAlpha;
 
             if (isActive && !wasActive)
                 StartPulse();

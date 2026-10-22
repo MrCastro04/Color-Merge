@@ -23,7 +23,12 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         {
             for (int i = 0; i < _levelButtons.Count; i++)
             {
-                var state = i < states.Count ? states[i] : new LevelButtonState(true, false, 0f);
+                LevelButtonState state;
+
+                if (i < states.Count)
+                    state = states[i];
+                else
+                    state = new LevelButtonState(true, false, 0f);
                 _levelButtons[i].Setup(i, state);
             }
 

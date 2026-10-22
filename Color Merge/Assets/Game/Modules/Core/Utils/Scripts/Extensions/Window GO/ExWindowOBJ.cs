@@ -35,34 +35,15 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
             callback?.Invoke();
         }
 
-        public static async UniTask CloseAsWindow(this IWindowObj windowObj, CancellationToken ct = default)
-        {
-            var closeDuration = windowObj.CloseDuration;
-            var containerContent = ResolveContainerContent(windowObj);
-
-            if (closeDuration <= 0)
-            {
-                closeDuration = 0.5f;
-            }
-
-            var tween = containerContent.gameObject.transform
-                .DOScale(Vector3.zero, closeDuration)
-                .From(Vector3.one)
-                .OnComplete(() =>
-                {
-                    containerContent.SetActive(false);
-                    windowObj.IsOpened = containerContent.gameObject.activeSelf;
-                });
-
-            await tween.AsyncWaitForCompletion();
-        }
-
         private static GameObject ResolveContainerContent(IWindowObj windowObj)
         {
             if (windowObj.ContainerContent.IsNotNull())
                 return windowObj.ContainerContent;
 
-            return windowObj is Component component ? component.gameObject : null;
+            if (windowObj is Component component)
+                return component.gameObject;
+            else
+                return null;
         }
     }
 }

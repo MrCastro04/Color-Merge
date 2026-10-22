@@ -15,6 +15,7 @@ using Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts;
 using Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts;
 using Assets.Game.Modules.Core.UI.Scripts;
 using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
@@ -56,7 +57,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly SettingsController _settingsController;
         private readonly ILevelTutorial _levelTutorial;
 
+        private readonly LevelsConfig _levelsConfig;
+
         private LevelConfig _levelConfig;
+        private LevelInfo _levelInfo;
 
         private LevelResult _result;
 
@@ -73,7 +77,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             LevelTimer levelTimer, BestTimeRepository bestTimeRepository, LevelProgressRepository levelProgress,
             HudView hudView, WinScreen winScreen, LoseScreen loseScreen, ChainProgressView chainProgressView,
             MusicPlayer musicPlayer, ScreenFader screenFader, SettingsController settingsController,
-            ILevelTutorial levelTutorial)
+            ILevelTutorial levelTutorial, LevelsConfig levelsConfig)
         {
             _assetProvider = assetProvider;
             _levelLoader = levelLoader;
@@ -97,6 +101,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _screenFader = screenFader;
             _settingsController = settingsController;
             _levelTutorial = levelTutorial;
+            _levelsConfig = levelsConfig;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
@@ -136,6 +141,11 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             _levelConfig = await _assetProvider.LoadAsync<LevelConfig>(_levelConfigReference, cancellation);
 
+            string sceneName = SceneManager.GetActiveScene().name;
+
+            if (!_levelsConfig.TryGetByScene(sceneName, out _levelInfo))
+                throw new InvalidOperationException($"Сцены {sceneName} нет в LevelsConfig");
+
             await UniTask.WhenAll(
                 _itemFactory.WarmUpAsync(cancellation),
                 _slotFactory.WarmUpAsync(cancellation));
@@ -154,7 +164,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _hudView.SetMerges(0, _levelConfig.MergesTarget);
             _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
             _candyBombSystem.Setup(_levelConfig);
-            float bottomBarShift = _candyBombSystem.IsEnabled ? BOMB_BOTTOM_BAR_SHIFT : 0f;
+            float bottomBarShift = 0f;
+
+            if (_candyBombSystem.IsEnabled)
+                bottomBarShift = BOMB_BOTTOM_BAR_SHIFT;
             _generatorController.SetCentered(!_levelConfig.IsGeneratorUpgradeEnabled, bottomBarShift);
             _upgradeGeneratorSystem.SetShift(bottomBarShift);
 
@@ -168,7 +181,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             {
                 UpdateTimeView(0f);
 
-                bool hasBestTime = _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
+                bool hasBestTime = _bestTimeRepository.TryGet(_levelInfo.Id, out var bestTime);
                 _hudView.SetBestTime(hasBestTime && HasRecord, bestTime);
             }
 
@@ -185,7 +198,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             goals.Clear();
 
-            if (_levelConfig.IsTutorial)
+            if (_levelInfo.IsTutorial)
                 return;
 
             foreach (var condition in _levelConfig.Conditions)
@@ -215,7 +228,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                 await ShowLoseAsync(cancellation);
         }
 
-        private bool HasRecord => _conditionsChecker.HasTimer && !_levelConfig.IsTutorial;
+        private bool HasRecord => _conditionsChecker.HasTimer && !_levelInfo.IsTutorial;
 
         private void StopGameplay()
         {
@@ -230,15 +243,15 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             float time = _levelTimer.Elapsed;
 
-            _levelProgress.MarkCompleted(_levelConfig.ID);
+            _levelProgress.MarkCompleted(_levelInfo.Id);
 
             if (IsWinItem(_lastMergedItem))
                 await _lastMergedItem.View.PlayWinAsync(cancellation);
 
             if (HasRecord)
             {
-                bool isNewRecord = _bestTimeRepository.TrySave(_levelConfig.ID, time);
-                _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
+                bool isNewRecord = _bestTimeRepository.TrySave(_levelInfo.Id, time);
+                _bestTimeRepository.TryGet(_levelInfo.Id, out var bestTime);
                 _winScreen.SetResult(time, bestTime, isNewRecord);
             }
             else if (_conditionsChecker.HasTimer)
@@ -399,10 +412,12 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             _winScreen.SetInteractable(false);
 
-            int next = LEVELS.IndexOfScene(_levelLoader.CurrentLevelScene) + 1;
-            bool hasNext = next > 0 && next < LEVELS.ALL.Length;
+            string sceneName = SCENE_NAMES.MAIN_MENU;
 
-            _levelLoader.LoadAsync(hasNext ? LEVELS.ALL[next].Scene : SCENE_NAMES.MAIN_MENU).Forget();
+            if (_levelsConfig.TryGetNext(_levelInfo.SceneName, out var next))
+                sceneName = next.SceneName;
+
+            _levelLoader.LoadAsync(sceneName).Forget();
         }
 
         private void HandleOnMenuClicked()

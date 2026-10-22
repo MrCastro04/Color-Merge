@@ -77,7 +77,14 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
                 _isPositionCached = true;
             }
 
-            rt.anchoredPosition = new Vector2((isCentered ? 0f : _sceneX) + shiftX, rt.anchoredPosition.y);
+            float x;
+
+            if (isCentered)
+                x = 0f;
+            else
+                x = _sceneX;
+
+            rt.anchoredPosition = new Vector2(x + shiftX, rt.anchoredPosition.y);
         }
 
         public void SetInteractable(bool isInteractable)

@@ -7,9 +7,10 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
     {
         public static UniTask StartPulseObj(this GameObject go)
         {
-            return go.TryGetComponent(out IPulseObject pulseObj)
-                ? pulseObj.StartPulse()
-                : UniTask.CompletedTask;
+            if (go.TryGetComponent(out IPulseObject pulseObj))
+                return pulseObj.StartPulse();
+            else
+                return UniTask.CompletedTask;
         }
 
         public static async UniTask StopPulseObj(this GameObject go)

@@ -53,7 +53,10 @@ namespace Assets.Game.Modules.Content.Level.Scripts.Conditions
 
         public float GetRemainingTime()
         {
-            return HasTimer ? Math.Max(0f, TimerSeconds - _levelTimer.Elapsed) : 0f;
+            if (HasTimer)
+                return Math.Max(0f, TimerSeconds - _levelTimer.Elapsed);
+            else
+                return 0f;
         }
     }
 }

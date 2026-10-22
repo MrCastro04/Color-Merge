@@ -47,12 +47,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 _bestTimeText.gameObject.SetActive(false);
         }
 
-        public void SetTime(float seconds)
-        {
-            _timeText.text = TimeFormatter.Format(seconds);
-            SetWarning(false);
-        }
-
         public void SetRemainingTime(float seconds)
         {
             _timeText.text = TimeFormatter.Format(seconds);
@@ -71,7 +65,11 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 return;
 
             _isWarning = isWarning;
-            _timeText.color = isWarning ? _warningColor : _timeColor;
+
+            if (isWarning)
+                _timeText.color = _warningColor;
+            else
+                _timeText.color = _timeColor;
 
             if (isWarning)
                 _timeText.transform.DOPunchScale(Vector3.one * 0.15f, 0.4f, 4, 0.5f).SetLink(gameObject);

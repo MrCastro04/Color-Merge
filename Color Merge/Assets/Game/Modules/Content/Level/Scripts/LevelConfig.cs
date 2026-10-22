@@ -13,10 +13,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
     [CreateAssetMenu(menuName = "Game/Level/Level Config", fileName = "Level_")]
     public class LevelConfig : SerializedScriptableObject
     {
-        [SerializeField] private string _id;
         [SerializeField] private ItemChainConfig _itemChain;
-        [Tooltip("Учебный уровень: рекорд времени не сохраняется и не показывается")]
-        [SerializeField] private bool _isTutorial;
 
         [Header("Conditions")]
         [OdinSerialize, NonSerialized, ShowInInspector] private HashSet<LevelCondition> _conditions = new();
@@ -51,9 +48,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         [Tooltip("Прошёл быстрее — 2 звезды, иначе 1")]
         [SerializeField, Min(0)] private float _twoStarsTime = 180f;
 
-        public string ID => _id;
         public ItemChainConfig ItemChain => _itemChain;
-        public bool IsTutorial => _isTutorial;
         public int Columns => _columns;
         public int Rows => _rows;
         public int SlotsCount => _columns * _rows;
@@ -70,7 +65,18 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public IReadOnlyCollection<LevelCondition> Conditions => _conditions;
         public bool HasTimer => _conditions.Any(condition => condition is Conditions.Timer);
 
-        public float TimerSeconds => _conditions.OfType<Conditions.Timer>().FirstOrDefault() is { } timer ? timer.Seconds : 0f;
+        public float TimerSeconds
+        {
+            get
+            {
+                var timer = _conditions.OfType<Conditions.Timer>().FirstOrDefault();
+
+                if (timer != null)
+                    return timer.Seconds;
+                else
+                    return 0f;
+            }
+        }
 
         public int TargetItemLevel
         {
@@ -84,7 +90,10 @@ namespace Assets.Game.Modules.Content.Level.Scripts
                         level = Mathf.Max(level, getItem.ItemLevel);
                 }
 
-                return level > 0 ? Mathf.Min(level, _itemChain.Items.Count) : _itemChain.Items.Count;
+                if (level > 0)
+                    return Mathf.Min(level, _itemChain.Items.Count);
+                else
+                    return _itemChain.Items.Count;
             }
         }
 
@@ -110,7 +119,12 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         {
             get
             {
-                int max = HasItemGoal ? TargetItemLevel - 1 : _itemChain.Items.Count;
+                int max;
+
+                if (HasItemGoal)
+                    max = TargetItemLevel - 1;
+                else
+                    max = _itemChain.Items.Count;
 
                 foreach (var condition in _conditions)
                 {

@@ -49,16 +49,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
             OnItemAttached?.Invoke(itemView);
         }
 
-        public virtual async UniTask<bool> TryAttach(ItemView itemView)
-        {
-            if (!CanAccept(itemView))
-                return false;
-
-            await ConfirmAndAttachToSlot(itemView);
-
-            return true;
-        }
-
         public UniTask Attach(ItemView itemView)
         {
             return ConfirmAndAttachToSlot(itemView);
@@ -67,13 +57,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
         public void Place(ItemView itemView)
         {
             _slotView.PlaceItem(itemView.RT);
-        }
-
-        protected bool CanAccept(ItemView itemView)
-        {
-            return itemView != null &&
-                   !IsBlocked &&
-                   (!IsOccupied || _slotView.ItemView == itemView);
         }
 
         protected async UniTask ConfirmAndAttachToSlot(ItemView itemView)

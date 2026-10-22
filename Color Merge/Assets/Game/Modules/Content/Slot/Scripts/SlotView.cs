@@ -53,7 +53,10 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
                     _isBackgroundColorCached = true;
                 }
 
-                _backgroundImage.color = isBlocked ? _blockedColor : _backgroundColor;
+                if (isBlocked)
+                    _backgroundImage.color = _blockedColor;
+                else
+                    _backgroundImage.color = _backgroundColor;
             }
 
             if (_wall.IsNotNull())

@@ -20,6 +20,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
     {
         [SerializeField] private ItemAssets _itemAssets;
         [SerializeField] private SlotAssets _slotAssets;
+        [SerializeField] private LevelsConfig _levelsConfig;
 
         [Header("Sound")]
         [SerializeField] private AudioSource _musicSource;
@@ -36,6 +37,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
         {
             builder.RegisterInstance(_itemAssets);
             builder.RegisterInstance(_slotAssets);
+            builder.RegisterInstance(_levelsConfig);
  
             builder.Register<AddressablesAssetProvider>(Lifetime.Singleton).As<IAssetProvider>().AsSelf();
             builder.Register<PlayerPrefsSaveService>(Lifetime.Singleton).As<ISaveService>();

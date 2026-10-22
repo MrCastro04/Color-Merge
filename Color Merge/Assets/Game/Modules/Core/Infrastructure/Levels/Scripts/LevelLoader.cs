@@ -44,9 +44,14 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             if (!isMenu)
                 CurrentLevelScene = sceneName;
 
-            _loadingTarget.Set(sceneName,
-                showTips: isMenu,
-                holdAfterLoad: isMenu ? MENU_HOLD_AFTER_LOAD : LEVEL_HOLD_AFTER_LOAD);
+            float holdAfterLoad;
+
+            if (isMenu)
+                holdAfterLoad = MENU_HOLD_AFTER_LOAD;
+            else
+                holdAfterLoad = LEVEL_HOLD_AFTER_LOAD;
+
+            _loadingTarget.Set(sceneName, showTips: isMenu, holdAfterLoad: holdAfterLoad);
 
             await _screenFader.FadeInAsync(CLOSE_FADE, cancellationToken);
 

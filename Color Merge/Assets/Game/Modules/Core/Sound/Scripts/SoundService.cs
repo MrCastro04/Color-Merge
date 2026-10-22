@@ -69,7 +69,11 @@ namespace Assets.Game.Modules.Core.Sound.Scripts
             source.spatialBlend = 0f;
             source.clip = clip;
             source.volume = SfxVolume * volumeScale;
-            source.pitch = randomizePitch ? Random.Range(MIN_PITCH, MAX_PITCH) : 1f;
+
+            if (randomizePitch)
+                source.pitch = Random.Range(MIN_PITCH, MAX_PITCH);
+            else
+                source.pitch = 1f;
             source.Play();
 
             Object.Destroy(go, clip.length / source.pitch + 0.1f);
