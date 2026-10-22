@@ -117,8 +117,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             try
             {
-                // Тутор есть только на обучающем уровне (TUTOR SCENARIO в сцене Level_0).
+                // Тутор — только на учебных уровнях (TUTOR SCENARIO в сцене). Пока идёт — кнопка настроек выключена.
+                _settingsController.SetInteractable(false);
                 await _levelTutorial.PlayAsync(_levelConfig.ItemChain, cancellation);
+                _settingsController.SetInteractable(true);
 
                 await StartLevelFlow(cancellation);
             }

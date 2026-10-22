@@ -98,14 +98,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7980484790740235135, guid: cca9227756a8d284abbc78fc6b5f0f66, type: 3}
       propertyPath: _text
-      value: 'Some levels have a time limit:
+      value: 'When the timer reaches zero,
 
-        then the timer counts down.
+        the level is lost. Hurry up!
 
-        Don''t
-        let it reach zero!
-
-        <size=60%><color=#FFE066>Tap to continue</color></size>'
+        <size=60%><color=#FFE066>Tap
+        to continue</color></size>'
       objectReference: {fileID: 0}
     - target: {fileID: 8730378702895884925, guid: cca9227756a8d284abbc78fc6b5f0f66, type: 3}
       propertyPath: m_Name

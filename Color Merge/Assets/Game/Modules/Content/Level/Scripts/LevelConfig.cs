@@ -62,6 +62,9 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public IReadOnlyList<LevelCondition> Conditions => _conditions;
         public bool HasTimer => _conditions.Exists(condition => condition is Conditions.Timer);
 
+        // Время на уровень из условия Timer (0 — таймера нет).
+        public float TimerSeconds => _conditions.Find(condition => condition is Conditions.Timer) is Conditions.Timer timer ? timer.Seconds : 0f;
+
         // Цель-предмет: самый высокий Get_Item_With_Level_X; нет такого условия — вся цепочка.
         public int TargetItemLevel
         {

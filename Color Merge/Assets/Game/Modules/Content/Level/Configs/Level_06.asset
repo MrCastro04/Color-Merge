@@ -48,7 +48,8 @@ MonoBehaviour:
     RefIds:
     - rid: 482838943652118657
       type: {class: Timer, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
-      data: 
+      data:
+        _seconds: 300
     - rid: 482838943652118658
       type: {class: Make_Merge_X_Times, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
       data:

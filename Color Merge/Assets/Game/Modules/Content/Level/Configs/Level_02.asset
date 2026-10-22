@@ -25,6 +25,8 @@ MonoBehaviour:
     ItemStartLevel: 2
   - SlotID: 22
     ItemStartLevel: 2
+  _candyConnector: {fileID: 0}
+  _initialCandies: []
   _generatorCharges: -1
   _generatorUpgradeEnabled: 1
   _threeStarsTime: 90
@@ -37,4 +39,4 @@ MonoBehaviour:
       data:
         _hasTimer: 0
         _timeLimit: 120
-        _generatorLevel: 5
+        _generatorLevel: 3

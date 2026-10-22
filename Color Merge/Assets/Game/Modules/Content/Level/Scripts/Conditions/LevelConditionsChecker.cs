@@ -15,6 +15,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts.Conditions
 
         // В списке есть Timer: у игрока таймер, и работают лимиты времени условий.
         public bool HasTimer { get; private set; }
+        // Время на уровень из условия Timer — общий обратный отсчёт.
+        public float TimerSeconds { get; private set; }
         public bool IsAllConditionsCompleted { get; private set; }
 
         public event Action OnAllConditionsCompleted;
@@ -29,6 +31,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts.Conditions
         {
             _conditions = levelConfig.Conditions;
             HasTimer = levelConfig.HasTimer;
+            TimerSeconds = levelConfig.TimerSeconds;
             IsAllConditionsCompleted = false;
         }
 
@@ -48,11 +51,14 @@ namespace Assets.Game.Modules.Content.Level.Scripts.Conditions
             return true;
         }
 
-        // Не успел выполнить условие с лимитом. Без Timer в списке проиграть по времени нельзя.
+        // Кончилось время уровня (Timer) или не успел выполнить условие с лимитом. Без Timer проиграть по времени нельзя.
         public bool IsTimeUp()
         {
             if (!HasTimer || IsAllConditionsCompleted)
                 return false;
+
+            if (_levelTimer.Elapsed >= TimerSeconds)
+                return true;
 
             foreach (var timed in GetPendingTimedConditions())
             {
@@ -63,14 +69,16 @@ namespace Assets.Game.Modules.Content.Level.Scripts.Conditions
             return false;
         }
 
-        // Сколько осталось до ближайшего лимита среди ещё не выполненных условий.
+        // Сколько осталось: время уровня (Timer) или ближайший лимит невыполненного условия — что раньше.
         public bool TryGetNearestDeadline(out float remaining)
         {
             remaining = float.MaxValue;
-            bool hasDeadline = false;
 
             if (!HasTimer)
                 return false;
+
+            remaining = TimerSeconds - _levelTimer.Elapsed;
+            bool hasDeadline = true;
 
             foreach (var timed in GetPendingTimedConditions())
             {
