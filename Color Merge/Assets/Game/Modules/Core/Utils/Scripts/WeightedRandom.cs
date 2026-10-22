@@ -5,7 +5,6 @@ namespace Assets.Game.Modules.Core.Utils.Scripts
 {
     public static class WeightedRandom
     {
-        // Выбирает элемент с вероятностью, пропорциональной его весу. Элементы с весом <= 0 не выпадают.
         public static T Pick<T>(IReadOnlyList<T> items, Func<T, float> getWeight)
         {
             if (items == null || items.Count == 0)

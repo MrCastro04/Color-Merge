@@ -1,6 +1,5 @@
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Что показать на кнопке уровня в окне выбора.
     public readonly struct LevelButtonState
     {
         public readonly bool IsLocked;

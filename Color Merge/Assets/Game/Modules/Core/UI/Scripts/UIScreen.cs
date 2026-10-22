@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.UI.Scripts
 {
-    // Базовый экран: показ/скрытие через фейд CanvasGroup.
     [RequireComponent(typeof(CanvasGroup))]
     public class UIScreen : MonoBehaviour
     {

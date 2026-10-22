@@ -10,7 +10,6 @@ namespace Assets.Game.Modules.Content.Tutorial
         Tap,
         ItemMerged,
         ButtonClick,
-        // Шаг закрывает контроллер тутора (TutorScenario.RequestSkip), например после взрыва бомбы.
         External,
     }
 

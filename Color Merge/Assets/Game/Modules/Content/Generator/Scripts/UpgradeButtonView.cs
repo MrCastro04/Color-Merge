@@ -8,9 +8,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.Generator.Scripts
 {
-    // Кнопка улучшения генератора (стрелка вверх). Активна, когда хватает энергии:
-    // сверху «Lvl N -> Lvl N+1», иначе — молния и сколько энергии накоплено (как у кнопки конфетной бомбы).
-    // На туторе поднимается над затемнением (IChangeSortGroupInCanvas).
     public class UpgradeButtonView : MonoBehaviour, IChangeSortGroupInCanvas
     {
         private const float ENERGY_ICON_GAP = 8f;
@@ -30,7 +27,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         public event Action OnClicked;
 
         public RectTransform RT => (RectTransform)transform;
-        // Подпись над кнопкой (энергия «0/3» или «Lvl N -> Lvl N+1») — на неё указывает стрелка тутора.
         public RectTransform LabelRT => (RectTransform)_labelText.transform;
 
         public string DesiredGroup => SORTING_LAYERS.TUTOR;
@@ -53,7 +49,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             gameObject.SetActive(isVisible);
         }
 
-        // Сдвиг вправо от места в сцене (слева есть кнопка конфетной бомбы).
         public void SetShift(float shiftX)
         {
             var rt = (RectTransform)transform;
@@ -88,7 +83,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             SetActive(false);
         }
 
-        // Молния стоит вплотную слева от текста (текст по центру, ширина меняется).
         private void SetEnergyIconVisible(bool isVisible)
         {
             if (_energyIcon == null)

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Подсказка по нажатию на закрытый уровень: какой уровень пройти, чтобы открыть.
     public class LockedLevelPopup : UIScreen
     {
         [SerializeField] private TMP_Text _messageText;

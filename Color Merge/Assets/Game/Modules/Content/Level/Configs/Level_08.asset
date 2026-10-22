@@ -12,14 +12,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9284afc0fecaa6242901cf79e7d36d34, type: 3}
   m_Name: Level_08
   m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Level.Scripts.LevelConfig
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: _conditions
+      Entry: 7
+      Data: 0|System.Collections.Generic.HashSet`1[[Assets.Game.Modules.Content.Level.Scripts.Conditions.LevelCondition,
+        Content]], System.Core
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 1|Assets.Game.Modules.Content.Level.Scripts.Conditions.Timer, Content
+    - Name: _seconds
+      Entry: 4
+      Data: 300
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|Assets.Game.Modules.Content.Level.Scripts.Conditions.Make_Merge_X_Times,
+        Content
+    - Name: _mergesCount
+      Entry: 3
+      Data: 20
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|Assets.Game.Modules.Content.Level.Scripts.Conditions.Upgraded_Generator_With_Level_X,
+        Content
+    - Name: _generatorLevel
+      Entry: 3
+      Data: 4
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 4|Assets.Game.Modules.Content.Level.Scripts.Conditions.Get_Item_With_Level_X,
+        Content
+    - Name: _itemLevel
+      Entry: 3
+      Data: 5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   _id: level_08
   _itemChain: {fileID: 11400000, guid: 9f9e62b8a819b444099ad8ea42e0bdd9, type: 2}
   _isTutorial: 0
-  _conditions:
-  - rid: 482838943652118738
-  - rid: 482838943652118739
-  - rid: 482838943652118740
-  - rid: 482838943652118741
   _columns: 5
   _rows: 7
   _blockedSlots: 00000000010000000500000006000000030000000400000008000000090000000c0000000d00000011000000120000001400000015000000190000001a00000017000000180000001c0000001d000000
@@ -38,32 +94,9 @@ MonoBehaviour:
     ItemStartLevel: 2
   _candyConnector: {fileID: 11400000, guid: 2748c654ca09a1a4094bddaaa689a4d7, type: 2}
   _initialCandies: []
+  _candyBomb: {fileID: 0}
+  _candyBombCost: 5
   _generatorCharges: -1
   _generatorUpgradeEnabled: 1
   _threeStarsTime: 90
   _twoStarsTime: 180
-  references:
-    version: 2
-    RefIds:
-    - rid: 482838943652118738
-      type: {class: Timer, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
-      data:
-        _seconds: 300
-    - rid: 482838943652118739
-      type: {class: Make_Merge_X_Times, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
-      data:
-        _hasTimer: 0
-        _timeLimit: 120
-        _mergesCount: 20
-    - rid: 482838943652118740
-      type: {class: Upgraded_Generator_With_Level_X, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
-      data:
-        _hasTimer: 0
-        _timeLimit: 120
-        _generatorLevel: 4
-    - rid: 482838943652118741
-      type: {class: Get_Item_With_Level_X, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
-      data:
-        _hasTimer: 0
-        _timeLimit: 120
-        _itemLevel: 5

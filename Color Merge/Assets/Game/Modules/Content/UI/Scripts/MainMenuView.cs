@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Главное меню: большая кнопка «Играть» (дышит, чтобы притягивать взгляд), под ней маленькая QUIT.
-    // Кнопка настроек — отдельный SettingsButtonView (общий с уровнем).
     public class MainMenuView : MonoBehaviour
     {
         [SerializeField] private Button _playButton;

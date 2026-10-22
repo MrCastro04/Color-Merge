@@ -18,14 +18,12 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
                 .SetLoops(-1, LoopType.Yoyo);
         }
 
-
         public static void ResetYoyo(this IMovator movator )
         {
             movator.RT.DOKill();
         }
     }
 
-    // IMoveArrow (стрелка с направлением) лежит в Content/Tutorial/Arrows — Core не знает про контент.
     public interface IMovator
     {
         public RectTransform RT { get; }

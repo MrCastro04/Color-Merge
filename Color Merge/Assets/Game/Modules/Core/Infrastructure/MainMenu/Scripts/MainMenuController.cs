@@ -13,13 +13,9 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
 {
-    // Сценарий главного меню: шторка уходит, музыка меню, «Играть» → окно выбора уровня → уровень через Mid Loader.
-    // Окно настроек ведёт SettingsController (общий с уровнем).
     public class MainMenuController : IAsyncStartable, IDisposable
     {
         private const float SHOW_MENU_FADE = 0.3f;
-
-        // Уровни — LEVELS.ALL. Открыт Level 0 и каждый уровень после пройденного предыдущего.
 
         private readonly MainMenuView _mainMenuView;
         private readonly LevelSelectView _levelSelectView;
@@ -117,7 +113,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelSelectView.ShowAsync(_cancellationToken).Forget();
         }
 
-        // QUIT — выход из игры (в редакторе — остановка Play Mode).
         private void HandleOnQuitClicked()
         {
             _sfx.Play(SFXOneShotType.ButtonClick);
@@ -129,7 +124,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
 #endif
         }
 
-        // Учебный уровень — сначала окно «новый контент», обычный — сразу загрузка.
         private void HandleOnLevelSelected(int levelIndex)
         {
             _sfx.Play(SFXOneShotType.ButtonClick);
@@ -167,7 +161,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelLoader.LoadAsync(LEVELS.ALL[levelIndex].Scene).Forget();
         }
 
-        // Лучшее время показывается только у пройденных неучебных уровней.
         private List<LevelButtonState> GetLevelStates()
         {
             var states = new List<LevelButtonState>(LEVELS.ALL.Length);
@@ -183,7 +176,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             return states;
         }
 
-        // Закрытый уровень: подсказка «пройди предыдущий». Уровни нумеруются с нуля → предыдущий = levelIndex - 1.
         private void HandleOnLockedLevelClicked(int levelIndex)
         {
             _sfx.Play(SFXOneShotType.Return);
@@ -197,7 +189,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _lockedLevelPopup.HideAsync(_cancellationToken).Forget();
         }
 
-        // Настройки → CLEAR PROGRESS (только в меню): стираем все сохранения, кнопки уровней — заново, окно-подтверждение.
         private void HandleOnClearProgressClicked()
         {
             _sfx.Play(SFXOneShotType.ButtonClick);

@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
 {
-    // Глобальный резолвер: находит IPulseObject-компонент на GameObject и запускает/останавливает пульс.
     public static class ExPulseResolver
     {
         public static UniTask StartPulseObj(this GameObject go)

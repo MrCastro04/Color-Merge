@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.Generator.Scripts
 {
-    // Кнопка генератора: иконка предмета, который он сейчас создаёт, «Lvl N» сверху справа, заряды.
-    // На туторе поднимается над затемнением (IChangeSortGroupInCanvas) и пульсирует (IPulseObject).
     public class GeneratorButtonView : MonoBehaviour, IChangeSortGroupInCanvas, IPulseObject
     {
         [SerializeField] private Button _button;
@@ -48,7 +46,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             _button.onClick.RemoveListener(HandleOnClick);
         }
 
-        // charges < 0 — без ограничения, счётчик скрыт
         public void SetCharges(int charges)
         {
             if (_chargesText == null)
@@ -70,8 +67,6 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
                 _icon.sprite = sprite;
         }
 
-        // Без кнопки улучшения генератор стоит по центру, с ней — на своём месте из сцены.
-        // shiftX — сдвиг вправо, когда слева есть кнопка конфетной бомбы.
         public void SetCentered(bool isCentered, float shiftX = 0f)
         {
             var rt = (RectTransform)transform;

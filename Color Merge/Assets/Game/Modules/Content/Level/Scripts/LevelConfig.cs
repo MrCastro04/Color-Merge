@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Level.Scripts.Conditions;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
-    // Уровень целиком настраивается здесь, без изменения кода.
-    // ID клетки = row * Columns + column, отсчёт с левого верхнего угла.
-    // Условия прохождения — список _conditions (добавляются кнопкой в инспекторе, LevelConfigEditor).
     [CreateAssetMenu(menuName = "Game/Level/Level Config", fileName = "Level_")]
-    public class LevelConfig : ScriptableObject
+    public class LevelConfig : SerializedScriptableObject
     {
         [SerializeField] private string _id;
         [SerializeField] private ItemChainConfig _itemChain;
@@ -19,7 +19,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         [SerializeField] private bool _isTutorial;
 
         [Header("Conditions")]
-        [SerializeReference] private List<LevelCondition> _conditions = new();
+        [OdinSerialize, NonSerialized, ShowInInspector] private HashSet<LevelCondition> _conditions = new();
 
         [Header("Board")]
         [SerializeField, Min(1)] private int _columns = 5;
@@ -67,13 +67,11 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public bool HasGeneratorLimit => _generatorCharges >= 0;
         public bool IsGeneratorUpgradeEnabled => _generatorUpgradeEnabled;
 
-        public IReadOnlyList<LevelCondition> Conditions => _conditions;
-        public bool HasTimer => _conditions.Exists(condition => condition is Conditions.Timer);
+        public IReadOnlyCollection<LevelCondition> Conditions => _conditions;
+        public bool HasTimer => _conditions.Any(condition => condition is Conditions.Timer);
 
-        // Время на уровень из условия Timer (0 — таймера нет).
-        public float TimerSeconds => _conditions.Find(condition => condition is Conditions.Timer) is Conditions.Timer timer ? timer.Seconds : 0f;
+        public float TimerSeconds => _conditions.OfType<Conditions.Timer>().FirstOrDefault() is { } timer ? timer.Seconds : 0f;
 
-        // Цель-предмет: самый высокий Get_Item_With_Level_X; нет такого условия — вся цепочка.
         public int TargetItemLevel
         {
             get
@@ -90,9 +88,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             }
         }
 
-        public bool HasItemGoal => _conditions.Exists(condition => condition is Get_Item_With_Level_X);
+        public bool HasItemGoal => _conditions.Any(condition => condition is Get_Item_With_Level_X);
 
-        // Сколько мерджей нужно (самое большое Make_Merge_X_Times); 0 — условия на мерджи нет.
         public int MergesTarget
         {
             get
@@ -109,8 +106,6 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             }
         }
 
-        // Генератор не выдаёт цель-предмет сам (до цели минус один),
-        // но условие на прокачку генератора всегда достижимо.
         public int GeneratorMaxLevel
         {
             get
@@ -127,7 +122,6 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             }
         }
 
-        // Без таймера звёзды за время не считаются — всегда 3.
         public int GetStars(float time)
         {
             if (!HasTimer) return 3;

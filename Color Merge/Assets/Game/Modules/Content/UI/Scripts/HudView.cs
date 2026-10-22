@@ -7,9 +7,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Таймер и рекорд (только на уровне с условием Timer).
-    // Есть невыполненное условие с лимитом — показывается оставшееся время; последние секунды — красным.
-    // На туторе поднимается над затемнением (IChangeSortGroupInCanvas).
     public class HudView : MonoBehaviour, IChangeSortGroupInCanvas
     {
         private const float WARNING_TIME = 10f;
@@ -29,7 +26,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         public string StartGroup { get; set; } = SORTING_LAYERS.DEFAULT;
         public Canvas SortingCanvas => _sortingCanvas;
 
-        // Границы самих цифр таймера (поле текста шире) — на них указывает стрелка тутора.
         public Bounds TimeTextWorldBounds
         {
             get
@@ -43,7 +39,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         }
         private bool _isWarning;
 
-        // Уровень без условия Timer — ни таймера, ни рекорда.
         public void SetTimerVisible(bool isVisible)
         {
             _timeText.gameObject.SetActive(isVisible);
@@ -52,14 +47,12 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 _bestTimeText.gameObject.SetActive(false);
         }
 
-        // Секундомер.
         public void SetTime(float seconds)
         {
             _timeText.text = TimeFormatter.Format(seconds);
             SetWarning(false);
         }
 
-        // Обратный отсчёт: меньше WARNING_TIME — текст краснеет и пульсирует.
         public void SetRemainingTime(float seconds)
         {
             _timeText.text = TimeFormatter.Format(seconds);
@@ -84,7 +77,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 _timeText.transform.DOPunchScale(Vector3.one * 0.15f, 0.4f, 4, 0.5f).SetLink(gameObject);
         }
 
-        // Рекорд показывается только при повторном прохождении.
         public void SetBestTime(bool hasBestTime, float seconds)
         {
             _bestTimeText.gameObject.SetActive(hasBestTime);
@@ -93,7 +85,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 _bestTimeText.text = $"BEST {TimeFormatter.Format(seconds)}";
         }
 
-        // Счётчик условия Make_Merge_X_Times: target = 0 — условия нет, счётчик скрыт.
         public void SetMerges(int done, int target)
         {
             if (_mergesText == null)
@@ -105,7 +96,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
         public RectTransform MergesTextRT => (RectTransform)_mergesText.transform;
 
-        // Значки условий победы сверху слева.
         public LevelGoalsView Goals => _goals;
 
         public void SetLevelName(string levelName)
@@ -113,7 +103,5 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             if (_levelText != null)
                 _levelText.text = levelName;
         }
-
-        // TODO: анимация нового рекорда (пульс _bestTimeText)
     }
 }

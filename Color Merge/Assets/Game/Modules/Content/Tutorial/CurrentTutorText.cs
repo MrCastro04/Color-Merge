@@ -24,7 +24,6 @@ namespace Assets.Game.Modules.Content.Tutorial
 
         private void OnDestroy()
         {
-            // зависимости могли не внедриться, если скоуп сцены не собрался
             if (_scenario == null) return;
 
             _scenario.OnTutorStartRun -= HandleOnTutorStartRun;

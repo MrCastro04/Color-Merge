@@ -15,8 +15,6 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
             await pulseObject.StartPulse();
         }
         
-        // withRestart и restartTime — пара: либо оба заданы (перезапуск через restartTime секунд
-        // после остановки по наведению), либо оба по умолчанию (просто остановка без перезапуска).
         public static async UniTask StartPulse(this IPulseObject pulseObj,
             bool? withRestart = false, float? restartTime = null)
         {
@@ -72,7 +70,6 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
                 .SetEase(ease);
         }
 
-        // Если RT не назначен в инспекторе, берём RectTransform с того же GameObject.
         private static RectTransform ResolveRT(IPulseObject pulseObj)
         {
             if (pulseObj.RT.IsNotNull())

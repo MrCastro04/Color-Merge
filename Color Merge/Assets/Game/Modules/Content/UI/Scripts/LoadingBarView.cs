@@ -7,8 +7,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Полоса загрузки Mid Loader'а (аналог LoadingBarView в Combo-Dungeon).
-    // Заполнение — anchorMax.x у полосы внутри маски (прогресс-бар из Cartoon GUI).
     public class LoadingBarView : MonoBehaviour
     {
         [SerializeField] private RectTransform _fill;
@@ -24,7 +22,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             SetValue(0f);
         }
 
-        // Плавно догоняет target; скорость — доля бара в секунду, чтобы и мгновенная загрузка была видна.
         public UniTask AnimateToAsync(float target, float speed = 1.2f, CancellationToken cancellationToken = default)
         {
             target = Mathf.Clamp01(target);

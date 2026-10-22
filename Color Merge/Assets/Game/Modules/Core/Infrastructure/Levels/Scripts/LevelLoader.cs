@@ -8,9 +8,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 {
-    // Все переходы между сценами идут через Mid Loader (как в Combo-Dungeon):
-    // шторка закрывается → грузится Mid Loader → он грузит целевую сцену в фоне и активирует её через ActivateAsync.
-    // Сцены грузятся с EnqueueParent(ApplicationScope) — только так их скоупы получают общие сервисы.
     public class LevelLoader
     {
         private const float CLOSE_FADE = 0.3f;
@@ -35,7 +32,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _applicationScope = applicationScope;
         }
 
-        // В главное меню — с фразами и паузой 1 с, на уровни — только бар.
         public async UniTask LoadAsync(string sceneName, CancellationToken cancellationToken = default)
         {
             if (IsLoading)
@@ -65,7 +61,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             return LoadAsync(CurrentLevelScene, cancellationToken);
         }
 
-        // Вызывает Mid Loader, когда целевая сцена загружена в фоне и шторка закрыта.
         public async UniTask ActivateAsync(PreloadedScene scene)
         {
             using (LifetimeScope.EnqueueParent(_applicationScope))

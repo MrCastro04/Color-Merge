@@ -3,9 +3,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.Vibration.Scripts
 {
-    // Вибрация телефона. Handheld.Vibrate слишком длинная (~0.5 с), поэтому на Android короткий импульс
-    // через системный Vibrator (VibrationEffect с API 26). В редакторе и на других платформах — ничего.
-    // Ссылка на Handheld.Vibrate (запасной путь) заодно добавляет в манифест разрешение VIBRATE.
     public class VibrationService : IVibrationService
     {
         private const string ENABLED_KEY = "vibration_enabled";

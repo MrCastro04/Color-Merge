@@ -18,8 +18,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
     // Level_0 и есть обучение — тутор играет при каждом входе на уровень.
     public class Tutorial_0_Controller : ILevelTutorial, IWaiter
     {
-        // Затемнение тутора — слой Tutor, order 1 (выше основного UI по рейкастам), текст — order 10.
-        // Подсвеченный объект встаёт между ними.
         private const int HIGHLIGHT_ORDER = 5;
         private const int FINGER_REFRESH_DELAY_MS = 350;
 
@@ -75,7 +73,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         {
             await this.Wait(0.3f, ct);
 
-            // тутор - про игру
             await _tutorScenario.RunStepWithCallbacks(0, ct: ct);
             await this.Wait(0.3f, ct);
         }
@@ -84,8 +81,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         {
             var chainProgress = _chainProgressView;
 
-            // тутор - цепочка предметов, последний из них — цель уровня
-            // стрелки: сверху — на цель уровня, слева — на начало цепочки
             _preTutorCallbacks
                 .With(() => chainProgress.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => PointArrows(1, chainProgress.GoalIcon, chainProgress.FirstIcon));
@@ -101,7 +96,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 
             var boardView = _boardView;
 
-            // тутор - перетащи предмет на такой же (тянуть можно только эту пару — чтобы не собрать цель раньше времени)
             _preTutorCallbacks
                 .With(() => boardView.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(AllowOnlyMergePair);
@@ -126,7 +120,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         {
             var generatorButton = _generatorButtonView;
 
-            // тутор - нажми на генератор, чтобы получить новый предмет
             _preTutorCallbacks
                 .With(() => generatorButton.gameObject.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => PointArrows(3, generatorButton.RT, generatorButton.RT))
@@ -145,10 +138,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 
         private async UniTask PlayTutor4(CancellationToken ct = default)
         {
-            // тутор - собери цель, время пошло с первого мерджа
             var chainProgress = _chainProgressView;
 
-            // цепочка подсвечена, стрелка — на цель уровня
             _preTutorCallbacks
                 .With(() => chainProgress.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => PointArrows(4, chainProgress.GoalIcon));
@@ -158,7 +149,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             await this.Wait(0.3f, ct);
         }
 
-        // Пара одинаковых предметов самого низкого уровня — их мердж не соберёт цель раньше времени.
         private bool TryFindMergePair(out ItemController from, out ItemController to)
         {
             var items = _boardController.GetItems();
@@ -176,7 +166,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 
                     int level = _chain.GetLevel(items[i].Config);
 
-                    // Конфеты не в цепочке (уровень 0) — не учебная пара.
                     if (level <= 0 || level >= bestLevel)
                         continue;
 
@@ -189,7 +178,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             return from != null;
         }
 
-        // Дроп доска принимает только целиком включённой — поэтому включаем её, а лишние предметы гасим поштучно.
         private void AllowOnlyMergePair()
         {
             _boardController.SetInteractable(true);
@@ -201,7 +189,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             }
         }
 
-        // Стрелки шага по порядку указывают на targets (направление каждой стрелки задано в префабе шага).
         private void PointArrows(int step, params RectTransform[] targets)
         {
             var arrows = _tutorScenario.GetTutor(step).Arrows;
@@ -225,7 +212,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             _finger.gameObject.SetActive(false);
         }
 
-        // Игрок переставил предмет из пары не туда — палец ведём от новых позиций.
         private void HandleOnPairItemMoved(ItemController item)
         {
             if (item == _mergeFrom || item == _mergeTo)
@@ -238,7 +224,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             HandleOnPairItemMoved(second);
         }
 
-        // Предмет долетает до новой клетки анимацией — позицию берём, когда он встал.
         private async UniTaskVoid ShowFingerAfterMove()
         {
             await UniTask.Delay(FINGER_REFRESH_DELAY_MS);

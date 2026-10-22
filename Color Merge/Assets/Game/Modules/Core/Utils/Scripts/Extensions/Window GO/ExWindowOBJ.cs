@@ -57,7 +57,6 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
             await tween.AsyncWaitForCompletion();
         }
 
-        // Если ContainerContent не назначен в инспекторе, окном считается сам GameObject компонента.
         private static GameObject ResolveContainerContent(IWindowObj windowObj)
         {
             if (windowObj.ContainerContent.IsNotNull())

@@ -8,9 +8,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.MidLoader.Scripts
 {
-    // Экран загрузки между сценами (как MidLoaderController в Combo-Dungeon):
-    // шторка уходит → целевая сцена грузится в фоне, бар идёт за реальным прогрессом →
-    // пауза → шторка закрывается → сцена активируется за шторкой и сама делает FadeOut.
     public class MidLoaderController : IAsyncStartable
     {
         private const float SHOW_LOADER_FADE = 0.4f;
@@ -54,7 +51,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MidLoader.Scripts
             tipsCts.Cancel();
             await _screenFader.FadeInAsync(HIDE_LOADER_FADE, cancellation);
 
-            // Без токена: при активации сцена Mid Loader выгружается вместе со своим скоупом.
             await _levelLoader.ActivateAsync(preloadedScene);
         }
 
@@ -66,7 +62,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.MidLoader.Scripts
                 .PreloadAsync(_loadingTarget.SceneName, Progress.Create<float>(p => loaded = p), cancellation)
                 .Preserve();
 
-            // Бар догоняет реальный прогресс, но не быстрее своей скорости — мгновенная загрузка тоже видна.
             while (_loadingBarView.Value < 1f)
             {
                 if (loaded > _loadingBarView.Value)

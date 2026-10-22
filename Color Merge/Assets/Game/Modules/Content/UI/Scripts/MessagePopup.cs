@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Простое окно-сообщение: заголовок, текст, кнопка OK (например, «прогресс очищен»).
     public class MessagePopup : UIScreen
     {
         [SerializeField] private TMP_Text _titleText;

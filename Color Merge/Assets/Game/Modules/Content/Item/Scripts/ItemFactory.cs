@@ -33,7 +33,6 @@ namespace Assets.Game.Modules.Content.Item.Scripts
             _prefab = prefab.GetComponent<ItemView>();
         }
 
-        // _resolver.Instantiate — чтобы сработал [Inject] Construct у ItemView (как CardFactory в Combo-Dungeon)
         public ItemController Create(ItemConfig config, Transform parent)
         {
             var view = _resolver.Instantiate(_prefab, parent);

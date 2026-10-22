@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
-    // Запуск музыки по типу из MusicTheme: грузит клип через IAssetProvider (кэшируется) и отдаёт в ISoundService.
     public class MusicPlayer
     {
         private readonly ISoundService _soundService;

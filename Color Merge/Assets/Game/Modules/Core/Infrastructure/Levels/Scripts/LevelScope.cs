@@ -19,9 +19,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 {
-    // Скоуп сцены уровня (как Tutorial_N_Scope в Combo-Dungeon). В инспекторе — только конфиг уровня,
-    // общие сервисы и ассеты приходят из ApplicationScope. Сцена, запущенная напрямую (не через Boot), их не найдёт.
-    // View'шки берутся из сцены (RegisterComponentInHierarchy) — все они обязаны быть на сцене.
     public class LevelScope : LifetimeScope
     {
         [SerializeField] private LevelConfigReference _levelConfig;

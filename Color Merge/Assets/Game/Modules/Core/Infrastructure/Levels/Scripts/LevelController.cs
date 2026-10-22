@@ -19,9 +19,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 {
-    // Сценарий уровня (как Tutorial_N_Controller в Combo-Dungeon):
-    // загрузка конфига → сборка доски → тутор (если есть) → StartLevelFlow (игра до победы / поражения) → экран результата.
-    // Победа — выполнены все условия LevelConfig.Conditions (LevelConditionsChecker.IsAllConditionsCompleted).
     public class LevelController : IAsyncStartable, IDisposable
     {
         private const float SHOW_LEVEL_FADE = 0.4f;
@@ -63,7 +60,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
         private LevelResult _result;
 
-        // Последний собранный мерджем предмет: если он закрыл условие на предмет — играет анимацию победы.
         private ItemController _lastMergedItem;
         private bool _wasTimerRunningBeforeSettings;
 
@@ -116,12 +112,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             _musicPlayer.PlayAsync(MusicType.Gameplay, cancellation).Forget();
 
-            // Доска собрана за шторкой Mid Loader'а — теперь её можно показать.
             await _screenFader.FadeOutAsync(SHOW_LEVEL_FADE, cancellation);
 
             try
             {
-                // Тутор — только на учебных уровнях (TUTOR SCENARIO в сцене). Пока идёт — кнопка настроек выключена.
                 _settingsController.SetInteractable(false);
                 await _levelTutorial.PlayAsync(_levelConfig.ItemChain, cancellation);
                 _settingsController.SetInteractable(true);
@@ -130,7 +124,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             }
             catch (OperationCanceledException)
             {
-                // Сцену уровня выгрузили посреди игры (меню, рестарт) — это не ошибка.
             }
         }
 
@@ -160,7 +153,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _upgrades.Reset();
             _hudView.SetMerges(0, _levelConfig.MergesTarget);
             _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
-            // Есть кнопка конфетной бомбы (слева) — генератор и кнопка улучшения сдвигаются вправо, чтобы влезли все три.
             _candyBombSystem.Setup(_levelConfig);
             float bottomBarShift = _candyBombSystem.IsEnabled ? BOMB_BOTTOM_BAR_SHIFT : 0f;
             _generatorController.SetCentered(!_levelConfig.IsGeneratorUpgradeEnabled, bottomBarShift);
@@ -176,7 +168,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             {
                 UpdateTimeView(0f);
 
-                // Учебный уровень: таймер есть, рекорда нет.
                 bool hasBestTime = _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
                 _hudView.SetBestTime(hasBestTime && HasRecord, bestTime);
             }
@@ -185,7 +176,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             SetupGoals();
         }
 
-        // Значки условий победы сверху слева — только на обычных (не учебных) уровнях.
         private void SetupGoals()
         {
             var goals = _hudView.Goals;
@@ -207,8 +197,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             }
         }
 
-        // Игра идёт, пока не выполнены все условия или не наступило поражение.
-        // Победу и «нет ходов» выставляют события, лимиты времени (только с Timer) проверяются здесь каждый кадр.
         private async UniTask StartLevelFlow(CancellationToken cancellation)
         {
             while (_result == LevelResult.NONE)
@@ -227,7 +215,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                 await ShowLoseAsync(cancellation);
         }
 
-        // Рекорд — только на уровне с таймером и не учебном.
         private bool HasRecord => _conditionsChecker.HasTimer && !_levelConfig.IsTutorial;
 
         private void StopGameplay()
@@ -243,7 +230,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             float time = _levelTimer.Elapsed;
 
-            // Пройден — в меню открывается следующий уровень.
             _levelProgress.MarkCompleted(_levelConfig.ID);
 
             if (IsWinItem(_lastMergedItem))
@@ -314,8 +300,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _settingsController.OnMenuRequested -= HandleOnMenuClicked;
         }
 
-        // Панель над доской: цепочка до цели-предмета. Прогресс — лучший предмет игрока на поле (PlayerUpgradesInLevel).
-        // Показывается только если в условиях есть Get_Item_With_Level_X.
         private void SetupChainProgress()
         {
             var chain = _levelConfig.ItemChain;
@@ -345,7 +329,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                    && _levelConfig.ItemChain.GetLevel(item.Config) >= _levelConfig.TargetItemLevel;
         }
 
-        // Прогресс вырос (предмет или генератор) — возможно, выполнены все условия.
         private void HandleOnUpgradesChanged()
         {
             _chainProgressView.SetReachedLevel(_upgrades.MaxItemLevel);
@@ -359,7 +342,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             _lastMergedItem = item;
 
-            // Таймер (только с условием Timer) стартует с первого мерджа.
             if (_conditionsChecker.HasTimer && !_levelTimer.IsRunning && _result == LevelResult.NONE)
                 _levelTimer.Start();
 
@@ -375,7 +357,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             CheckOutOfMoves();
         }
 
-        // Нет ходов: пар для мерджа нет, и новый предмет взять негде (генератор пуст или доска заполнена).
         private void CheckOutOfMoves()
         {
             if (_result != LevelResult.NONE || _boardController.HasAvailableMerge())
@@ -387,19 +368,14 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                 _result = LevelResult.LOSE_OUT_OF_MOVES;
         }
 
-        // Есть невыполненное условие с лимитом — обратный отсчёт до ближайшего, иначе секундомер.
         private void UpdateTimeView(float elapsed)
         {
             if (!_conditionsChecker.HasTimer)
                 return;
 
-            if (_conditionsChecker.TryGetNearestDeadline(out float remaining))
-                _hudView.SetRemainingTime(remaining);
-            else
-                _hudView.SetTime(elapsed);
+            _hudView.SetRemainingTime(_conditionsChecker.GetRemainingTime());
         }
 
-        // Пока открыты настройки — пауза: таймер стоит, RESUME продолжает.
         private void HandleOnSettingsOpened()
         {
             _wasTimerRunningBeforeSettings = _levelTimer.IsRunning;
@@ -412,7 +388,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                 _levelTimer.Start();
         }
 
-        // С экрана победы или поражения.
         private void HandleOnRestartClicked()
         {
             _winScreen.SetInteractable(false);
@@ -420,7 +395,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _levelLoader.RestartAsync().Forget();
         }
 
-        // С экрана победы: следующий уровень по LEVELS.ALL (он уже открыт — этот пройден), с последнего — в меню.
         private void HandleOnContinueClicked()
         {
             _winScreen.SetInteractable(false);
@@ -431,7 +405,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _levelLoader.LoadAsync(hasNext ? LEVELS.ALL[next].Scene : SCENE_NAMES.MAIN_MENU).Forget();
         }
 
-        // С экрана победы, поражения или из настроек.
         private void HandleOnMenuClicked()
         {
             _winScreen.SetInteractable(false);

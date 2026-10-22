@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Окно настроек: громкость музыки и звуков, галочка вибрации. Сама громкость меняется снаружи (контроллер → ISoundService).
-    // В меню окно закрывается крестиком; на уровне внизу кнопки MENU и RESUME (крестика нет).
-    // Необязательные кнопки можно не назначать.
     public class SettingsView : UIScreen
     {
         [SerializeField] private Slider _musicSlider;
@@ -49,7 +46,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 _clearProgressButton.onClick.AddListener(() => OnClearProgressClicked?.Invoke());
         }
 
-        // Без вызова событий — только показать текущие значения.
         public void SetValues(float musicVolume, float sfxVolume, bool isVibrationEnabled)
         {
             _musicSlider.SetValueWithoutNotify(musicVolume);

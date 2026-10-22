@@ -15,7 +15,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
     // Шаги PlayTutorN как в Tutorial_0_Controller; доска и генератор на время тутора выключены.
     public class Tutorial_4_Controller : ILevelTutorial, IWaiter
     {
-        // Затемнение — слой Tutor, order 1, текст — order 10; подсвеченный объект между ними.
         private const int HIGHLIGHT_ORDER = 5;
 
         private readonly TutorScenario _tutorScenario;
@@ -66,7 +65,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 
             await this.Wait(0.3f, ct);
 
-            // тутор - это стена, на неё нельзя ставить предметы
             _preTutorCallbacks
                 .With(() => boardView.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => _tutorScenario.GetTutor(0).Arrows[0].PointAt(wall));
@@ -80,7 +78,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         {
             var generatorButton = _generatorButtonView;
 
-            // тутор - генератор тоже не ставит туда предметы
             _preTutorCallbacks
                 .With(() => generatorButton.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => _tutorScenario.GetTutor(1).Arrows[0].PointAt(generatorButton.RT));
@@ -90,7 +87,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             await this.Wait(0.3f, ct);
         }
 
-        // Первая стена на доске — на неё указывает стрелка.
         private RectTransform FindWall()
         {
             foreach (var slot in _boardController.Slots)

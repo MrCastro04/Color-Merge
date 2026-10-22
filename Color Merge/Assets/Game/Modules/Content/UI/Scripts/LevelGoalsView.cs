@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Значки условий победы сверху слева (обычные уровни): нужный предмет — его картинка,
-    // прокачка генератора — выключенная кнопка улучшения и «Lvl N». Таймер и мерджи здесь не показываются.
-    // Шаблоны лежат выключенными в _container (HorizontalLayoutGroup их не учитывает).
     public class LevelGoalsView : MonoBehaviour
     {
         [SerializeField] private RectTransform _container;

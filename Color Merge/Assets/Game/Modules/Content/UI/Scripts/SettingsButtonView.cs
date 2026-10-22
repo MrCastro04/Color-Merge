@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Круглая кнопка с шестерёнкой — открывает окно настроек (в меню и на уровне).
     public class SettingsButtonView : MonoBehaviour
     {
         [SerializeField] private Button _button;

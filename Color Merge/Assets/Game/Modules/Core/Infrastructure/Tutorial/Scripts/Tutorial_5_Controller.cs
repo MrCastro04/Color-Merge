@@ -16,7 +16,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
     // (шаг закрывается взрывом — SkipCondition.External). Шаги PlayTutorN как в Tutorial_0_Controller.
     public class Tutorial_5_Controller : ILevelTutorial, IWaiter
     {
-        // Затемнение — слой Tutor, order 1, текст — order 10; подсвеченный объект между ними.
         private const int HIGHLIGHT_ORDER = 5;
 
         private readonly TutorScenario _tutorScenario;
@@ -64,7 +63,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 
             await this.Wait(0.3f, ct);
 
-            // тутор - это кнопка конфетной бомбы, мерджи дают ей энергию
             _preTutorCallbacks
                 .With(() => bombButton.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => _tutorScenario.GetTutor(0).Arrows[0].PointAt(bombButton.RT));
@@ -79,7 +77,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             var boardView = _boardView;
             var wall = FindWall();
 
-            // тутор - взрыв превращает предметы и стены вокруг в конфеты
             _preTutorCallbacks.With(() => boardView.ChangeSortGroupInObj(HIGHLIGHT_ORDER));
 
             if (wall != null)
@@ -95,7 +92,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             var boardView = _boardView;
             var bombButton = _bombButtonView;
 
-            // тутор - бесплатный заряд: нажми на кнопку и перенеси бомбу к стенам (шаг закрывает взрыв)
             _preTutorCallbacks
                 .With(() => _candyBombSystem.AddEnergy(_candyBombSystem.Cost))
                 .With(() => boardView.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
@@ -114,7 +110,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             await this.Wait(0.5f, ct);
         }
 
-        // Дроп доска принимает только целиком включённой — включаем её, а предметы гасим (тянуть можно только бомбу).
         private void AllowOnlyBomb()
         {
             _boardController.SetInteractable(true);

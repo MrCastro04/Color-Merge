@@ -8,9 +8,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Панель над доской: цепочка предметов по порядку улучшения (до цели уровня включительно).
-    // Достигнутые ступени яркие, ещё не собранные — полупрозрачные; новая ступень «подпрыгивает».
-    // На тутор поднимается над затемнением (IChangeSortGroupInCanvas).
     public class ChainProgressView : MonoBehaviour, IChangeSortGroupInCanvas
     {
         [SerializeField] private RectTransform _container;
@@ -25,7 +22,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         public string StartGroup { get; set; } = SORTING_LAYERS.DEFAULT;
         public Canvas SortingCanvas => _sortingCanvas;
 
-        // Первая и последняя (цель уровня) иконки цепочки — на них указывают стрелки тутора.
         public RectTransform FirstIcon => _icons.Count > 0 ? (RectTransform)_icons[0].transform : null;
         public RectTransform GoalIcon => _icons.Count > 0 ? (RectTransform)_icons[^1].transform : null;
 
@@ -59,7 +55,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             }
         }
 
-        // level — уровень лучшего предмета на доске (1 — первый). Прогресс только растёт.
         public void SetReachedLevel(int level)
         {
             level = Mathf.Clamp(level, 0, _icons.Count);
@@ -72,7 +67,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 var icon = _icons[i];
                 icon.color = WithAlpha(icon.color, 1f);
 
-                // Анимируем только при обновлении во время игры, а не стартовую расстановку.
                 if (_reachedLevel > 0)
                 {
                     icon.transform.DOKill(true);

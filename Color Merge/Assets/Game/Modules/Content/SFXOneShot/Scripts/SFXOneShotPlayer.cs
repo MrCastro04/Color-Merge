@@ -8,7 +8,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Content.SFXOneShot.Scripts
 {
-    // Грузит все одноразовые звуки из Addressables (WarmUpAsync) и проигрывает их по типу через ISoundService.
     public class SFXOneShotPlayer
     {
         private readonly ISoundService _soundService;

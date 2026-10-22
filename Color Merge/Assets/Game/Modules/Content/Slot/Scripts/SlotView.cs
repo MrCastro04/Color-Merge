@@ -9,8 +9,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.Slot.Scripts
 {
-    // Перенесён из SlotView (Combo-Dungeon): слот только ловит дроп и анимирует прикрепление,
-    // решение, что делать с предметом, принимает контроллер.
     public class SlotView : MonoBehaviour, IDropHandler, IWaiter
     {
         [SerializeField] protected int _id = 0;
@@ -24,7 +22,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
         private Color _backgroundColor;
         private bool _isBackgroundColorCached;
 
-        // кинули предмет и пытаемся его прикрепить
         public event Action<ItemView> OnDropRequested;
         public event Action<ItemView> OnItemAttached;
 
@@ -44,7 +41,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
             _id = id;
         }
 
-        // Заблокированная клетка — стена: на неё ничего не поставить, генератор туда не спавнит.
         public void SetBlocked(bool isBlocked)
         {
             _isBlocked = isBlocked;
@@ -57,7 +53,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
                     _isBackgroundColorCached = true;
                 }
 
-                // Взрыв бомбы снимает стену — клетка снова обычная.
                 _backgroundImage.color = isBlocked ? _blockedColor : _backgroundColor;
             }
 
@@ -84,7 +79,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
             await DragToHolder(itemViewRT, durationToDrag);
         }
 
-        // Мгновенно, без анимации перелёта — для спавна.
         public void PlaceItem(RectTransform itemViewRT)
         {
             _holderView.Set(itemViewRT, out _);

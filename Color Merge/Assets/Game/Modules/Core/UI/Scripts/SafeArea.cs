@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.UI.Scripts
 {
-    // Вешается на RectTransform под Canvas: растягивает его по Screen.safeArea (вырезы, скруглённые углы).
     [RequireComponent(typeof(RectTransform))]
     [DisallowMultipleComponent]
     public class SafeArea : MonoBehaviour

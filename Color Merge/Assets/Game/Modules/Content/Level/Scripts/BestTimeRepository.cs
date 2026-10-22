@@ -2,7 +2,6 @@ using Assets.Game.Modules.Core.Save.Scripts;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
-    // Рекорд уровня между сессиями.
     public class BestTimeRepository
     {
         private const string KEY_PREFIX = "best_time_";
@@ -28,7 +27,6 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             return true;
         }
 
-        // true — новый рекорд
         public bool TrySave(string levelId, float time)
         {
             if (TryGet(levelId, out var bestTime) && bestTime <= time)

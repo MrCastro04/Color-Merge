@@ -13,8 +13,6 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
             await scaleable.GetScaleTween(endResult, duration).AsyncWaitForCompletion();
         }
 
-        // Только собирает твин и отдаёт его — ничего не запускает и не ждёт.
-        // Вызывающий сам решает: заавайтить, докрутить .OnComplete/.SetEase, убить и т.д.
         public static Tween GetScaleTween(this IScaleable scaleable, Vector3 endResult, float duration)
         {
             return scaleable.RT.DOScale(endResult, duration);

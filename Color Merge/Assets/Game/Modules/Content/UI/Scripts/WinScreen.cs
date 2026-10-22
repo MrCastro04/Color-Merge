@@ -10,8 +10,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Экран победы: время, рекорд, 1–3 звезды (появляются по очереди), конфетти.
-    // CONTINUE — следующий уровень (на последнем — в меню), RESTART, MENU.
     public class WinScreen : UIScreen
     {
         private const string WITHOUT_TIME_TEXT = "WELL DONE!";
@@ -34,7 +32,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         public event Action OnRestartClicked;
         public event Action OnMenuClicked;
         public event Action OnContinueClicked;
-        // Для звука: каждая зажжённая звезда.
         public event Action<int> OnStarShown;
 
         protected override void Awake()
@@ -60,7 +57,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 _newRecordLabel.SetActive(isNewRecord);
         }
 
-        // Учебный уровень с таймером: время показываем, рекорд — нет.
         public void SetResultWithoutRecord(float time)
         {
             _timeText.gameObject.SetActive(true);
@@ -71,7 +67,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 _newRecordLabel.SetActive(false);
         }
 
-        // Уровень без условия Timer: вместо времени — похвала, рекорд не показывается.
         public void SetResultWithoutTime()
         {
             _timeText.gameObject.SetActive(true);
@@ -91,7 +86,6 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 _continueButton.interactable = isInteractable;
         }
 
-        // Окно появилось → конфетти + звёзды по одной.
         public async UniTask ShowWithStarsAsync(int stars, CancellationToken cancellationToken = default)
         {
             foreach (var star in _stars)

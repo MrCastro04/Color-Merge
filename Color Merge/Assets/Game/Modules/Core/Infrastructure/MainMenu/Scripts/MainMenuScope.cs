@@ -4,7 +4,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
 {
-    // Скоуп сцены Main Menu. Общие сервисы (звук, загрузка уровней, шторка) приходят из ApplicationScope.
     public class MainMenuScope : LifetimeScope
     {
         protected override void Configure(IContainerBuilder builder)

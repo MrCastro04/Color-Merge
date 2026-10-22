@@ -18,8 +18,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
             _sfxOneShotPlayer = sfxOneShotPlayer;
         }
 
-        // Конфетти победы и анимации доски одновременно держат сотни твинов — ёмкость задаём сразу,
-        // чтобы DOTween не расширял её на лету с предупреждениями.
         private const int TWEENS_CAPACITY = 500;
         private const int SEQUENCES_CAPACITY = 150;
 
@@ -27,7 +25,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
         {
             DOTween.SetTweensCapacity(TWEENS_CAPACITY, SEQUENCES_CAPACITY);
 
-            // Одноразовые звуки грузятся один раз на всю игру — дальше играют без задержки.
             await _sfxOneShotPlayer.WarmUpAsync(cancellation);
 
             await _levelLoader.LoadAsync(SCENE_NAMES.MAIN_MENU, cancellation);

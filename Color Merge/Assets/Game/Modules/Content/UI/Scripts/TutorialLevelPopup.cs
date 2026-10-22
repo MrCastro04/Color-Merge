@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Окно перед учебным уровнем (0–2): в уровне новый контент и обучение. PLAY — грузим уровень, крестик — назад к выбору.
     public class TutorialLevelPopup : UIScreen
     {
         [SerializeField] private TMP_Text _messageText;

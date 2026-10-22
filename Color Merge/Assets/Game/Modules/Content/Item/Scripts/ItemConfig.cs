@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Content.Item.Scripts
 {
-    // Один предмет цепочки. Уровень предмета = его позиция в ItemChainConfig.
     [CreateAssetMenu(menuName = "Game/Item/Item Config", fileName = "Item_")]
     public class ItemConfig : ScriptableObject
     {

@@ -2,9 +2,6 @@ using System;
 
 namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
 {
-    // Порядок уровней игры: сцена + ID (LevelConfig.ID) для рекорда и прогресса + учебный ли уровень.
-    // Учебные: перед загрузкой из меню — окно «новый контент», рекорд не показывается.
-    // Нужен меню (кнопки выбора) и экрану победы (CONTINUE → следующий уровень).
     public static class LEVELS
     {
         public static readonly (string Scene, string LevelId, bool IsTutorial)[] ALL =
@@ -22,7 +19,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
             (SCENE_NAMES.LEVEL_10, "level_10", false),
         };
 
-        // -1 — сцена не уровень.
         public static int IndexOfScene(string scene) => Array.FindIndex(ALL, level => level.Scene == scene);
     }
 }

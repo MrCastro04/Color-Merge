@@ -16,7 +16,6 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
             await UniTask.WaitUntil(condition, cancellationToken: cancellationToken);
         }
 
-        // Склеивает несколько ожиданий в одно: await a.Wait(1f).With(b.Wait(2f), c.WaitUntil(() => flag));
         public static UniTask With(this UniTask task, params UniTask[] otherTasks)
         {
             if (otherTasks.IsNull() || otherTasks.Length == 0)

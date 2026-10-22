@@ -4,9 +4,6 @@ using UnityEngine.UI;
 
 namespace Assets.Game.Modules.Content.CandyBomb.Scripts
 {
-    // Затемнение на время взрыва конфетной бомбы (как на туторе). Свой Canvas на слое Tutor —
-    // бомба и взрыв лежат на Drag Canvas (слой Drag) и видны поверх, всё остальное гаснет.
-    // Пока затемнение на экране, оно ловит нажатия (свой GraphicRaycaster).
     public class BombDimView : MonoBehaviour
     {
         [SerializeField] private Image _image;

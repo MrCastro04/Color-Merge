@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.UI.Scripts
 {
-    // Тряска экрана: трясёт свой RectTransform (в уровнях — SafeArea со всем UI) и возвращает на место.
     [RequireComponent(typeof(RectTransform))]
     public class ScreenShakeView : MonoBehaviour
     {
@@ -16,7 +15,6 @@ namespace Assets.Game.Modules.Core.UI.Scripts
             _rt = GetComponent<RectTransform>();
         }
 
-        // strength — амплитуда в единицах канваса.
         public void Shake(float duration, float strength, int vibrato)
         {
             if (duration <= 0f || strength <= 0f)

@@ -16,7 +16,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
     // Шаги PlayTutorN как в Tutorial_0_Controller; доска и генератор на время тутора выключены.
     public class Tutorial_3_Controller : ILevelTutorial, IWaiter
     {
-        // Затемнение — слой Tutor, order 1, текст — order 10; подсвеченный объект между ними.
         private const int HIGHLIGHT_ORDER = 5;
 
         private readonly TutorScenario _tutorScenario;
@@ -71,7 +70,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 
             await this.Wait(0.3f, ct);
 
-            // тутор - это конфета: предмет + конфета = предмет уровнем выше; конфеты между собой не мерджатся
             _preTutorCallbacks
                 .With(() => boardView.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => _tutorScenario.GetTutor(0).Arrows[0].PointAt(_candy.View.RT));
@@ -85,7 +83,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         {
             var boardView = _boardView;
 
-            // тутор - перетащи предмет на конфету (тянуть можно только эту пару)
             _preTutorCallbacks
                 .With(() => boardView.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(AllowOnlyCandyPair);
@@ -104,7 +101,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         {
             var hud = _hudView;
 
-            // тутор - цель уровня: сделать N мерджей (счётчик в HUD)
             _preTutorCallbacks
                 .With(() => hud.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => _tutorScenario.GetTutor(2).Arrows[0].PointAt(hud.MergesTextRT));
@@ -114,7 +110,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             await this.Wait(0.3f, ct);
         }
 
-        // Конфета и самый простой предмет цепочки (низший уровень) для учебного мерджа.
         private bool TryFindCandyAndItem(out ItemController candy, out ItemController item)
         {
             candy = null;
@@ -141,7 +136,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
             return candy != null && item != null;
         }
 
-        // Дроп доска принимает только целиком включённой — включаем её, а лишние предметы гасим поштучно.
         private void AllowOnlyCandyPair()
         {
             _boardController.SetInteractable(true);

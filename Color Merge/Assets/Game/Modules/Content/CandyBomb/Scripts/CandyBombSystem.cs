@@ -10,10 +10,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.CandyBomb.Scripts
 {
-    // Конфетная бомба (как UpgradeGeneratorSystem для генератора):
-    // каждый мердж (и с конфетой) → +1 энергия; энергии хватает на цену уровня → кнопка активна;
-    // нажали → на кнопке появляется бомба; перенесли на клетку → BoardController взрывает её,
-    // здесь — эффект, вибрация и сброс кнопки. Бомбы в конфиге уровня нет — кнопка скрыта.
     public class CandyBombSystem : IInitializable, IDisposable
     {
         private readonly BoardController _boardController;
@@ -65,7 +61,6 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
             _buttonView.OnClicked -= HandleOnButtonClicked;
         }
 
-        // Вызывает LevelController при сборке уровня.
         public void Setup(LevelConfig levelConfig)
         {
             _config = levelConfig.CandyBomb;
@@ -77,7 +72,6 @@ namespace Assets.Game.Modules.Content.CandyBomb.Scripts
             UpdateView();
         }
 
-        // Тутор дарит заряд, чтобы игрок сразу попробовал бомбу.
         public void AddEnergy(int amount)
         {
             if (!IsEnabled)

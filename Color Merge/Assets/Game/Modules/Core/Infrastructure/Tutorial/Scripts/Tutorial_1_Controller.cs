@@ -15,7 +15,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
     // Шаги PlayTutorN как в Tutorial_0_Controller; доска и генератор на время тутора выключены.
     public class Tutorial_1_Controller : ILevelTutorial, IWaiter
     {
-        // Затемнение — слой Tutor, order 1, текст — order 10; подсвеченный объект между ними.
         private const int HIGHLIGHT_ORDER = 5;
 
         private readonly TutorScenario _tutorScenario;
@@ -57,7 +56,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 
             await this.Wait(0.3f, ct);
 
-            // тутор - это таймер, он стартует с первого мерджа
             _preTutorCallbacks
                 .With(() => hud.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => _tutorScenario.GetTutor(0).Arrows[0].PointAt(hud.TimeTextWorldBounds));
@@ -71,7 +69,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         {
             var chainProgress = _chainProgressView;
 
-            // тутор - собери цель быстрее: больше звёзд
             _preTutorCallbacks
                 .With(() => chainProgress.ChangeSortGroupInObj(HIGHLIGHT_ORDER))
                 .With(() => _tutorScenario.GetTutor(1).Arrows[0].PointAt(chainProgress.GoalIcon));
@@ -83,7 +80,6 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
 
         private async UniTask PlayTutor2(CancellationToken ct = default)
         {
-            // тутор - на некоторых уровнях лимит времени, таймер идёт назад
             await _tutorScenario.RunStepWithCallbacks(2, ct: ct);
             await this.Wait(0.3f, ct);
         }

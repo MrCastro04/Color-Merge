@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.Utils.Editor
 {
-    // Скрывает поле, пока соседнее bool-поле выключено. Работает и внутри [SerializeReference]-элементов списка.
     [CustomPropertyDrawer(typeof(ShowIfAttribute))]
     public class ShowIfDrawer : PropertyDrawer
     {

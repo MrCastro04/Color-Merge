@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
 {
-    // Глобальный резолвер: находит IWindowObj-компонент на GameObject и открывает/закрывает его как окно.
     public static class ExWindowResolver
     {
         public static async UniTask OpenObjAsWindow(this GameObject go, CancellationToken ct = default)

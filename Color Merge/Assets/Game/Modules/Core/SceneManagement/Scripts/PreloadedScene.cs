@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Assets.Game.Modules.Core.SceneManagement.Scripts
 {
-    // Сцена загружена в фоне, но ещё не показана (allowSceneActivation = false).
     public class PreloadedScene
     {
         private readonly AsyncOperation _operation;

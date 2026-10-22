@@ -5,7 +5,6 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
-    // Таймер уровня: стартует после первого мерджа (LevelController), стоп на победе.
     public class LevelTimer : ITickable
     {
         private readonly Stopwatch _stopwatch = new();

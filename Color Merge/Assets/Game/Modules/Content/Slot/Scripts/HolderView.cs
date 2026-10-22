@@ -27,7 +27,6 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
             otherRT.localRotation = Quaternion.identity;
             otherRT.localScale = Vector3.one;
 
-            // Клетка подгоняется под экран (BoardView), поэтому предмет берёт размер холдера.
             otherRT.sizeDelta = _rectTransform.rect.size;
 
             isAdded = true;
