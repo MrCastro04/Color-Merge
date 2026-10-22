@@ -144,6 +144,9 @@ namespace Assets.Game.Modules.Content.Level.Editor
             if (config.InitialItems.Any(item => config.BlockedSlots.Contains(item.SlotID)) || config.InitialCandies.Any(candy => config.BlockedSlots.Contains(candy.SlotID)))
                 EditorGUILayout.HelpBox("Предмет стоит на стене (Blocked Slots) — в игре он не появится.", MessageType.Info);
 
+            if (config.CandyBomb != null && config.CandyConnector == null)
+                EditorGUILayout.HelpBox("Есть Candy Bomb, но нет Candy Connector — взрыв не создаст конфеты.", MessageType.Warning);
+
             if (config.InitialCandies.Count > 0 && config.CandyConnector == null)
                 EditorGUILayout.HelpBox("Конфеты на поле есть, а Candy Connector не задан — они не появятся.", MessageType.Error);
 

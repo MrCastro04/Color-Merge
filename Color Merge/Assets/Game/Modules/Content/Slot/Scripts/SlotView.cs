@@ -21,6 +21,8 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
 
         protected HolderView _holderView;
         protected bool _isBlocked;
+        private Color _backgroundColor;
+        private bool _isBackgroundColorCached;
 
         // кинули предмет и пытаемся его прикрепить
         public event Action<ItemView> OnDropRequested;
@@ -47,8 +49,17 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
         {
             _isBlocked = isBlocked;
 
-            if (_backgroundImage.IsNotNull() && isBlocked)
-                _backgroundImage.color = _blockedColor;
+            if (_backgroundImage.IsNotNull())
+            {
+                if (!_isBackgroundColorCached)
+                {
+                    _backgroundColor = _backgroundImage.color;
+                    _isBackgroundColorCached = true;
+                }
+
+                // Взрыв бомбы снимает стену — клетка снова обычная.
+                _backgroundImage.color = isBlocked ? _blockedColor : _backgroundColor;
+            }
 
             if (_wall.IsNotNull())
                 _wall.SetActive(isBlocked);

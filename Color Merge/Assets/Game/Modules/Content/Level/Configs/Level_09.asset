@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9284afc0fecaa6242901cf79e7d36d34, type: 3}
+  m_Name: Level_09
+  m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Level.Scripts.LevelConfig
+  _id: level_09
+  _itemChain: {fileID: 11400000, guid: 9f9e62b8a819b444099ad8ea42e0bdd9, type: 2}
+  _isTutorial: 1
+  _conditions:
+  - rid: 482838943652118754
+  _columns: 5
+  _rows: 7
+  _blockedSlots: 0b0000000c0000000d000000100000001100000012000000150000001600000017000000
+  _initialItems:
+  - SlotID: 0
+    ItemStartLevel: 1
+  - SlotID: 2
+    ItemStartLevel: 1
+  - SlotID: 4
+    ItemStartLevel: 1
+  - SlotID: 5
+    ItemStartLevel: 2
+  - SlotID: 9
+    ItemStartLevel: 2
+  - SlotID: 25
+    ItemStartLevel: 1
+  - SlotID: 29
+    ItemStartLevel: 1
+  - SlotID: 31
+    ItemStartLevel: 1
+  - SlotID: 33
+    ItemStartLevel: 1
+  _candyConnector: {fileID: 11400000, guid: 2748c654ca09a1a4094bddaaa689a4d7, type: 2}
+  _initialCandies: []
+  _candyBomb: {fileID: 11400000, guid: 919d90b77de497e4186efc4aeb1433a3, type: 2}
+  _candyBombCost: 3
+  _generatorCharges: -1
+  _generatorUpgradeEnabled: 0
+  _threeStarsTime: 90
+  _twoStarsTime: 180
+  references:
+    version: 2
+    RefIds:
+    - rid: 482838943652118754
+      type: {class: Get_Item_With_Level_X, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
+      data:
+        _hasTimer: 0
+        _timeLimit: 120
+        _itemLevel: 5

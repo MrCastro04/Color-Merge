@@ -9,5 +9,8 @@ namespace Assets.Game.Modules.Core.Vibration.Scripts
 
         // Короткий отклик (мердж). Выключена — ничего не делает.
         void VibrateShort();
+
+        // Сильный отклик (взрыв бомбы).
+        void VibrateStrong();
     }
 }

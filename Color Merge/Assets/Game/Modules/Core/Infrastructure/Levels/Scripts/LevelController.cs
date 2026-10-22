@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Assets.Game.Modules.Content.Board.Scripts;
+using Assets.Game.Modules.Content.CandyBomb.Scripts;
 using Assets.Game.Modules.Content.Generator.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
@@ -42,6 +43,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly BoardController _boardController;
         private readonly GeneratorController _generatorController;
         private readonly UpgradeGeneratorSystem _upgradeGeneratorSystem;
+        private readonly CandyBombSystem _candyBombSystem;
         private readonly PlayerUpgradesInLevel _upgrades;
         private readonly LevelConditionsChecker _conditionsChecker;
         private readonly LevelTimer _levelTimer;
@@ -69,7 +71,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             LevelConfigReference levelConfigReference,
             IItemFactory itemFactory, ISlotFactory slotFactory,
             BoardController boardController, GeneratorController generatorController,
-            UpgradeGeneratorSystem upgradeGeneratorSystem, PlayerUpgradesInLevel upgrades,
+            UpgradeGeneratorSystem upgradeGeneratorSystem, CandyBombSystem candyBombSystem, PlayerUpgradesInLevel upgrades,
             LevelConditionsChecker conditionsChecker,
             LevelTimer levelTimer, BestTimeRepository bestTimeRepository, LevelProgressRepository levelProgress,
             HudView hudView, WinScreen winScreen, LoseScreen loseScreen, ChainProgressView chainProgressView,
@@ -84,6 +86,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _boardController = boardController;
             _generatorController = generatorController;
             _upgradeGeneratorSystem = upgradeGeneratorSystem;
+            _candyBombSystem = candyBombSystem;
             _upgrades = upgrades;
             _conditionsChecker = conditionsChecker;
             _levelTimer = levelTimer;
@@ -157,6 +160,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _hudView.SetMerges(0, _levelConfig.MergesTarget);
             _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
             _generatorController.SetCentered(!_levelConfig.IsGeneratorUpgradeEnabled);
+            _candyBombSystem.Setup(_levelConfig);
 
             _conditionsChecker.Setup(_levelConfig);
 
@@ -228,6 +232,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _boardController.SetInteractable(false);
             _generatorController.SetInteractable(false);
             _upgradeGeneratorSystem.SetInteractable(false);
+            _candyBombSystem.SetInteractable(false);
         }
 
         private async UniTask ShowWinAsync(CancellationToken cancellation)

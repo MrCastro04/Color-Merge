@@ -14,5 +14,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts
         CANDY,
         // Level_7: стены (заблокированные клетки) — Tutorial_4_Controller.
         WALL,
+        // Level_9: конфетная бомба — Tutorial_5_Controller.
+        CANDY_BOMB,
     }
 }

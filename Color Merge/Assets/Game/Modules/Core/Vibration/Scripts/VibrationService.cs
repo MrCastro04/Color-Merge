@@ -10,6 +10,7 @@ namespace Assets.Game.Modules.Core.Vibration.Scripts
     {
         private const string ENABLED_KEY = "vibration_enabled";
         private const long SHORT_DURATION_MS = 35;
+        private const long STRONG_DURATION_MS = 160;
         private const int DEFAULT_AMPLITUDE = -1;
         private const int VIBRATION_EFFECT_MIN_SDK = 26;
 
@@ -34,7 +35,11 @@ namespace Assets.Game.Modules.Core.Vibration.Scripts
             _saveService.Save();
         }
 
-        public void VibrateShort()
+        public void VibrateShort() => Vibrate(SHORT_DURATION_MS);
+
+        public void VibrateStrong() => Vibrate(STRONG_DURATION_MS);
+
+        private void Vibrate(long milliseconds)
         {
             if (!IsEnabled)
                 return;
@@ -42,7 +47,7 @@ namespace Assets.Game.Modules.Core.Vibration.Scripts
 #if UNITY_ANDROID && !UNITY_EDITOR
             try
             {
-                VibrateAndroid(SHORT_DURATION_MS);
+                VibrateAndroid(milliseconds);
             }
             catch (System.Exception)
             {
