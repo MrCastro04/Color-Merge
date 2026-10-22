@@ -25,27 +25,27 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         [SerializeField] private List<InitialItem> _initialItems = new();
 
         [Header("Candy Connector")]
-        [Tooltip("Особый предмет: предмет X + конфета → предмет X+1")]
+        [Tooltip("Особливий предмет: предмет X + цукерка → предмет X+1")]
         [SerializeField] private CandyConnectorConfig _candyConnector;
-        [Tooltip("Клетки, где стоят конфеты на старте")]
+        [Tooltip("Клітинки, де стоять цукерки на старті")]
         [SerializeField] private List<InitialCandy> _initialCandies = new();
 
         [Header("Candy Bomb")]
         [Tooltip("Задан — у игрока кнопка бомбы слева от генератора. Взрыв превращает предметы и стены в конфеты (нужен Candy Connector)")]
         [SerializeField] private CandyBombConfig _candyBomb;
-        [Tooltip("Сколько энергии (1 мердж = 1 энергия) стоит одна бомба")]
+        [Tooltip("Скільки енергії (1 мердж = 1 енергія) коштує одна бомба")]
         [SerializeField, Min(1)] private int _candyBombCost = 5;
 
         [Header("Generator")]
-        [Tooltip("-1 — без ограничения")]
+        [Tooltip("-1 — без обмеження")]
         [SerializeField] private int _generatorCharges = -1;
-        [Tooltip("Показывать кнопку улучшения генератора (энергия за мерджи)")]
+        [Tooltip("Показувати кнопку покращення генератора (енергія за мерджі)")]
         [SerializeField] private bool _generatorUpgradeEnabled = true;
 
-        [Header("Stars (секунды, только с условием Timer)")]
-        [Tooltip("Прошёл быстрее — 3 звезды")]
+        [Header("Stars (секунди, лише з умовою Timer)")]
+        [Tooltip("Пройшов швидше — 3 зірки")]
         [SerializeField, Min(0)] private float _threeStarsTime = 90f;
-        [Tooltip("Прошёл быстрее — 2 звезды, иначе 1")]
+        [Tooltip("Пройшов швидше — 2 зірки, інакше 1")]
         [SerializeField, Min(0)] private float _twoStarsTime = 180f;
 
         public ItemChainConfig ItemChain => _itemChain;
@@ -149,7 +149,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         {
             public int SlotID;
             [FormerlySerializedAs("Level")]
-            [Tooltip("Уровень предмета в ItemChain: 1 — первый")]
+            [Tooltip("Рівень предмета в ItemChain: 1 — перший")]
             [Min(1)] public int ItemStartLevel;
         }
 

@@ -14,7 +14,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
 
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _labelText;
-        [Tooltip("Молния слева от «энергия/цена»")]
+        [Tooltip("Блискавка ліворуч від «енергія/ціна»")]
         [SerializeField] private RectTransform _energyIcon;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField, Range(0f, 1f)] private float _inactiveAlpha = 0.5f;

@@ -145,7 +145,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             string sceneName = SceneManager.GetActiveScene().name;
 
             if (!_levelsConfig.TryGetByScene(sceneName, out _levelInfo))
-                throw new InvalidOperationException($"Сцены {sceneName} нет в LevelsConfig");
+                throw new InvalidOperationException($"Сцени {sceneName} немає в LevelsConfig");
 
             await UniTask.WhenAll(
                 _itemFactory.WarmUpAsync(cancellation),

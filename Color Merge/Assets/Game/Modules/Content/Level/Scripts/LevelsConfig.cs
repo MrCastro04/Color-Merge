@@ -7,7 +7,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
     [CreateAssetMenu(menuName = "Game/Level/Levels Config", fileName = "Levels")]
     public class LevelsConfig : ScriptableObject
     {
-        [Tooltip("Порядок уровней в меню и для кнопки CONTINUE")]
+        [Tooltip("Порядок рівнів у меню та для кнопки CONTINUE")]
         [SerializeField] private List<LevelInfo> _levels = new();
 
         public int Count => _levels.Count;
@@ -54,11 +54,11 @@ namespace Assets.Game.Modules.Content.Level.Scripts
     [Serializable]
     public class LevelInfo
     {
-        [Tooltip("Имя сцены уровня (как в Build Settings)")]
+        [Tooltip("Назва сцени рівня (як у Build Settings)")]
         [SerializeField] private string _sceneName;
-        [Tooltip("Ключ сохранений: пройден ли уровень, лучшее время")]
+        [Tooltip("Ключ збережень: чи пройдено рівень, найкращий час")]
         [SerializeField] private string _id;
-        [Tooltip("Учебный уровень: окно NEW CONTENT в меню, рекорд времени не сохраняется")]
+        [Tooltip("Навчальний рівень: вікно NEW CONTENT у меню, рекорд часу не зберігається")]
         [SerializeField] private bool _isTutorial;
 
         public string SceneName => _sceneName;

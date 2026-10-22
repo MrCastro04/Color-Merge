@@ -13,7 +13,7 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _resumeButton;
         [SerializeField] private Button _menuButton;
-        [Tooltip("Только в главном меню: стереть весь прогресс")]
+        [Tooltip("Лише в головному меню: стерти весь прогрес")]
         [SerializeField] private Button _clearProgressButton;
 
         public event Action<float> OnMusicVolumeChanged;

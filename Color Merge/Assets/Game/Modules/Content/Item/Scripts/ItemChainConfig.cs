@@ -36,7 +36,7 @@ namespace Assets.Game.Modules.Content.Item.Scripts
         private void OnValidate()
         {
             if (_items.Count < MIN_CHAIN_LENGTH || _items.Count > MAX_CHAIN_LENGTH)
-                Debug.LogWarning($"{name}: в цепочке {_items.Count} предметов, нужно {MIN_CHAIN_LENGTH}–{MAX_CHAIN_LENGTH}.", this);
+                Debug.LogWarning($"{name}: у ланцюжку {_items.Count} предметів, потрібно {MIN_CHAIN_LENGTH}–{MAX_CHAIN_LENGTH}.", this);
         }
     }
 }

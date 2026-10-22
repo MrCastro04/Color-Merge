@@ -14,7 +14,7 @@ namespace Assets.Game.Modules.Content.Slot.Scripts
         [SerializeField] protected int _id = 0;
         [SerializeField] protected Image _backgroundImage;
         [SerializeField] protected Color _blockedColor = new(0.3f, 0.3f, 0.3f, 1f);
-        [Tooltip("Стена поверх заблокированной клетки (Square/Dark из GUI-пака)")]
+        [Tooltip("Стіна поверх заблокованої клітинки (Square/Dark з GUI-паку)")]
         [SerializeField] protected GameObject _wall;
 
         protected HolderView _holderView;

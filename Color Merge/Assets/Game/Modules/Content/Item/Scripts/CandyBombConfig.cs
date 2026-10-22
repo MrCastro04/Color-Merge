@@ -7,19 +7,19 @@ namespace Assets.Game.Modules.Content.Item.Scripts
     {
         public const int MIN_RADIUS = 1;
 
-        [Tooltip("Радиус взрыва в клетках вокруг бомбы")]
+        [Tooltip("Радіус вибуху в клітинках навколо бомби")]
         [SerializeField, Min(MIN_RADIUS)] private int _radius = 1;
 
-        [Header("Затемнение")]
+        [Header("Затемнення")]
         [SerializeField, Range(0f, 1f)] private float _dimAlpha = 0.7f;
-        [Tooltip("Затемнение появляется, когда бомбу отпустили на клетку")]
+        [Tooltip("Затемнення з’являється, коли бомбу відпустили на клітинку")]
         [SerializeField, Min(0f)] private float _dimFadeInDuration = 0.2f;
-        [Tooltip("Затемнение уходит сразу после взрыва")]
+        [Tooltip("Затемнення зникає одразу після вибуху")]
         [SerializeField, Min(0f)] private float _dimFadeOutDuration = 0.15f;
 
-        [Header("Тряска экрана")]
+        [Header("Трусіння екрана")]
         [SerializeField, Min(0f)] private float _shakeDuration = 0.35f;
-        [Tooltip("Амплитуда в единицах канваса (1080×1920)")]
+        [Tooltip("Амплітуда в одиницях канвасу (1080×1920)")]
         [SerializeField, Min(0f)] private float _shakeStrength = 25f;
         [SerializeField, Min(1)] private int _shakeVibrato = 20;
 

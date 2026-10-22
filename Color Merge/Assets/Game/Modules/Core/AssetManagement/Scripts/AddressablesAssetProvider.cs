@@ -15,7 +15,7 @@ namespace Assets.Game.Modules.Core.AssetManagement.Scripts
             where T : UnityEngine.Object
         {
             if (reference == null || !reference.RuntimeKeyIsValid())
-                throw new ArgumentException($"AssetReference для {typeof(T).Name} не назначен.");
+                throw new ArgumentException($"AssetReference для {typeof(T).Name} не призначено.");
 
             return LoadAsync<T>(reference.RuntimeKey.ToString(), cancellationToken);
         }

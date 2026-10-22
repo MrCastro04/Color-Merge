@@ -20,7 +20,7 @@ namespace Assets.Game.Modules.Content.Tutorial
         public SkipCondition SkipCondition;
         public bool UseBackgroundFade;
 
-        [Tooltip("Только для SkipCondition = ButtonClick")]
+        [Tooltip("Лише для SkipCondition = ButtonClick")]
         public Button RequiredButton;
     }
 

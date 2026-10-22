@@ -23,22 +23,22 @@ namespace Assets.Game.Modules.Content.Level.Editor
             var mergeGoal = conditions.OfType<Make_Merge_X_Times>().FirstOrDefault();
 
             if (conditions.Any(condition => condition == null))
-                EditorGUILayout.HelpBox("В списке есть пустое условие — удали его.", MessageType.Error);
+                EditorGUILayout.HelpBox("У списку є порожня умова — видали її.", MessageType.Error);
 
             if (itemGoal == null && generatorGoal == null && mergeGoal == null)
-                EditorGUILayout.HelpBox("Нет условий-целей (Get_Item / Upgraded_Generator / Make_Merge): уровень пройдётся с первым мерджем.", MessageType.Warning);
+                EditorGUILayout.HelpBox("Немає умов-цілей (Get_Item / Upgraded_Generator / Make_Merge): рівень пройдеться з першим мерджем.", MessageType.Warning);
 
             if (config.InitialItems.Any(item => config.BlockedSlots.Contains(item.SlotID)) || config.InitialCandies.Any(candy => config.BlockedSlots.Contains(candy.SlotID)))
-                EditorGUILayout.HelpBox("Предмет стоит на стене (Blocked Slots) — в игре он не появится.", MessageType.Info);
+                EditorGUILayout.HelpBox("Предмет стоїть на стіні (Blocked Slots) — у грі він не з’явиться.", MessageType.Info);
 
             if (config.CandyBomb != null && config.CandyConnector == null)
-                EditorGUILayout.HelpBox("Есть Candy Bomb, но нет Candy Connector — взрыв не создаст конфеты.", MessageType.Warning);
+                EditorGUILayout.HelpBox("Є Candy Bomb, але немає Candy Connector — вибух не створить цукерки.", MessageType.Warning);
 
             if (config.InitialCandies.Count > 0 && config.CandyConnector == null)
-                EditorGUILayout.HelpBox("Конфеты на поле есть, а Candy Connector не задан — они не появятся.", MessageType.Error);
+                EditorGUILayout.HelpBox("Цукерки на полі є, а Candy Connector не задано — вони не з’являться.", MessageType.Error);
 
             if (generatorGoal != null && !config.IsGeneratorUpgradeEnabled)
-                EditorGUILayout.HelpBox("Upgraded_Generator без кнопки улучшения (_generatorUpgradeEnabled) не выполнить.", MessageType.Error);
+                EditorGUILayout.HelpBox("Upgraded_Generator без кнопки покращення (_generatorUpgradeEnabled) не виконати.", MessageType.Error);
 
             if (config.ItemChain == null)
                 return;
@@ -46,10 +46,10 @@ namespace Assets.Game.Modules.Content.Level.Editor
             int chainLength = config.ItemChain.Items.Count;
 
             if (itemGoal?.ItemLevel > chainLength || generatorGoal?.GeneratorLevel > chainLength)
-                EditorGUILayout.HelpBox($"Уровень в условии больше длины цепочки ({chainLength}).", MessageType.Error);
+                EditorGUILayout.HelpBox($"Рівень в умові більший за довжину ланцюжка ({chainLength}).", MessageType.Error);
 
             if (itemGoal != null && generatorGoal?.GeneratorLevel >= config.TargetItemLevel)
-                EditorGUILayout.HelpBox("Генератор, прокачанный до уровня цели-предмета, будет выдавать её сам.", MessageType.Warning);
+                EditorGUILayout.HelpBox("Генератор, прокачаний до рівня цілі-предмета, видаватиме її сам.", MessageType.Warning);
         }
     }
 }
