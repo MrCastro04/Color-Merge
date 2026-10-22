@@ -9,12 +9,16 @@ using UnityEngine.UI;
 namespace Assets.Game.Modules.Content.Generator.Scripts
 {
     // Кнопка улучшения генератора (стрелка вверх). Активна, когда хватает энергии:
-    // сверху «Lvl N -> Lvl N+1», иначе — сколько энергии накоплено.
+    // сверху «Lvl N -> Lvl N+1», иначе — молния и сколько энергии накоплено (как у кнопки конфетной бомбы).
     // На туторе поднимается над затемнением (IChangeSortGroupInCanvas).
     public class UpgradeButtonView : MonoBehaviour, IChangeSortGroupInCanvas
     {
+        private const float ENERGY_ICON_GAP = 8f;
+
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _labelText;
+        [Tooltip("Молния слева от «энергия/цена»")]
+        [SerializeField] private RectTransform _energyIcon;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField, Range(0f, 1f)] private float _inactiveAlpha = 0.5f;
         [SerializeField] private Canvas _sortingCanvas;
@@ -50,19 +54,38 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         public void SetReady(int currentLevel, int nextLevel)
         {
             _labelText.text = $"Lvl {currentLevel} -> Lvl {nextLevel}";
+            SetEnergyIconVisible(false);
             SetActive(true);
         }
 
         public void SetNotReady(int energy, int energyNeeded)
         {
             _labelText.text = $"{energy}/{energyNeeded}";
+            SetEnergyIconVisible(true);
             SetActive(false);
         }
 
         public void SetMaxed()
         {
             _labelText.text = "MAX";
+            SetEnergyIconVisible(false);
             SetActive(false);
+        }
+
+        // Молния стоит вплотную слева от текста (текст по центру, ширина меняется).
+        private void SetEnergyIconVisible(bool isVisible)
+        {
+            if (_energyIcon == null)
+                return;
+
+            _energyIcon.gameObject.SetActive(isVisible);
+
+            if (!isVisible)
+                return;
+
+            _labelText.ForceMeshUpdate();
+            float halfWidth = _labelText.preferredWidth * 0.5f;
+            _energyIcon.anchoredPosition = new Vector2(-halfWidth - ENERGY_ICON_GAP, _energyIcon.anchoredPosition.y);
         }
 
         private void SetActive(bool isActive)

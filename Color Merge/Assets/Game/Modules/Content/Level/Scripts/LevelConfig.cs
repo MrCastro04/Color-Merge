@@ -33,6 +33,12 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         [Tooltip("Клетки, где стоят конфеты на старте")]
         [SerializeField] private List<InitialCandy> _initialCandies = new();
 
+        [Header("Candy Bomb")]
+        [Tooltip("Задан — у игрока кнопка бомбы слева от генератора. Взрыв превращает предметы и стены в конфеты (нужен Candy Connector)")]
+        [SerializeField] private CandyBombConfig _candyBomb;
+        [Tooltip("Сколько энергии (1 мердж = 1 энергия) стоит одна бомба")]
+        [SerializeField, Min(1)] private int _candyBombCost = 5;
+
         [Header("Generator")]
         [Tooltip("-1 — без ограничения")]
         [SerializeField] private int _generatorCharges = -1;
@@ -55,12 +61,17 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public IReadOnlyList<InitialItem> InitialItems => _initialItems;
         public CandyConnectorConfig CandyConnector => _candyConnector;
         public IReadOnlyList<InitialCandy> InitialCandies => _initialCandies;
+        public CandyBombConfig CandyBomb => _candyBomb;
+        public int CandyBombCost => Mathf.Max(1, _candyBombCost);
         public int GeneratorCharges => _generatorCharges;
         public bool HasGeneratorLimit => _generatorCharges >= 0;
         public bool IsGeneratorUpgradeEnabled => _generatorUpgradeEnabled;
 
         public IReadOnlyList<LevelCondition> Conditions => _conditions;
         public bool HasTimer => _conditions.Exists(condition => condition is Conditions.Timer);
+
+        // Время на уровень из условия Timer (0 — таймера нет).
+        public float TimerSeconds => _conditions.Find(condition => condition is Conditions.Timer) is Conditions.Timer timer ? timer.Seconds : 0f;
 
         // Цель-предмет: самый высокий Get_Item_With_Level_X; нет такого условия — вся цепочка.
         public int TargetItemLevel

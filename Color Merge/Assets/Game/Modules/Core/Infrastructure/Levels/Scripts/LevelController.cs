@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Assets.Game.Modules.Content.Board.Scripts;
+using Assets.Game.Modules.Content.CandyBomb.Scripts;
 using Assets.Game.Modules.Content.Generator.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
@@ -42,6 +43,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly BoardController _boardController;
         private readonly GeneratorController _generatorController;
         private readonly UpgradeGeneratorSystem _upgradeGeneratorSystem;
+        private readonly CandyBombSystem _candyBombSystem;
         private readonly PlayerUpgradesInLevel _upgrades;
         private readonly LevelConditionsChecker _conditionsChecker;
         private readonly LevelTimer _levelTimer;
@@ -69,7 +71,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             LevelConfigReference levelConfigReference,
             IItemFactory itemFactory, ISlotFactory slotFactory,
             BoardController boardController, GeneratorController generatorController,
-            UpgradeGeneratorSystem upgradeGeneratorSystem, PlayerUpgradesInLevel upgrades,
+            UpgradeGeneratorSystem upgradeGeneratorSystem, CandyBombSystem candyBombSystem, PlayerUpgradesInLevel upgrades,
             LevelConditionsChecker conditionsChecker,
             LevelTimer levelTimer, BestTimeRepository bestTimeRepository, LevelProgressRepository levelProgress,
             HudView hudView, WinScreen winScreen, LoseScreen loseScreen, ChainProgressView chainProgressView,
@@ -84,6 +86,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _boardController = boardController;
             _generatorController = generatorController;
             _upgradeGeneratorSystem = upgradeGeneratorSystem;
+            _candyBombSystem = candyBombSystem;
             _upgrades = upgrades;
             _conditionsChecker = conditionsChecker;
             _levelTimer = levelTimer;
@@ -117,8 +120,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             try
             {
-                // Тутор есть только на обучающем уровне (TUTOR SCENARIO в сцене Level_0).
+                // Тутор — только на учебных уровнях (TUTOR SCENARIO в сцене). Пока идёт — кнопка настроек выключена.
+                _settingsController.SetInteractable(false);
                 await _levelTutorial.PlayAsync(_levelConfig.ItemChain, cancellation);
+                _settingsController.SetInteractable(true);
 
                 await StartLevelFlow(cancellation);
             }
@@ -155,6 +160,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _hudView.SetMerges(0, _levelConfig.MergesTarget);
             _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
             _generatorController.SetCentered(!_levelConfig.IsGeneratorUpgradeEnabled);
+            _candyBombSystem.Setup(_levelConfig);
 
             _conditionsChecker.Setup(_levelConfig);
 
@@ -172,6 +178,29 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             }
 
             SetupChainProgress();
+            SetupGoals();
+        }
+
+        // Значки условий победы сверху слева — только на обычных (не учебных) уровнях.
+        private void SetupGoals()
+        {
+            var goals = _hudView.Goals;
+
+            if (goals == null)
+                return;
+
+            goals.Clear();
+
+            if (_levelConfig.IsTutorial)
+                return;
+
+            foreach (var condition in _levelConfig.Conditions)
+            {
+                if (condition is Get_Item_With_Level_X getItem)
+                    goals.AddItemGoal(_levelConfig.ItemChain.GetByLevel(Math.Min(getItem.ItemLevel, _levelConfig.ItemChain.Items.Count)).Icon);
+                else if (condition is Upgraded_Generator_With_Level_X generator)
+                    goals.AddGeneratorGoal(generator.GeneratorLevel);
+            }
         }
 
         // Игра идёт, пока не выполнены все условия или не наступило поражение.
@@ -203,6 +232,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _boardController.SetInteractable(false);
             _generatorController.SetInteractable(false);
             _upgradeGeneratorSystem.SetInteractable(false);
+            _candyBombSystem.SetInteractable(false);
         }
 
         private async UniTask ShowWinAsync(CancellationToken cancellation)
@@ -281,9 +311,12 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         }
 
         // Панель над доской: цепочка до цели-предмета. Прогресс — лучший предмет игрока на поле (PlayerUpgradesInLevel).
+        // Показывается только если в условиях есть Get_Item_With_Level_X.
         private void SetupChainProgress()
         {
             var chain = _levelConfig.ItemChain;
+
+            _chainProgressView.gameObject.SetActive(_levelConfig.HasItemGoal);
             var path = new List<ItemConfig>();
 
             for (int level = 1; level <= _levelConfig.TargetItemLevel; level++)

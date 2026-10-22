@@ -7,6 +7,7 @@ using Assets.Game.Modules.Content.Slot.Scripts;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
 using Assets.Game.Modules.Core.Utils.Scripts.Extensions;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 
 namespace Assets.Game.Modules.Content.Board.Scripts
 {
@@ -22,6 +23,10 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         private readonly HashSet<int> _busySlots = new();
         private ItemController[] _items = Array.Empty<ItemController>();
         private ItemChainConfig _itemChain;
+        // Во что взрыв бомбы превращает предметы и стены (LevelConfig.CandyConnector).
+        private ItemConfig _candyConfig;
+        private int _columns;
+        private int _rows;
         private bool _isInteractable = true;
 
         public event Action<ItemController> OnItemSpawned;
@@ -30,6 +35,8 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         public event Action<ItemController> OnItemReturned;
         public event Action<ItemController, ItemController> OnItemsSwapped;
         public event Action<ItemController> OnItemMerged;
+        // Бомба взорвалась в клетке centerId (эффект, вибрация, звук — снаружи).
+        public event Action<int, CandyBombConfig> OnBombExploded;
 
         public IReadOnlyList<SlotController> Slots => _slots;
         public bool HasFreeSlot => GetFreeSlotIds().Count > 0;
@@ -52,6 +59,9 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             Clear();
 
             _itemChain = levelConfig.ItemChain;
+            _candyConfig = levelConfig.CandyConnector;
+            _columns = levelConfig.Columns;
+            _rows = levelConfig.Rows;
             _items = new ItemController[levelConfig.SlotsCount];
 
             _boardView.Init(levelConfig.Columns, levelConfig.Rows);
@@ -169,6 +179,15 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             if (!_isInteractable || itemView.IsNull() || itemView.Controller.IsNull())
                 return;
 
+            // Бомба не лежит на доске (её приносят с кнопки) — дроп на любую клетку без стены взрывает её там.
+            if (itemView.Controller.Config is CandyBombConfig bomb)
+            {
+                if (!targetSlot.IsBlocked && !_busySlots.Contains(targetSlot.ID))
+                    DetonateAsync(targetSlot.ID, itemView.Controller, bomb).Forget();
+
+                return;
+            }
+
             int sourceId = IndexOf(itemView.Controller);
             int targetId = targetSlot.ID;
 
@@ -281,6 +300,79 @@ namespace Assets.Game.Modules.Content.Board.Scripts
                 merged.View.CanDrag = _isInteractable;
 
             Unlock(targetId);
+        }
+
+        // Бомба долетает до клетки, раздувается и сжимается — взрыв: в квадрате радиуса R вокруг (без центра)
+        // предметы и стены превращаются в конфеты, пустые клетки и конфеты не меняются, за краем доски — ничего.
+        private async UniTaskVoid DetonateAsync(int centerId, ItemController bomb, CandyBombConfig config)
+        {
+            var bombView = bomb.View;
+            var bombRt = bombView.RT;
+
+            bombView.ConfirmDrop();
+            bombView.CanDrag = false;
+            Lock(centerId);
+
+            await bombRt
+                .DOMove(_slots[centerId].View.transform.position, 0.15f)
+                .SetEase(Ease.OutQuad)
+                .SetLink(bombView.gameObject)
+                .AwaitCompletion();
+
+            await DOTween.Sequence()
+                .Append(bombRt.DOScale(1.6f, 0.3f).SetEase(Ease.OutQuad))
+                .Append(bombRt.DOScale(0f, 0.15f).SetEase(Ease.InBack))
+                .SetLink(bombView.gameObject)
+                .AwaitCompletion();
+
+            _itemFactory.Destroy(bomb);
+
+            int centerX = centerId % _columns;
+            int centerY = centerId / _columns;
+            int radius = config.Radius;
+
+            for (int dy = -radius; dy <= radius; dy++)
+            {
+                for (int dx = -radius; dx <= radius; dx++)
+                {
+                    int x = centerX + dx;
+                    int y = centerY + dy;
+
+                    if ((dx == 0 && dy == 0) || x < 0 || x >= _columns || y < 0 || y >= _rows)
+                        continue;
+
+                    TurnIntoCandy(y * _columns + x);
+                }
+            }
+
+            Unlock(centerId);
+            OnBombExploded?.Invoke(centerId, config);
+        }
+
+        private void TurnIntoCandy(int slotId)
+        {
+            if (_candyConfig.IsNull() || _busySlots.Contains(slotId))
+                return;
+
+            var slot = _slots[slotId];
+
+            if (slot.IsBlocked)
+            {
+                slot.View.SetBlocked(false);
+            }
+            else
+            {
+                var item = _items[slotId];
+
+                if (item.IsNull() || IsCandy(item))
+                    return;
+
+                _items[slotId] = null;
+                DestroyItem(item);
+            }
+
+            var candy = CreateAt(slotId, _candyConfig);
+            candy.View.PlaySpawnAsync().Forget();
         }
 
         private ItemController CreateAt(int slotId, ItemConfig config)

@@ -245,5 +245,12 @@ namespace Assets.Game.Modules.Content.Tutorial
         {
             _skipRequested = true;
         }
+
+        // Для шагов с SkipCondition.External — закрыть шаг снаружи.
+        public void RequestSkip()
+        {
+            if (_activeTutor != null && _activeStep.SkipCondition == SkipCondition.External)
+                _skipRequested = true;
+        }
     }
 }

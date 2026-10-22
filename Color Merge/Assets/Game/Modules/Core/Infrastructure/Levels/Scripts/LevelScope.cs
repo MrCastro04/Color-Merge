@@ -1,4 +1,5 @@
 using Assets.Game.Modules.Content.Board.Scripts;
+using Assets.Game.Modules.Content.CandyBomb.Scripts;
 using Assets.Game.Modules.Content.Generator.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
@@ -40,6 +41,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             builder.Register<LevelTimer>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
             builder.Register<LevelConditionsChecker>(Lifetime.Scoped);
             builder.Register<LevelSounds>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+            builder.Register<LevelHaptics>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
 
             RegisterUI(builder);
 
@@ -77,6 +79,12 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                 case LevelTutorialType.CANDY:
                     builder.Register<Tutorial_3_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
                     break;
+                case LevelTutorialType.WALL:
+                    builder.Register<Tutorial_4_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
+                    break;
+                case LevelTutorialType.CANDY_BOMB:
+                    builder.Register<Tutorial_5_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
+                    break;
             }
         }
 
@@ -98,6 +106,10 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             builder.RegisterComponentInHierarchy<UpgradeButtonView>();
             builder.Register<PlayerUpgradesInLevel>(Lifetime.Scoped);
             builder.Register<UpgradeGeneratorSystem>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+
+            builder.RegisterComponentInHierarchy<CandyBombButtonView>();
+            builder.RegisterComponentInHierarchy<ExplosionView>();
+            builder.Register<CandyBombSystem>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
         }
 
         private static void RegisterUI(IContainerBuilder builder)

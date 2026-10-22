@@ -18,12 +18,14 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         private readonly WinScreen _winScreen;
         private readonly LoseScreen _loseScreen;
         private readonly Generator.Scripts.UpgradeGeneratorSystem _upgradeGeneratorSystem;
+        private readonly CandyBomb.Scripts.CandyBombSystem _candyBombSystem;
         private readonly LevelConditionsChecker _conditionsChecker;
 
         public LevelSounds(
             SFXOneShotPlayer sfx, BoardController boardController,
             Generator.Scripts.GeneratorController generatorController, WinScreen winScreen, LoseScreen loseScreen,
-            Generator.Scripts.UpgradeGeneratorSystem upgradeGeneratorSystem, LevelConditionsChecker conditionsChecker)
+            Generator.Scripts.UpgradeGeneratorSystem upgradeGeneratorSystem, LevelConditionsChecker conditionsChecker,
+            CandyBomb.Scripts.CandyBombSystem candyBombSystem)
         {
             _sfx = sfx;
             _boardController = boardController;
@@ -31,6 +33,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             _winScreen = winScreen;
             _loseScreen = loseScreen;
             _upgradeGeneratorSystem = upgradeGeneratorSystem;
+            _candyBombSystem = candyBombSystem;
             _conditionsChecker = conditionsChecker;
         }
 
@@ -45,6 +48,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             _conditionsChecker.OnAllConditionsCompleted += HandleOnAllConditionsCompleted;
             _generatorController.OnSpawnFailed += HandleOnSpawnFailed;
             _upgradeGeneratorSystem.OnUpgraded += HandleOnGeneratorUpgraded;
+            _candyBombSystem.OnBombCreated += HandleOnBombCreated;
+            _candyBombSystem.OnExploded += HandleOnBombExploded;
             _winScreen.OnRestartClicked += HandleOnButtonClicked;
             _winScreen.OnMenuClicked += HandleOnButtonClicked;
             _winScreen.OnContinueClicked += HandleOnButtonClicked;
@@ -64,6 +69,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts
             _conditionsChecker.OnAllConditionsCompleted -= HandleOnAllConditionsCompleted;
             _generatorController.OnSpawnFailed -= HandleOnSpawnFailed;
             _upgradeGeneratorSystem.OnUpgraded -= HandleOnGeneratorUpgraded;
+            _candyBombSystem.OnBombCreated -= HandleOnBombCreated;
+            _candyBombSystem.OnExploded -= HandleOnBombExploded;
             _winScreen.OnRestartClicked -= HandleOnButtonClicked;
             _winScreen.OnMenuClicked -= HandleOnButtonClicked;
             _winScreen.OnContinueClicked -= HandleOnButtonClicked;
@@ -82,6 +89,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         private void HandleOnSpawnFailed() => _sfx.Play(SFXOneShotType.Return);
         private void HandleOnButtonClicked() => _sfx.Play(SFXOneShotType.ButtonClick);
         private void HandleOnGeneratorUpgraded() => _sfx.Play(SFXOneShotType.Merge);
+        private void HandleOnBombCreated() => _sfx.Play(SFXOneShotType.Spawn);
+        private void HandleOnBombExploded() => _sfx.Play(SFXOneShotType.Win);
         private void HandleOnStarShown(int starIndex) => _sfx.Play(SFXOneShotType.Spawn);
     }
 }

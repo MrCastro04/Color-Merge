@@ -26,6 +26,8 @@ MonoBehaviour:
     ItemStartLevel: 2
   - SlotID: 22
     ItemStartLevel: 2
+  _candyConnector: {fileID: 0}
+  _initialCandies: []
   _generatorCharges: -1
   _generatorUpgradeEnabled: 1
   _threeStarsTime: 90
@@ -35,7 +37,8 @@ MonoBehaviour:
     RefIds:
     - rid: 482838943652118631
       type: {class: Timer, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
-      data: 
+      data:
+        _seconds: 120
     - rid: 482838943652118632
       type: {class: Upgraded_Generator_With_Level_X, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
       data:

@@ -40,6 +40,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a84a575c76a60746a5988fb1bbce3d6
+    m_Address: Level_09
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f6215acc6c3b734891807912f2f3ca0
+    m_Address: Level_08
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 794be8487841dc642bc5f3ff630fca19
     m_Address: SFX_Spawn
     m_ReadOnly: 0
@@ -92,6 +102,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e39a4f07788c038499ae2d803caea0c2
     m_Address: Slot
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eecb84663e46b0d44a514b18c42ac79c
+    m_Address: Level_07
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

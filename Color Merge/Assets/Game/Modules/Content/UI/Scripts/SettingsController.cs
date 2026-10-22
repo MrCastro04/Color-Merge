@@ -1,12 +1,13 @@
 using System;
 using Assets.Game.Modules.Content.SFXOneShot.Scripts;
 using Assets.Game.Modules.Core.Sound.Scripts;
+using Assets.Game.Modules.Core.Vibration.Scripts;
 using Cysharp.Threading.Tasks;
 using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.UI.Scripts
 {
-    // Окно настроек целиком: кнопка-шестерёнка → окно с громкостью → ISoundService.
+    // Окно настроек целиком: кнопка-шестерёнка → окно с громкостью (ISoundService) и вибрацией (IVibrationService).
     // Один и тот же контроллер регистрируется в скоупе меню и в скоупе уровня.
     // Уровень слушает OnOpened/OnClosed (пауза таймера) и OnMenuRequested (выход в меню).
     public class SettingsController : IInitializable, IDisposable
@@ -14,6 +15,7 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         private readonly SettingsView _settingsView;
         private readonly SettingsButtonView _settingsButtonView;
         private readonly ISoundService _soundService;
+        private readonly IVibrationService _vibrationService;
         private readonly SFXOneShotPlayer _sfx;
 
         public bool IsOpened { get; private set; }
@@ -24,11 +26,12 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 
         public SettingsController(
             SettingsView settingsView, SettingsButtonView settingsButtonView,
-            ISoundService soundService, SFXOneShotPlayer sfx)
+            ISoundService soundService, IVibrationService vibrationService, SFXOneShotPlayer sfx)
         {
             _settingsView = settingsView;
             _settingsButtonView = settingsButtonView;
             _soundService = soundService;
+            _vibrationService = vibrationService;
             _sfx = sfx;
         }
 
@@ -41,6 +44,7 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             _settingsView.OnMenuClicked += HandleOnMenuClicked;
             _settingsView.OnMusicVolumeChanged += _soundService.SetMusicVolume;
             _settingsView.OnSfxVolumeChanged += _soundService.SetSfxVolume;
+            _settingsView.OnVibrationChanged += HandleOnVibrationChanged;
         }
 
         public void Dispose()
@@ -50,11 +54,20 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             _settingsView.OnMenuClicked -= HandleOnMenuClicked;
             _settingsView.OnMusicVolumeChanged -= _soundService.SetMusicVolume;
             _settingsView.OnSfxVolumeChanged -= _soundService.SetSfxVolume;
+            _settingsView.OnVibrationChanged -= HandleOnVibrationChanged;
         }
 
         public void SetInteractable(bool isInteractable)
         {
             _settingsButtonView.SetInteractable(isInteractable);
+        }
+
+        // Включили вибрацию — сразу короткий отклик, чтобы было понятно, что это.
+        private void HandleOnVibrationChanged(bool isEnabled)
+        {
+            _sfx.Play(SFXOneShotType.ButtonClick);
+            _vibrationService.SetEnabled(isEnabled);
+            _vibrationService.VibrateShort();
         }
 
         private void HandleOnSettingsClicked()
@@ -65,7 +78,7 @@ namespace Assets.Game.Modules.Content.UI.Scripts
             IsOpened = true;
             _sfx.Play(SFXOneShotType.ButtonClick);
 
-            _settingsView.SetValues(_soundService.MusicVolume, _soundService.SfxVolume);
+            _settingsView.SetValues(_soundService.MusicVolume, _soundService.SfxVolume, _vibrationService.IsEnabled);
             _settingsView.SetButtonsInteractable(true);
             _settingsView.ShowAsync().Forget();
 
