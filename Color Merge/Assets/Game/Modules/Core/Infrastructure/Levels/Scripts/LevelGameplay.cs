@@ -163,7 +163,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             _upgrades.Reset();
             _hudView.SetMerges(0, _levelConfig.MergesTarget);
-            _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
+            _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled, _levelConfig.GeneratorUpgradeCost);
             _candyBombSystem.Setup(_levelConfig);
             float bottomBarShift = 0f;
 

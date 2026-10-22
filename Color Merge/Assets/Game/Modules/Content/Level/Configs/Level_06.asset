@@ -53,7 +53,7 @@ MonoBehaviour:
         Content
     - Name: _itemLevel
       Entry: 3
-      Data: 7
+      Data: 6
     - Name: 
       Entry: 8
       Data: 
@@ -88,5 +88,6 @@ MonoBehaviour:
   _candyBombCost: 5
   _generatorCharges: -1
   _generatorUpgradeEnabled: 1
+  _generatorUpgradeCost: 3
   _threeStarsTime: 75
   _twoStarsTime: 112.5

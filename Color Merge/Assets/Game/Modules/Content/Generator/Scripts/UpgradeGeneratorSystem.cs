@@ -8,14 +8,13 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
 {
     public class UpgradeGeneratorSystem : IInitializable, IDisposable
     {
-        public const int ENERGY_PER_UPGRADE = 3;
-
         private readonly GeneratorController _generatorController;
         private readonly BoardController _boardController;
         private readonly PlayerUpgradesInLevel _upgrades;
         private readonly UpgradeButtonView _upgradeButtonView;
 
         private ItemChainConfig _chain;
+        private int _upgradeCost;
         private bool _isInteractable = true;
         private bool _isEnabled = true;
 
@@ -46,9 +45,10 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             _upgrades.OnChanged -= UpdateButton;
         }
 
-        public void Setup(ItemChainConfig chain, bool isEnabled)
+        public void Setup(ItemChainConfig chain, bool isEnabled, int upgradeCost)
         {
             _chain = chain;
+            _upgradeCost = upgradeCost;
             _isEnabled = isEnabled;
             _upgradeButtonView.SetVisible(isEnabled);
             _upgrades.SetGeneratorLevel(_generatorController.Level);
@@ -76,7 +76,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             if (sourceLevel != _generatorController.Level)
                 return;
 
-            if (!_generatorController.CanUpgrade || _upgrades.Energy >= ENERGY_PER_UPGRADE)
+            if (!_generatorController.CanUpgrade || _upgrades.Energy >= _upgradeCost)
                 return;
 
             _upgrades.AddEnergy(1);
@@ -88,7 +88,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             if (!_isEnabled || !_isInteractable || !_generatorController.CanUpgrade)
                 return;
 
-            if (!_upgrades.TrySpendEnergy(ENERGY_PER_UPGRADE))
+            if (!_upgrades.TrySpendEnergy(_upgradeCost))
                 return;
 
             _generatorController.Upgrade();
@@ -105,10 +105,10 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
                 return;
             }
 
-            if (_isInteractable && _upgrades.Energy >= ENERGY_PER_UPGRADE)
+            if (_isInteractable && _upgrades.Energy >= _upgradeCost)
                 _upgradeButtonView.SetReady(_generatorController.Level, _generatorController.Level + 1);
             else
-                _upgradeButtonView.SetNotReady(Math.Min(_upgrades.Energy, ENERGY_PER_UPGRADE), ENERGY_PER_UPGRADE);
+                _upgradeButtonView.SetNotReady(Math.Min(_upgrades.Energy, _upgradeCost), _upgradeCost);
         }
     }
 }
