@@ -40,6 +40,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f6215acc6c3b734891807912f2f3ca0
+    m_Address: Level_08
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 794be8487841dc642bc5f3ff630fca19
     m_Address: SFX_Spawn
     m_ReadOnly: 0
