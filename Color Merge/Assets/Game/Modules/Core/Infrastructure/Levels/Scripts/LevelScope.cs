@@ -11,6 +11,7 @@ using Assets.Game.Modules.Content.Tutorial;
 using Assets.Game.Modules.Content.Tutorial.Tutor_Scenario.Scripts;
 using Assets.Game.Modules.Content.UI.Scripts;
 using Assets.Game.Modules.Core.Infrastructure.Tutorial.Scripts;
+using Assets.Game.Modules.Core.UI.Scripts;
 using Assets.Game.Modules.Core.Utils.Scripts;
 using UnityEngine;
 using VContainer;
@@ -109,6 +110,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             builder.RegisterComponentInHierarchy<CandyBombButtonView>();
             builder.RegisterComponentInHierarchy<ExplosionView>();
+            builder.RegisterComponentInHierarchy<BombDimView>();
+            builder.RegisterComponentInHierarchy<ScreenShakeView>();
             builder.Register<CandyBombSystem>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
         }
 

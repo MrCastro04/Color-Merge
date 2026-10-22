@@ -35,6 +35,8 @@ namespace Assets.Game.Modules.Content.Board.Scripts
         public event Action<ItemController> OnItemReturned;
         public event Action<ItemController, ItemController> OnItemsSwapped;
         public event Action<ItemController> OnItemMerged;
+        // Бомбу отпустили на клетку centerId — она летит туда и раздувается, взрыв ещё впереди.
+        public event Action<int, CandyBombConfig> OnBombDropped;
         // Бомба взорвалась в клетке centerId (эффект, вибрация, звук — снаружи).
         public event Action<int, CandyBombConfig> OnBombExploded;
 
@@ -312,6 +314,7 @@ namespace Assets.Game.Modules.Content.Board.Scripts
             bombView.ConfirmDrop();
             bombView.CanDrag = false;
             Lock(centerId);
+            OnBombDropped?.Invoke(centerId, config);
 
             await bombRt
                 .DOMove(_slots[centerId].View.transform.position, 0.15f)
