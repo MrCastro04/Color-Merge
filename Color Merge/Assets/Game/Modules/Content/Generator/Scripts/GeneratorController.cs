@@ -67,9 +67,9 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             _buttonView.PlayUpgrade();
         }
 
-        public void SetCentered(bool isCentered)
+        public void SetCentered(bool isCentered, float shiftX = 0f)
         {
-            _buttonView.SetCentered(isCentered);
+            _buttonView.SetCentered(isCentered, shiftX);
         }
 
         public void SetInteractable(bool isInteractable)

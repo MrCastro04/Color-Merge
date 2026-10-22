@@ -70,14 +70,14 @@ MonoBehaviour:
   m_text: TUTOR TEXT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5d1a790a4efe15c47b5ea75e5b0318bb, type: 2}
-  m_sharedMaterial: {fileID: -1374827906211079879, guid: 5d1a790a4efe15c47b5ea75e5b0318bb, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 1def44e8fb205a141b7810001c78ea32, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4278234367
-  m_fontColor: {r: 1, g: 0.62352943, b: 0.10980392, a: 1}
+  m_fontColor: {r: 1, g: 0.92156863, b: 0.23137255, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

@@ -71,7 +71,8 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         }
 
         // Без кнопки улучшения генератор стоит по центру, с ней — на своём месте из сцены.
-        public void SetCentered(bool isCentered)
+        // shiftX — сдвиг вправо, когда слева есть кнопка конфетной бомбы.
+        public void SetCentered(bool isCentered, float shiftX = 0f)
         {
             var rt = (RectTransform)transform;
 
@@ -81,7 +82,7 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
                 _isPositionCached = true;
             }
 
-            rt.anchoredPosition = new Vector2(isCentered ? 0f : _sceneX, rt.anchoredPosition.y);
+            rt.anchoredPosition = new Vector2((isCentered ? 0f : _sceneX) + shiftX, rt.anchoredPosition.y);
         }
 
         public void SetInteractable(bool isInteractable)

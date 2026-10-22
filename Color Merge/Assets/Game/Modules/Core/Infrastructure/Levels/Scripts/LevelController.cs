@@ -26,6 +26,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
     {
         private const float SHOW_LEVEL_FADE = 0.4f;
         private const int SHOW_LOSE_DELAY_MS = 400;
+        private const float BOMB_BOTTOM_BAR_SHIFT = 90f;
 
         private enum LevelResult
         {
@@ -159,8 +160,11 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _upgrades.Reset();
             _hudView.SetMerges(0, _levelConfig.MergesTarget);
             _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
-            _generatorController.SetCentered(!_levelConfig.IsGeneratorUpgradeEnabled);
+            // Есть кнопка конфетной бомбы (слева) — генератор и кнопка улучшения сдвигаются вправо, чтобы влезли все три.
             _candyBombSystem.Setup(_levelConfig);
+            float bottomBarShift = _candyBombSystem.IsEnabled ? BOMB_BOTTOM_BAR_SHIFT : 0f;
+            _generatorController.SetCentered(!_levelConfig.IsGeneratorUpgradeEnabled, bottomBarShift);
+            _upgradeGeneratorSystem.SetShift(bottomBarShift);
 
             _conditionsChecker.Setup(_levelConfig);
 

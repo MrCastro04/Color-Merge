@@ -24,6 +24,8 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         [SerializeField] private Canvas _sortingCanvas;
 
         private Tween _readyPulse;
+        private float _sceneX;
+        private bool _isPositionCached;
 
         public event Action OnClicked;
 
@@ -49,6 +51,20 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
         public void SetVisible(bool isVisible)
         {
             gameObject.SetActive(isVisible);
+        }
+
+        // Сдвиг вправо от места в сцене (слева есть кнопка конфетной бомбы).
+        public void SetShift(float shiftX)
+        {
+            var rt = (RectTransform)transform;
+
+            if (!_isPositionCached)
+            {
+                _sceneX = rt.anchoredPosition.x;
+                _isPositionCached = true;
+            }
+
+            rt.anchoredPosition = new Vector2(_sceneX + shiftX, rt.anchoredPosition.y);
         }
 
         public void SetReady(int currentLevel, int nextLevel)

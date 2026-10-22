@@ -60,6 +60,12 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
             UpdateButton();
         }
 
+        // Слева есть кнопка конфетной бомбы — кнопка улучшения сдвигается вправо вместе с генератором.
+        public void SetShift(float shiftX)
+        {
+            _upgradeButtonView.SetShift(shiftX);
+        }
+
         public void SetInteractable(bool isInteractable)
         {
             _isInteractable = isInteractable;
