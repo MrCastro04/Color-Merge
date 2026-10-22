@@ -18,15 +18,17 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
     {
         private const float SHOW_MENU_FADE = 0.3f;
 
-        // Порядок уровней в окне выбора: сцена + ID рекорда (LevelConfig.ID). Level 0 — обучающий, пока открыт только он.
-        private static readonly (string Scene, string RecordId)[] LEVELS =
+        // Порядок уровней в окне выбора: сцена + ID (LevelConfig.ID) для рекорда и прогресса + учебный ли уровень.
+        // Учебные (0–2): перед загрузкой окно «новый контент», рекорд не показывается.
+        // Открыт Level 0 и каждый уровень после пройденного предыдущего.
+        private static readonly (string Scene, string LevelId, bool IsTutorial)[] LEVELS =
         {
-            (SCENE_NAMES.LEVEL_0, "level_00"),
-            (SCENE_NAMES.LEVEL_1, "level_01"),
-            (SCENE_NAMES.LEVEL_2, "level_02"),
-            (SCENE_NAMES.LEVEL_3, "level_03"),
+            (SCENE_NAMES.LEVEL_0, "level_00", true),
+            (SCENE_NAMES.LEVEL_1, "level_01", true),
+            (SCENE_NAMES.LEVEL_2, "level_02", true),
+            (SCENE_NAMES.LEVEL_3, "level_03", false),
+            (SCENE_NAMES.LEVEL_4, "level_04", false),
         };
-        private const int UNLOCKED_LEVELS = 1;
 
         private readonly MainMenuView _mainMenuView;
         private readonly LevelSelectView _levelSelectView;
@@ -36,14 +38,17 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
         private readonly MusicPlayer _musicPlayer;
         private readonly SFXOneShotPlayer _sfx;
         private readonly BestTimeRepository _bestTimeRepository;
+        private readonly LevelProgressRepository _levelProgress;
         private readonly LockedLevelPopup _lockedLevelPopup;
+        private readonly TutorialLevelPopup _tutorialLevelPopup;
 
         private CancellationToken _cancellationToken;
 
         public MainMenuController(
             MainMenuView mainMenuView, LevelSelectView levelSelectView, SettingsController settingsController,
             LevelLoader levelLoader, ScreenFader screenFader, MusicPlayer musicPlayer, SFXOneShotPlayer sfx,
-            BestTimeRepository bestTimeRepository, LockedLevelPopup lockedLevelPopup)
+            BestTimeRepository bestTimeRepository, LevelProgressRepository levelProgress,
+            LockedLevelPopup lockedLevelPopup, TutorialLevelPopup tutorialLevelPopup)
         {
             _mainMenuView = mainMenuView;
             _levelSelectView = levelSelectView;
@@ -53,7 +58,9 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _musicPlayer = musicPlayer;
             _sfx = sfx;
             _bestTimeRepository = bestTimeRepository;
+            _levelProgress = levelProgress;
             _lockedLevelPopup = lockedLevelPopup;
+            _tutorialLevelPopup = tutorialLevelPopup;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation = default)
@@ -63,6 +70,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelSelectView.HideImmediate();
             _levelSelectView.Setup(GetLevelStates());
             _lockedLevelPopup.HideImmediate();
+            _tutorialLevelPopup.HideImmediate();
 
             Subscribe();
 
@@ -83,6 +91,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelSelectView.OnLockedLevelClicked += HandleOnLockedLevelClicked;
             _levelSelectView.OnCloseClicked += HandleOnLevelSelectCloseClicked;
             _lockedLevelPopup.OnOkClicked += HandleOnLockedPopupOkClicked;
+            _tutorialLevelPopup.OnPlayClicked += HandleOnTutorialPopupPlayClicked;
+            _tutorialLevelPopup.OnCloseClicked += HandleOnTutorialPopupCloseClicked;
         }
 
         private void Unsubscribe()
@@ -92,6 +102,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelSelectView.OnLockedLevelClicked -= HandleOnLockedLevelClicked;
             _levelSelectView.OnCloseClicked -= HandleOnLevelSelectCloseClicked;
             _lockedLevelPopup.OnOkClicked -= HandleOnLockedPopupOkClicked;
+            _tutorialLevelPopup.OnPlayClicked -= HandleOnTutorialPopupPlayClicked;
+            _tutorialLevelPopup.OnCloseClicked -= HandleOnTutorialPopupCloseClicked;
         }
 
         private void HandleOnPlayClicked()
@@ -100,9 +112,37 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelSelectView.ShowAsync(_cancellationToken).Forget();
         }
 
+        // Учебный уровень — сначала окно «новый контент», обычный — сразу загрузка.
         private void HandleOnLevelSelected(int levelIndex)
         {
             _sfx.Play(SFXOneShotType.ButtonClick);
+
+            if (LEVELS[levelIndex].IsTutorial)
+            {
+                _tutorialLevelPopup.SetLevel(levelIndex);
+                _tutorialLevelPopup.SetInteractable(true);
+                _tutorialLevelPopup.ShowAsync(_cancellationToken).Forget();
+                return;
+            }
+
+            LoadLevel(levelIndex);
+        }
+
+        private void HandleOnTutorialPopupPlayClicked()
+        {
+            _sfx.Play(SFXOneShotType.ButtonClick);
+            _tutorialLevelPopup.SetInteractable(false);
+            LoadLevel(_tutorialLevelPopup.LevelIndex);
+        }
+
+        private void HandleOnTutorialPopupCloseClicked()
+        {
+            _sfx.Play(SFXOneShotType.ButtonClick);
+            _tutorialLevelPopup.HideAsync(_cancellationToken).Forget();
+        }
+
+        private void LoadLevel(int levelIndex)
+        {
             _levelSelectView.SetInteractable(false);
             _mainMenuView.SetInteractable(false);
             _settingsController.SetInteractable(false);
@@ -110,15 +150,17 @@ namespace Assets.Game.Modules.Core.Infrastructure.MainMenu.Scripts
             _levelLoader.LoadAsync(LEVELS[levelIndex].Scene).Forget();
         }
 
-        // Лучшее время показывается только у пройденных уровней (рекорд есть только после прохождения).
+        // Лучшее время показывается только у пройденных неучебных уровней.
         private List<LevelButtonState> GetLevelStates()
         {
             var states = new List<LevelButtonState>(LEVELS.Length);
 
             for (int i = 0; i < LEVELS.Length; i++)
             {
-                bool hasBestTime = _bestTimeRepository.TryGet(LEVELS[i].RecordId, out var bestTime);
-                states.Add(new LevelButtonState(isLocked: i >= UNLOCKED_LEVELS, hasBestTime, bestTime));
+                bool isUnlocked = i == 0 || _levelProgress.IsCompleted(LEVELS[i - 1].LevelId);
+                bool hasBestTime = _bestTimeRepository.TryGet(LEVELS[i].LevelId, out var bestTime) && !LEVELS[i].IsTutorial;
+
+                states.Add(new LevelButtonState(isLocked: !isUnlocked, hasBestTime, bestTime));
             }
 
             return states;

@@ -1,4 +1,6 @@
 using Assets.Game.Modules.Core.Timer.Scripts;
+using Assets.Game.Modules.Core.Utils.Scripts;
+using Assets.Game.Modules.Core.Utils.Scripts.Extensions;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -7,7 +9,8 @@ namespace Assets.Game.Modules.Content.UI.Scripts
 {
     // Таймер и рекорд (только на уровне с условием Timer).
     // Есть невыполненное условие с лимитом — показывается оставшееся время; последние секунды — красным.
-    public class HudView : MonoBehaviour
+    // На туторе поднимается над затемнением (IChangeSortGroupInCanvas).
+    public class HudView : MonoBehaviour, IChangeSortGroupInCanvas
     {
         private const float WARNING_TIME = 10f;
 
@@ -15,9 +18,27 @@ namespace Assets.Game.Modules.Content.UI.Scripts
         [SerializeField] private TMP_Text _bestTimeText;
         [SerializeField] private TMP_Text _levelText;
         [SerializeField] private Color _warningColor = new(1f, 0.35f, 0.35f, 1f);
+        [SerializeField] private Canvas _sortingCanvas;
 
         private Color _timeColor;
         private bool _isColorCached;
+
+        public string DesiredGroup => SORTING_LAYERS.TUTOR;
+        public string StartGroup { get; set; } = SORTING_LAYERS.DEFAULT;
+        public Canvas SortingCanvas => _sortingCanvas;
+
+        // Границы самих цифр таймера (поле текста шире) — на них указывает стрелка тутора.
+        public Bounds TimeTextWorldBounds
+        {
+            get
+            {
+                _timeText.ForceMeshUpdate();
+                var bounds = _timeText.textBounds;
+                var t = _timeText.transform;
+
+                return new Bounds(t.TransformPoint(bounds.center), Vector3.Scale(bounds.size, t.lossyScale));
+            }
+        }
         private bool _isWarning;
 
         // Уровень без условия Timer — ни таймера, ни рекорда.

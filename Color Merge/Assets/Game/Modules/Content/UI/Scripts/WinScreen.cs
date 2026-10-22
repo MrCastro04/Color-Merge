@@ -54,6 +54,17 @@ namespace Assets.Game.Modules.Content.UI.Scripts
                 _newRecordLabel.SetActive(isNewRecord);
         }
 
+        // Учебный уровень с таймером: время показываем, рекорд — нет.
+        public void SetResultWithoutRecord(float time)
+        {
+            _timeText.gameObject.SetActive(true);
+            _timeText.text = TimeFormatter.Format(time);
+            _bestTimeText.gameObject.SetActive(false);
+
+            if (_newRecordLabel != null)
+                _newRecordLabel.SetActive(false);
+        }
+
         // Уровень без условия Timer: вместо времени — похвала, рекорд не показывается.
         public void SetResultWithoutTime()
         {

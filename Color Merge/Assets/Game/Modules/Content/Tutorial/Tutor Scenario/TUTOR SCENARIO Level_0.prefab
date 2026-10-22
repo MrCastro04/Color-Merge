@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 3013588447222921720}
   - component: {fileID: 1539277859534847871}
   m_Layer: 0
-  m_Name: TUTOR SCENARIO
+  m_Name: TUTOR SCENARIO Level_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -52,12 +52,20 @@ namespace Assets.Game.Modules.Content.Tutorial.Arrows
             var corners = new Vector3[4];
             target.GetWorldCorners(corners);
 
-            Vector3 center = (corners[0] + corners[2]) * 0.5f;
+            PointAt(new Bounds((corners[0] + corners[2]) * 0.5f, corners[2] - corners[0]), gap);
+        }
+
+        // То же по мировым границам (например, только цифры таймера, а не всё поле текста).
+        public void PointAt(Bounds targetBounds, float gap = 10f)
+        {
+            if (_rt == null)
+                _rt = GetComponent<RectTransform>();
+
             Vector3 direction = GetDirectionVector();
-            float halfSize = Mathf.Abs(Vector3.Dot((corners[2] - corners[0]) * 0.5f, direction));
+            float halfSize = Mathf.Abs(Vector3.Dot(targetBounds.extents, direction));
             float scale = _rt.lossyScale.x;
 
-            _rt.position = center - direction * (halfSize + (TipOffset + MoveDistance + gap) * scale);
+            _rt.position = targetBounds.center - direction * (halfSize + (TipOffset + MoveDistance + gap) * scale);
             _startPosition = _rt.position;
 
             if (isActiveAndEnabled)

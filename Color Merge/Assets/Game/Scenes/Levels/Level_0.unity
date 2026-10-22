@@ -1146,6 +1146,7 @@ MonoBehaviour:
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 0
+  _tutorialType: 1
   _tutorScenario: {fileID: 1728578523}
   _tutorFinger: {fileID: 1728578524}
 --- !u!4 &169515576
@@ -2338,6 +2339,8 @@ GameObject:
   - component: {fileID: 474916902}
   - component: {fileID: 474916901}
   - component: {fileID: 474916900}
+  - component: {fileID: 474916906}
+  - component: {fileID: 474916905}
   m_Layer: 5
   m_Name: UpgradeButton
   m_TagString: Untagged
@@ -2382,6 +2385,7 @@ MonoBehaviour:
   _labelText: {fileID: 556897519}
   _canvasGroup: {fileID: 474916904}
   _inactiveAlpha: 0.5
+  _sortingCanvas: {fileID: 474916906}
 --- !u!114 &474916901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2476,6 +2480,46 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &474916905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 474916898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &474916906
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 474916898}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &476013581
 GameObject:
   m_ObjectHideFlags: 0
@@ -6492,6 +6536,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1520505543}
   - component: {fileID: 1520505544}
+  - component: {fileID: 1520505546}
+  - component: {fileID: 1520505545}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -6537,6 +6583,47 @@ MonoBehaviour:
   _bestTimeText: {fileID: 1882529675}
   _levelText: {fileID: 667156290}
   _warningColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+  _sortingCanvas: {fileID: 1520505546}
+--- !u!114 &1520505545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520505542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!223 &1520505546
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520505542}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &1539713337
 GameObject:
   m_ObjectHideFlags: 0

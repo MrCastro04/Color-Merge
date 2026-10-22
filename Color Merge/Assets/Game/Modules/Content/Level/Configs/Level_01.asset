@@ -14,32 +14,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: Content::Assets.Game.Modules.Content.Level.Scripts.LevelConfig
   _id: level_01
   _itemChain: {fileID: 11400000, guid: 9f9e62b8a819b444099ad8ea42e0bdd9, type: 2}
+  _isTutorial: 1
   _conditions:
-  - rid: 482838925939835038
-  - rid: 482838925939835039
+  - rid: 482838943652118626
+  - rid: 482838943652118627
   _columns: 5
   _rows: 7
   _blockedSlots: 
   _initialItems:
-  - SlotID: 11
+  - SlotID: 1
     ItemStartLevel: 1
-  - SlotID: 13
+  - SlotID: 3
+    ItemStartLevel: 2
+  - SlotID: 5
     ItemStartLevel: 1
-  - SlotID: 21
+  - SlotID: 8
+    ItemStartLevel: 1
+  - SlotID: 10
     ItemStartLevel: 2
-  - SlotID: 23
+  - SlotID: 12
+    ItemStartLevel: 3
+  - SlotID: 16
+    ItemStartLevel: 1
+  - SlotID: 19
     ItemStartLevel: 2
+  - SlotID: 22
+    ItemStartLevel: 1
+  - SlotID: 25
+    ItemStartLevel: 3
+  - SlotID: 28
+    ItemStartLevel: 2
+  - SlotID: 31
+    ItemStartLevel: 1
   _generatorCharges: -1
-  _generatorUpgradeEnabled: 1
+  _generatorUpgradeEnabled: 0
   _threeStarsTime: 90
   _twoStarsTime: 180
   references:
     version: 2
     RefIds:
-    - rid: 482838925939835038
+    - rid: 482838943652118626
       type: {class: Timer, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
       data: 
-    - rid: 482838925939835039
+    - rid: 482838943652118627
       type: {class: Get_Item_With_Level_X, ns: Assets.Game.Modules.Content.Level.Scripts.Conditions, asm: Content}
       data:
         _hasTimer: 0

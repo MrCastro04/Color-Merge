@@ -15,6 +15,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts
     {
         [SerializeField] private string _id;
         [SerializeField] private ItemChainConfig _itemChain;
+        [Tooltip("Учебный уровень: рекорд времени не сохраняется и не показывается")]
+        [SerializeField] private bool _isTutorial;
 
         [Header("Conditions")]
         [SerializeReference] private List<LevelCondition> _conditions = new();
@@ -39,6 +41,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
 
         public string ID => _id;
         public ItemChainConfig ItemChain => _itemChain;
+        public bool IsTutorial => _isTutorial;
         public int Columns => _columns;
         public int Rows => _rows;
         public int SlotsCount => _columns * _rows;

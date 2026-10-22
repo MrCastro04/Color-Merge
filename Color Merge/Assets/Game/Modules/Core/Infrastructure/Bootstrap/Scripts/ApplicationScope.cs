@@ -45,6 +45,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts
             RegisterSound(builder);
 
             builder.Register<BestTimeRepository>(Lifetime.Singleton);
+            builder.Register<LevelProgressRepository>(Lifetime.Singleton);
             RegisterLoading(builder);
 
             builder.RegisterEntryPoint<BootController>();

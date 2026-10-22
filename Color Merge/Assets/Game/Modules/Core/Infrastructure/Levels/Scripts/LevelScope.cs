@@ -24,7 +24,8 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
     {
         [SerializeField] private LevelConfigReference _levelConfig;
 
-        [Header("Тутор — только на обучающем уровне (Level_0), иначе пусто")]
+        [Header("Тутор — только на учебных уровнях (0–2), иначе NONE и пусто")]
+        [SerializeField] private LevelTutorialType _tutorialType = LevelTutorialType.NONE;
         [SerializeField] private TutorScenario _tutorScenario;
         [SerializeField] private MoveableTutorArrow _tutorFinger;
 
@@ -51,15 +52,29 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
         private void RegisterTutor(IContainerBuilder builder)
         {
-            if (_tutorScenario == null)
+            if (_tutorialType == LevelTutorialType.NONE || _tutorScenario == null)
             {
                 builder.Register<EmptyLevelTutorial>(Lifetime.Scoped).As<ILevelTutorial>();
                 return;
             }
 
             builder.RegisterComponent(_tutorScenario).AsSelf().AsImplementedInterfaces();
-            builder.RegisterComponent(_tutorFinger);
-            builder.Register<Tutorial_0_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
+
+            if (_tutorFinger != null)
+                builder.RegisterComponent(_tutorFinger);
+
+            switch (_tutorialType)
+            {
+                case LevelTutorialType.BASICS:
+                    builder.Register<Tutorial_0_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
+                    break;
+                case LevelTutorialType.TIMER:
+                    builder.Register<Tutorial_1_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
+                    break;
+                case LevelTutorialType.GENERATOR_UPGRADE:
+                    builder.Register<Tutorial_2_Controller>(Lifetime.Scoped).As<ILevelTutorial>();
+                    break;
+            }
         }
 
         private static void RegisterBoard(IContainerBuilder builder)

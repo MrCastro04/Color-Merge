@@ -46,6 +46,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         private readonly LevelConditionsChecker _conditionsChecker;
         private readonly LevelTimer _levelTimer;
         private readonly BestTimeRepository _bestTimeRepository;
+        private readonly LevelProgressRepository _levelProgress;
         private readonly HudView _hudView;
         private readonly WinScreen _winScreen;
         private readonly LoseScreen _loseScreen;
@@ -68,7 +69,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             BoardController boardController, GeneratorController generatorController,
             UpgradeGeneratorSystem upgradeGeneratorSystem, PlayerUpgradesInLevel upgrades,
             LevelConditionsChecker conditionsChecker,
-            LevelTimer levelTimer, BestTimeRepository bestTimeRepository,
+            LevelTimer levelTimer, BestTimeRepository bestTimeRepository, LevelProgressRepository levelProgress,
             HudView hudView, WinScreen winScreen, LoseScreen loseScreen, ChainProgressView chainProgressView,
             MusicPlayer musicPlayer, ScreenFader screenFader, SettingsController settingsController,
             ILevelTutorial levelTutorial)
@@ -85,6 +86,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             _conditionsChecker = conditionsChecker;
             _levelTimer = levelTimer;
             _bestTimeRepository = bestTimeRepository;
+            _levelProgress = levelProgress;
             _hudView = hudView;
             _winScreen = winScreen;
             _loseScreen = loseScreen;
@@ -161,8 +163,9 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             {
                 UpdateTimeView(0f);
 
+                // Учебный уровень: таймер есть, рекорда нет.
                 bool hasBestTime = _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
-                _hudView.SetBestTime(hasBestTime, bestTime);
+                _hudView.SetBestTime(hasBestTime && HasRecord, bestTime);
             }
 
             SetupChainProgress();
@@ -188,6 +191,9 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
                 await ShowLoseAsync(cancellation);
         }
 
+        // Рекорд — только на уровне с таймером и не учебном.
+        private bool HasRecord => _conditionsChecker.HasTimer && !_levelConfig.IsTutorial;
+
         private void StopGameplay()
         {
             _levelTimer.Stop();
@@ -200,14 +206,21 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
         {
             float time = _levelTimer.Elapsed;
 
+            // Пройден — в меню открывается следующий уровень.
+            _levelProgress.MarkCompleted(_levelConfig.ID);
+
             if (IsWinItem(_lastMergedItem))
                 await _lastMergedItem.View.PlayWinAsync(cancellation);
 
-            if (_conditionsChecker.HasTimer)
+            if (HasRecord)
             {
                 bool isNewRecord = _bestTimeRepository.TrySave(_levelConfig.ID, time);
                 _bestTimeRepository.TryGet(_levelConfig.ID, out var bestTime);
                 _winScreen.SetResult(time, bestTime, isNewRecord);
+            }
+            else if (_conditionsChecker.HasTimer)
+            {
+                _winScreen.SetResultWithoutRecord(time);
             }
             else
             {

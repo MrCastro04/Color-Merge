@@ -1,4 +1,6 @@
 using System;
+using Assets.Game.Modules.Core.Utils.Scripts;
+using Assets.Game.Modules.Core.Utils.Scripts.Extensions;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -8,16 +10,26 @@ namespace Assets.Game.Modules.Content.Generator.Scripts
 {
     // Кнопка улучшения генератора (стрелка вверх). Активна, когда хватает энергии:
     // сверху «Lvl N -> Lvl N+1», иначе — сколько энергии накоплено.
-    public class UpgradeButtonView : MonoBehaviour
+    // На туторе поднимается над затемнением (IChangeSortGroupInCanvas).
+    public class UpgradeButtonView : MonoBehaviour, IChangeSortGroupInCanvas
     {
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _labelText;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField, Range(0f, 1f)] private float _inactiveAlpha = 0.5f;
+        [SerializeField] private Canvas _sortingCanvas;
 
         private Tween _readyPulse;
 
         public event Action OnClicked;
+
+        public RectTransform RT => (RectTransform)transform;
+        // Подпись над кнопкой (энергия «0/3» или «Lvl N -> Lvl N+1») — на неё указывает стрелка тутора.
+        public RectTransform LabelRT => (RectTransform)_labelText.transform;
+
+        public string DesiredGroup => SORTING_LAYERS.TUTOR;
+        public string StartGroup { get; set; } = SORTING_LAYERS.DEFAULT;
+        public Canvas SortingCanvas => _sortingCanvas;
 
         private void OnEnable()
         {
