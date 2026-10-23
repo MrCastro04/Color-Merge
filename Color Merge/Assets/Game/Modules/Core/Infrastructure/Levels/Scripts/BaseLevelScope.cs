@@ -1,5 +1,8 @@
 using Assets.Game.Modules.Content.Board.Scripts;
 using Assets.Game.Modules.Content.CandyBomb.Scripts;
+using Assets.Game.Modules.Content.GUI.HUD.Scripts;
+using Assets.Game.Modules.Content.GUI.Popups.Scripts;
+using Assets.Game.Modules.Content.GUI.Settings.Scripts;
 using Assets.Game.Modules.Content.Generator.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
@@ -7,7 +10,6 @@ using Assets.Game.Modules.Content.Level.Scripts;
 using Assets.Game.Modules.Content.Level.Scripts.Conditions;
 using Assets.Game.Modules.Content.Slot.Scripts;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
-using Assets.Game.Modules.Content.GUI.Scripts;
 using Assets.Game.Modules.Core.UI.Scripts;
 using Assets.Game.Modules.Core.Utils.Scripts;
 using UnityEngine;
@@ -31,7 +33,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             builder.Register<LevelTimer>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
             builder.Register<LevelConditionsChecker>(Lifetime.Scoped);
             builder.Register<LevelSounds>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
-            builder.Register<LevelHaptics>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+            builder.Register<LevelVibration>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
 
             RegisterUI(builder);
 

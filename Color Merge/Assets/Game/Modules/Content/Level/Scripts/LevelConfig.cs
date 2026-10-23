@@ -41,6 +41,8 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         [SerializeField] private int _generatorCharges = -1;
         [Tooltip("Показувати кнопку покращення генератора (енергія за мерджі)")]
         [SerializeField] private bool _generatorUpgradeEnabled = true;
+        [Tooltip("Скільки енергії (1 мердж предметів рівня генератора = 1 енергія) коштує одне покращення")]
+        [SerializeField, Min(1)] private int _generatorUpgradeCost = 3;
 
         [Header("Stars (секунди, лише з умовою Timer)")]
         [Tooltip("Пройшов швидше — 3 зірки")]
@@ -61,6 +63,7 @@ namespace Assets.Game.Modules.Content.Level.Scripts
         public int GeneratorCharges => _generatorCharges;
         public bool HasGeneratorLimit => _generatorCharges >= 0;
         public bool IsGeneratorUpgradeEnabled => _generatorUpgradeEnabled;
+        public int GeneratorUpgradeCost => Mathf.Max(1, _generatorUpgradeCost);
 
         public IReadOnlyCollection<LevelCondition> Conditions => _conditions;
         public bool HasTimer => _conditions.Any(condition => condition is Conditions.Timer);

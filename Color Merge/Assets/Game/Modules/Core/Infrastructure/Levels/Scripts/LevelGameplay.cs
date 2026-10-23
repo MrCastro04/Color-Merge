@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Threading;
 using Assets.Game.Modules.Content.Board.Scripts;
 using Assets.Game.Modules.Content.CandyBomb.Scripts;
+using Assets.Game.Modules.Content.GUI.HUD.Scripts;
+using Assets.Game.Modules.Content.GUI.Popups.Scripts;
+using Assets.Game.Modules.Content.GUI.Settings.Scripts;
 using Assets.Game.Modules.Content.Generator.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts.Interfaces;
 using Assets.Game.Modules.Content.Level.Scripts;
 using Assets.Game.Modules.Content.Level.Scripts.Conditions;
 using Assets.Game.Modules.Content.Slot.Scripts.Interfaces;
-using Assets.Game.Modules.Content.GUI.Scripts;
 using Assets.Game.Modules.Core.AssetManagement.Scripts;
 using Assets.Game.Modules.Core.Infrastructure.Bootstrap.Scripts;
 using Assets.Game.Modules.Core.UI.Scripts;
@@ -163,7 +165,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             _upgrades.Reset();
             _hudView.SetMerges(0, _levelConfig.MergesTarget);
-            _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled);
+            _upgradeGeneratorSystem.Setup(chain, _levelConfig.IsGeneratorUpgradeEnabled, _levelConfig.GeneratorUpgradeCost);
             _candyBombSystem.Setup(_levelConfig);
             float bottomBarShift = 0f;
 
@@ -204,9 +206,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
 
             foreach (var condition in _levelConfig.Conditions)
             {
-                if (condition is Get_Item_With_Level_X getItem)
-                    goals.AddItemGoal(_levelConfig.ItemChain.GetByLevel(Math.Min(getItem.ItemLevel, _levelConfig.ItemChain.Items.Count)).Icon);
-                else if (condition is Upgraded_Generator_With_Level_X generator)
+                if (condition is Upgraded_Generator_With_Level_X generator)
                     goals.AddGeneratorGoal(generator.GeneratorLevel);
             }
         }

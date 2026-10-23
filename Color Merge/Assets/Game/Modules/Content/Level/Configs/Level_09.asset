@@ -47,7 +47,7 @@ MonoBehaviour:
   _itemChain: {fileID: 11400000, guid: 9f9e62b8a819b444099ad8ea42e0bdd9, type: 2}
   _columns: 5
   _rows: 7
-  _blockedSlots: 0b0000000c0000000d000000100000001100000012000000150000001600000017000000
+  _blockedSlots: 0b0000000c0000000d0000001000000012000000150000001600000017000000
   _initialItems:
   - SlotID: 0
     ItemStartLevel: 1
@@ -73,5 +73,6 @@ MonoBehaviour:
   _candyBombCost: 3
   _generatorCharges: -1
   _generatorUpgradeEnabled: 0
+  _generatorUpgradeCost: 3
   _threeStarsTime: 90
   _twoStarsTime: 180
