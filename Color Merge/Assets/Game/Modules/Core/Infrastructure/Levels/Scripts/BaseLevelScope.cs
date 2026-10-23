@@ -33,7 +33,7 @@ namespace Assets.Game.Modules.Core.Infrastructure.Levels.Scripts
             builder.Register<LevelTimer>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
             builder.Register<LevelConditionsChecker>(Lifetime.Scoped);
             builder.Register<LevelSounds>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
-            builder.Register<LevelHaptics>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+            builder.Register<LevelVibration>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
 
             RegisterUI(builder);
 

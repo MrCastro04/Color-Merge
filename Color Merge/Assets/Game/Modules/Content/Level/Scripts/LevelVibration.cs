@@ -6,12 +6,12 @@ using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
 {
-    public class LevelHaptics : IInitializable, IDisposable
+    public class LevelVibration : IInitializable, IDisposable
     {
         private readonly BoardController _boardController;
         private readonly IVibrationService _vibrationService;
 
-        public LevelHaptics(BoardController boardController, IVibrationService vibrationService)
+        public LevelVibration(BoardController boardController, IVibrationService vibrationService)
         {
             _boardController = boardController;
             _vibrationService = vibrationService;
