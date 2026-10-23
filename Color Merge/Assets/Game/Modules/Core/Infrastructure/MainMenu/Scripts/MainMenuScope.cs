@@ -1,4 +1,6 @@
-using Assets.Game.Modules.Content.GUI.Scripts;
+using Assets.Game.Modules.Content.GUI.Main_Menu.Scripts;
+using Assets.Game.Modules.Content.GUI.Popups.Scripts;
+using Assets.Game.Modules.Content.GUI.Settings.Scripts;
 using VContainer;
 using VContainer.Unity;
 

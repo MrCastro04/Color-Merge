@@ -1,9 +1,9 @@
 using System;
 using Assets.Game.Modules.Content.Board.Scripts;
+using Assets.Game.Modules.Content.GUI.Popups.Scripts;
 using Assets.Game.Modules.Content.Item.Scripts;
 using Assets.Game.Modules.Content.Level.Scripts.Conditions;
 using Assets.Game.Modules.Content.SFXOneShot.Scripts;
-using Assets.Game.Modules.Content.GUI.Scripts;
 using VContainer.Unity;
 
 namespace Assets.Game.Modules.Content.Level.Scripts
