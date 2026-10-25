@@ -1,5 +1,4 @@
 ﻿using System;
-using Assets.Game.Modules.Content.Tutorial.Arrows;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,13 +21,5 @@ namespace Assets.Game.Modules.Content.Tutorial
 
         [Tooltip("Лише для SkipCondition = ButtonClick")]
         public Button RequiredButton;
-    }
-
-    [Serializable]
-    public struct ArrowSpawnInfo
-    {
-        public RectTransform StartPoint;
-        public ArrowDirectionType Direction;
-        public bool IsAnimated;
     }
 }

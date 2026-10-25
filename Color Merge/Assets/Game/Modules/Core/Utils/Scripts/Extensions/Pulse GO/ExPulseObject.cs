@@ -1,4 +1,3 @@
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -7,30 +6,8 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
 {
     public static class ExPulseObject
     {
-        public static async UniTask StartPulseWithTimer(this IPulseObject pulseObject,
-            float seconds, CancellationToken ct = default)
+        public static async UniTask StartPulse(this IPulseObject pulseObj)
         {
-            await UniTask.WaitForSeconds(seconds, cancellationToken: ct);
-
-            await pulseObject.StartPulse();
-        }
-        
-        public static async UniTask StartPulse(this IPulseObject pulseObj,
-            bool? withRestart = false, float? restartTime = null)
-        {
-            if (pulseObj is IPulseObjWithPointer pointerObj && pointerObj.HasPointer)
-            {
-                pointerObj.RT?.DOKill();
-                pointerObj.PulseSequence?.Kill(true);
-
-                if (withRestart == true && restartTime.HasValue)
-                {
-                    pulseObj.StartPulseWithTimer(restartTime.Value).Forget();
-                }
-
-                return;
-            }
-
             const Ease defaultPulseEase = Ease.InOutSine;
             const float defaultMinPulseScale = 1f;
             const float defaultMaxPulseScale = 1.25f;
@@ -52,6 +29,7 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
 
             if (pulseObj.PulseEase != default)
                 ease = pulseObj.PulseEase;
+
             var rt = ResolveRT(pulseObj);
 
             rt.localScale = Vector3.one * minScale;
@@ -71,8 +49,7 @@ namespace Assets.Game.Modules.Core.Utils.Scripts.Extensions
 
         public static void StopPulse(this IPulseObject pulseObj)
         {
-            var isCard = pulseObj is IPulseObjWithPointer;
-            pulseObj.PulseSequence?.Kill(isCard);
+            pulseObj.PulseSequence?.Kill();
         }
 
         private static Tween GetTweenScale(RectTransform rt, float scaleTo, float duration, Ease ease)
