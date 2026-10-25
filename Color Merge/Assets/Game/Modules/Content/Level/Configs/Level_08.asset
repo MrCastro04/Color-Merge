@@ -96,5 +96,6 @@ MonoBehaviour:
   _candyBombCost: 5
   _generatorCharges: -1
   _generatorUpgradeEnabled: 1
+  _generatorUpgradeCost: 3
   _threeStarsTime: 75
   _twoStarsTime: 112.5
